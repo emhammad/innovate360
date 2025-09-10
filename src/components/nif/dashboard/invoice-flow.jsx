@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import Image from 'next/image';
 import logo_img from "@assets/img/logo/innovate360.png";
 import WalletImage from "@assets/img/icon/payment-success.png";
-import InvoicePreview from '../../../admin/dashboard/InvoicePreview';
+import InvoicePreview from '../../admin/dashboard/InvoicePreview';
 import {
   FaDownload
 } from 'react-icons/fa';
