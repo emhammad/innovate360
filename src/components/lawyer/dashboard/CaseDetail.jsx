@@ -27,35 +27,35 @@ export default function Home(CaseId) {
     {
       title: 'Registration',
       description: 'Your invoice is not paid. Kindly pay it to complete your registration.',
-      icon: <Image src="/assets/img/icon/registration.png" alt="Registration" width={20} height={20} />,
+      icon: <Image src="/assets/img/icon/registration.png" alt="Registration" width={40} height={40} />,
       button: 'View',
       active: true
     },
     {
       title: 'Invoice',
       description: 'Waiting for invoice to be paid',
-      icon: <Image src="/assets/img/icon/invoice.png" alt="Invoice" width={20} height={20} />,
+      icon: <Image src="/assets/img/icon/invoice.png" alt="Invoice" width={40} height={40} />,
       button: 'View',
       active: false
     },
     {
       title: 'Company Name',
       description: 'Your name is not approved. Kindly resubmit the names.',
-      icon: <Image src="/assets/img/icon/company-name.png" alt="Company Name" width={20} height={20} />,
+      icon: <Image src="/assets/img/icon/company-name.png" alt="Company Name" width={40} height={40} />,
       button: 'View',
       active: false
     },
     {
       title: 'Processing',
       description: 'Your company registration is in process. Kindly e-sign the documents uploaded.',
-      icon: <Image src="/assets/img/icon/processing.png" alt="Processing" width={20} height={20} />,
+      icon: <Image src="/assets/img/icon/processing.png" alt="Processing" width={40} height={40} />,
       button: 'View',
       active: false
     },
     {
       title: 'Company Registration',
       description: 'Your company is successfully registered.',
-      icon: <Image src="/assets/img/icon/com-registration.png" alt="Company Registration" width={20} height={20} />,
+      icon: <Image src="/assets/img/icon/com-registration.png" alt="Company Registration" width={40} height={40} />,
       button: 'View',
       active: false
     }
