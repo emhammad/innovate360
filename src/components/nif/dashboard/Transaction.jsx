@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { FaDownload } from "react-icons/fa";
-import InvoicePreview from "../../../admin/dashboard/InvoicePreview";
+import InvoicePreview from "../../admin/dashboard/InvoicePreview";
 
 const transactions = [
   {
