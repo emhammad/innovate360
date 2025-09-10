@@ -1,0 +1,29 @@
+
+// font url
+
+$font-url: 'https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap';
+
+
+// styles/_fonts.scss
+
+$font-family: (
+  'ff': (
+    'body': "'Inter', sans-serif",        // Use Inter for general body text
+    'heading': "'Inter', sans-serif",     // Use Inter for headings too (modern look)
+    'p': "'Inter', sans-serif",           // Use Inter for paragraph text
+    'poppins': "'Inter', sans-serif",     // Use Inter instead of Poppins
+    'fontawesome': '"Font Awesome 6 Pro"',  // Icon font remains unchanged
+  )
+);
+
+
+
+// font size
+$font-size: (
+    'fz': (
+        'body': 16px,
+        'p': 16px,
+    )
+);
+
+

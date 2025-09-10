@@ -1,0 +1,115 @@
+@use '../../utils' as *;
+
+.cst_asterik
+{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 7%;
+}
+.portfolio_cst_img img
+{
+    width: 100%;
+    height: 100%;
+}
+.portfolio_cst_img
+{
+    position: relative;
+    height: 50vh;
+}
+.case-studies-hero-section h1
+{
+    font-size: 140px;
+}
+.cst-detail-hero-area h1
+{
+    font-size: 80px;
+}
+.cst-detail-hero-area h1:nth-child(1), .cst-detail-hero-area p,
+.project_info_list h5, .project_info_list span, .services-detail-hero-area h1
+,.services-detail-hero-area p 
+{
+    color: white;
+}
+.text_bottom
+{
+    position: absolute;
+    bottom: 0;
+}
+.gif_container img
+{
+    width: 100%;
+    height: 100%;
+    transform: rotate(30deg);
+}
+.services-detail-hero-area h1
+{
+    text-transform: uppercase;
+    font-size: 60px;
+    font-weight: 300;
+}
+.project_info_container
+{
+    position: absolute;
+    bottom: 0;
+}
+.project_info_list h5
+{
+    font-weight: 400;
+}
+.project_info_list li
+{
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 10px;
+    margin-bottom:10px
+}
+.project_info_list
+{
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+}
+.cst-detail-hero-area h1:nth-child(2)
+{
+    color: #d31f23;
+}
+.cst-hero-img
+{
+    height: 100%;
+}
+.cst-hero-img img
+{
+    width: 100%;
+    height: 100%;
+}
+.cst-detail-hero-area, .services-detail-hero-area
+{
+    background: #441D1E;
+    background: -webkit-linear-gradient(45deg, rgba(68, 29, 30, 1) 0%, rgba(28, 28, 28, 1) 51%);
+    background: -moz-linear-gradient(45deg, rgba(68, 29, 30, 1) 0%, rgba(28, 28, 28, 1) 51%);
+    background: linear-gradient(45deg, rgba(68, 29, 30, 1) 0%, rgba(28, 28, 28, 1) 51%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#441D1E", endColorstr="#1C1C1C", GradientType=0);
+}
+.portfolio-nav
+{
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    border: solid 2px #d31f23;
+    padding: 5px;
+    border-radius: 10px;
+}
+.portfolio-nav li
+{
+    margin-left: 20px;
+    margin-right: 20px;
+    color:#575454;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.portfolio-nav img
+{
+    width: 20px;
+    height: 15px;
+}
