@@ -170,6 +170,7 @@ export default function NIFUploadAndPreview() {
                         onClick={() => removeFile(file.id)}
                         className="remove-file btn btn-link text-decoration-none text-muted p-0 bg-white"
                         aria-label="Remove file"
+                        style={{width : '30px'}}
                       >
                         <FaMinus />
                       </button>

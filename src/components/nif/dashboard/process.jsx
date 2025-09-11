@@ -3,38 +3,24 @@ import { useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
 
-import DashboardIcon from "@assets/img/sideNav/dashboard.png";
-import CardIcon from "@assets/img/sideNav/card.png";
 import AnalyticsIcon from "@assets/img/sideNav/analytics.png";
-import ChatIcon from "@assets/img/sideNav/chat.png";
+import AnalyticsIconActive from "@assets/img/icon/chart.png";
 // Import your step components
 import AnalyticDashboard from "../AnalyticDashboard"
 
 export default function CompanySetupPage() {
 
-    const [activeTab, setactiveTab] = useState(0);
+    const [activeTab, setactiveTab] = useState(2); // Set Analytics as default
     const handleNavClick = (index) => {
-        // if (index !== activeTab) {
-        // setCompletedSteps((prev) =>
-        //     index > activeTab
-        //     ? [...new Set([...prev, activeTab])]
-        //     : prev.filter((step) => step !== activeTab)
-        // );
-        // }
-        setactiveTab(index);
+        // Only allow Analytics tab (index 2)
+        if (index === 2) {
+            setactiveTab(index);
+        }
     };
 
     const getTabComponent = () => {
-        switch (activeTab) {
-        case 0:
-            return <AnalyticDashboard />;
-        case 1:
-            return <Transactions />;
-        case 2:
-            return <AnalyticDashboard/>    
-        default:
-            return <div className="text-muted">Coming soon...</div>;
-        }
+        // Only return Analytics component
+        return <AnalyticDashboard />;
     };
   return (
     <>
@@ -46,23 +32,30 @@ export default function CompanySetupPage() {
         
 
         <div className="d-flex flex-grow-1">
-          {/* Left icon sidebar */}
+          {/* Left icon sidebar - Only Analytics tab */}
           <div
             className="text-white d-flex flex-column align-items-center py-3"
-            style={{ width: "4vw",background:"#007C36" }}
+            style={{ width: "5vw", background: "#007C36" }}
           >
-            <i className="bi bi-house-door-fill fs-4 mb-4" role="button" onClick={() => handleNavClick(0)}>
-                <Image src={DashboardIcon} alt="Dashboard"/>
-            </i>
-            <i className="bi bi-briefcase-fill fs-4 mb-4" role="button" onClick={() => handleNavClick(1)}>
-                <Image src={CardIcon} alt="Dashboard"/>
-            </i>
-            <i className="bi bi-people-fill fs-4 mb-4" role="button" onClick={() => handleNavClick(2)}>
-                <Image src={AnalyticsIcon} alt="Dashboard"/>
-            </i>
-            <i className="bi bi-gear-fill fs-4" role="button" onClick={() => handleNavClick(3)}>
-                <Image src={ChatIcon} alt="Dashboard"/>
-            </i>
+            <div
+              className="d-flex align-items-center justify-content-center mb-4"
+              style={{
+                width: "40px",
+                height: "40px",
+                borderRadius: "25px",
+                backgroundColor: activeTab === 2 ? "#EDFF8B" : "transparent",
+                cursor: "pointer"
+              }}
+              role="button"
+              onClick={() => handleNavClick(2)}
+            >
+              <Image
+                src={activeTab === 2 ? AnalyticsIconActive : AnalyticsIcon}
+                alt="Analytics"
+                width={activeTab === 2 ? '25px' : '35px'}
+                height={activeTab === 2 ? '25px' : '35px'}
+              />
+            </div>
           </div>
            <div className="flex-grow-1">
             <div className="container-fluid">
