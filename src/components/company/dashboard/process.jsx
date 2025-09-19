@@ -19,6 +19,7 @@ import Stepper from "./stepper";
 import Transactions from "./Transaction";
 import AnalyticDashboard from "../AnalyticDashboard";
 import ChatBox from "./ChatBox";
+import MainDashboard from "../main-dashboard";
 export default function CompanySetupPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeTab, setactiveTab] = useState(0);
@@ -79,7 +80,10 @@ export default function CompanySetupPage() {
     }
   }, []);
   const handleNavClick = (index) => {
-    setactiveTab(index);
+    // Allow all tabs: Stepper (0), Transactions (1), Analytics (2), Chat (3), Company Name (4)
+    if (index >= 0 && index <= 4) {
+      setactiveTab(index);
+    }
 
     // Update URL parameters based on the selected tab
     const url = new URL(window.location);
@@ -136,6 +140,8 @@ export default function CompanySetupPage() {
         return <AnalyticDashboard />;
       case 3:
         return <ChatBox />;
+      case 4:
+        return <MainDashboard />;
       default:
         return <div className="text-muted">Coming soon...</div>;
     }
@@ -214,7 +220,7 @@ export default function CompanySetupPage() {
                 />
               </div>
               <div
-                className="d-flex align-items-center justify-content-center"
+                className="d-flex align-items-center justify-content-center mb-4"
                 style={{
                   width: "40px",
                   height: "40px",
@@ -228,6 +234,25 @@ export default function CompanySetupPage() {
                 <Image
                   src={activeTab === 3 ? ChatIconActive : ChatIcon}
                   alt="Chat"
+                  width={activeTab ? '25px' : '35px'}
+                  height={activeTab ? '25px' : '35px'}
+                />
+              </div>
+              <div
+                className="d-flex align-items-center justify-content-center"
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "25px",
+                  backgroundColor: activeTab === 4 ? "#EDFF8B" : "transparent",
+                  cursor: "pointer"
+                }}
+                role="button"
+                onClick={() => handleNavClick(4)}
+              >
+                <Image
+                  src={activeTab === 4 ? DashboardIconActive : DashboardIcon}
+                  alt="Main Dashboard"
                   width={activeTab ? '25px' : '35px'}
                   height={activeTab ? '25px' : '35px'}
                 />

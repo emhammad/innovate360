@@ -1,11 +1,13 @@
 import React from 'react';
 import HeaderTwo from '@/src/layout/headers/header-2';
 import WelcomeScreen from './welcome';
+import Topbar from '@/src/components/company/common/topbar';
 
 const HomeTwo = () => {
     return (
         <>
-            <HeaderTwo />
+            {/* <HeaderTwo /> */}
+            <Topbar />
             <main>
               <WelcomeScreen/>
             </main>

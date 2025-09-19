@@ -27,7 +27,7 @@ const Topbar = () => {
       // Update state
       setIsAuthenticated(false);
       // Redirect to login page
-      window.location.href = '/company';
+      window.location.href = '/';
    };
 
    return (
@@ -120,12 +120,6 @@ const Topbar = () => {
                                           display: 'flex',
                                           alignItems: 'center',
                                           gap: '8px'
-                                       }}
-                                       onMouseEnter={(e) => {
-                                          e.target.style.backgroundColor = '#1a3d1a';
-                                       }}
-                                       onMouseLeave={(e) => {
-                                          e.target.style.backgroundColor = '#2D5A27';
                                        }}
                                     >
                                        Login

@@ -1,17 +1,58 @@
 'use client'; // If using Next.js 13+ app directory
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import logo_img from "@assets/img/logo/innovate360.png";
 import WalletImage from "@assets/img/icon/payment-success.png";
 import InvoicePreview from '../../admin/dashboard/InvoicePreview';
+import { IoIosArrowBack } from "react-icons/io";
+
 import {
   FaDownload
 } from 'react-icons/fa';
-export default function InvoiceFlow() {
+import { useRouter } from 'next/router';
+export default function InvoiceFlow({ onBackToStep0, onNextToStep2, onBackToSummary }) {
   const [step, setStep] = useState(1);
-  const [paymentMethod, setPaymentMethod] = useState(null); // 'card' or 'bank'
+  const [paymentMethod, setPaymentMethod] = useState(null);
   const [showInvoicePreview, setShowInvoicePreview] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Handle hydration and localStorage initialization
+  useEffect(() => {
+    setIsHydrated(true);
+    
+    // Initialize from localStorage after hydration
+    if (typeof window !== 'undefined') {
+      const savedStep = localStorage.getItem('invoiceFlowStep');
+      const savedMethod = localStorage.getItem('invoiceFlowPaymentMethod');
+      
+      if (savedStep) {
+        setStep(parseInt(savedStep, 10));
+      }
+      
+      if (savedMethod) {
+        setPaymentMethod(savedMethod);
+      }
+    }
+  }, []);
+
+  // Persist step changes to localStorage
+  useEffect(() => {
+    if (isHydrated && typeof window !== 'undefined') {
+      localStorage.setItem('invoiceFlowStep', step.toString());
+    }
+  }, [step, isHydrated]);
+
+  // Persist paymentMethod changes to localStorage
+  useEffect(() => {
+    if (isHydrated && typeof window !== 'undefined') {
+      if (paymentMethod) {
+        localStorage.setItem('invoiceFlowPaymentMethod', paymentMethod);
+      } else {
+        localStorage.removeItem('invoiceFlowPaymentMethod');
+      }
+    }
+  }, [paymentMethod, isHydrated]);
 
   const handleViewInvoice = () => {
     setShowInvoicePreview(true);
@@ -27,49 +68,64 @@ export default function InvoiceFlow() {
         <InvoicePreview onClose={handleCloseInvoice} />
       ) : (
         <div>
-          {step === 1 && <InvoiceSummary onNext={() => setStep(2)} />}
-          {step === 2 && (
-        <PaymentMethodSelector
-          selected={paymentMethod}
-          onSelect={setPaymentMethod}
-          onNext={() => {
-            if (paymentMethod) {
-              // redirect or move to next step based on method
-              if (paymentMethod === 'card') {
-                setStep(3)
-              } else {
-                setStep(4)
-              }
+          {step === 1 && <InvoiceSummary onNext={() => setStep(2)} onBack={() => {
+            // Clear localStorage when going back to summary
+            if (typeof window !== 'undefined') {
+              localStorage.removeItem('invoiceFlowStep');
+              localStorage.removeItem('invoiceFlowPaymentMethod');
             }
-          }}
-        />
-      )}
-      {step === 3 && <CardPayment onBack={() => setStep(2)} onSuccess={() => setStep(6)} />}
-      {step === 4 && <BankDetails onBack={() => setStep(2)} onNext={() => setStep(5)} />}
-      {step === 5 && <UploadReceipt onNext={() => setStep(6)} />}
-      {step === 6 && <PaymentSuccess onDone={() => setStep(6)} />}
-      {step === 7 && <PaymentHistory />}
+            onBackToSummary();
+          }} />}
+          {step === 2 && (
+            <PaymentMethodSelector
+              selected={paymentMethod}
+              onSelect={setPaymentMethod}
+              onNext={() => {
+                if (paymentMethod) {
+                  // redirect or move to next step based on method
+                  if (paymentMethod === 'card') {
+                    setStep(3)
+                  } else {
+                    setStep(4)
+                  }
+                }
+              }}
+              onBack={() => setStep(1)}
+            />
+          )}
+          {step === 3 && <CardPayment onBack={() => setStep(2)} onSuccess={() => setStep(6)} />}
+          {step === 4 && <BankDetails onBack={() => setStep(2)} onNext={() => setStep(5)} />}
+          {step === 5 && <UploadReceipt onNext={() => setStep(6)} />}
+          {step === 6 && <PaymentSuccess onDone={() => setStep(6)} onNextStep={() => {
+            // Clear localStorage when flow is completed
+            if (typeof window !== 'undefined') {
+              localStorage.removeItem('invoiceFlowStep');
+              localStorage.removeItem('invoiceFlowPaymentMethod');
+            }
+            onNextToStep2();
+          }} />}
+          {step === 7 && <PaymentHistory />}
 
         </div>
       )}
     </>
   );
 }
-function PaymentSuccess({ onDone }) {
+function PaymentSuccess({ onDone, onNextStep }) {
   return (
     <div className="text-center py-5 w-100 d-flex justify-content-center align-items-center flex-column" style={{ minHeight: '80vh' }}>
       <Image src={WalletImage} alt="Success" style={{ width: '150px', height: '150px', objectFit: 'contain' }} className="mb-4" />
       <h5 style={{ color: '#3D3D3D', fontSize: '24px', fontWeight: '600' }}>Payment Successful</h5>
       <p className="mx-auto mt-2" style={{ maxWidth: '600px', fontSize: '16px', color: '#3D3D3D' }}>
-        Payment receipt has been submitted. It usually takes 24 hours to review. In case of a weekend, we’ll review on the next working day.
+        Payment receipt has been submitted. It usually takes 24 hours to review. In case of a weekend, we'll review on the next working day.
       </p>
-      <button onClick={onDone} className="btn btn-success rounded-pill px-5 mt-3" style={{
-        height: '42px',
+      <button onClick={onNextStep} className="btn btn-success rounded-pill px-5 mt-3" style={{
+        height: '40px',
         fontSize: '16px',
         fontWeight: '600',
         minWidth: '350px',
         cursor: 'pointer',
-        backgroundColor: '#28a745',
+        backgroundColor: '#007C36',
         color: '#fff',
         border: 'none'
       }}>
@@ -105,7 +161,7 @@ function PaymentHistory() {
                 <span className="badge bg-success">Success</span>
               </td>
               <td>
-                <button 
+                <button
                   className="btn btn-link text-decoration-none text-success fw-bold p-0"
                   onClick={handleViewInvoice}
                   style={{ border: 'none', background: 'none' }}
@@ -833,11 +889,11 @@ function CardPayment({ onBack, onSuccess }) {
               type="submit"
               className="btn w-100 mb-3"
               style={{
-                height: '48px',
+                height: '42px',
                 borderRadius: '50px',
                 fontSize: '16px',
                 fontWeight: '600',
-                backgroundColor: isFormValid ? '#28a745' : '#1D1B201F',
+                backgroundColor: isFormValid ? '#007C36' : '#1D1B201F',
                 color: isFormValid ? '#fff' : '#1D1B20',
                 border: 'none',
                 boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
@@ -859,57 +915,95 @@ function CardPayment({ onBack, onSuccess }) {
 }
 
 // ------------------- Invoice Summary -------------------
-function InvoiceSummary({ onNext }) {
+function InvoiceSummary({ onNext, onBack }) {
   return (
-    <div className="d-flex align-items-center justify-content-center w-100" style={{ minHeight: '90vh' }}>
-      <div className="container" style={{ maxWidth: '600px', marginTop: '30px', marginBottom: '50px' }}>
+    <>
+      <button onClick={onBack}> <IoIosArrowBack /> Back</button>
+      <div className="d-flex align-items-center justify-content-center w-100" style={{ minHeight: '90vh' }}>
+        <div className="container" style={{ maxWidth: '600px', marginTop: '30px', marginBottom: '50px' }}>
 
-        {/* Invoice Section */}
-        <div className="mb-4">
-          <div
-            className="card"
-            style={{
-              borderRadius: '16px',
-              border: 'none',
-              backgroundColor: 'white',
-              boxShadow: '0px 0px 24.8px 0px #00000026'
-            }}
-          >
-            <div className="card-body p-4">
-              {/* Logo */}
-              <div className="text-start mb-1">
-                <Image
-                  src={logo_img}
-                  alt="INNOVATE 360°"
-                  width={180}
-                  height={60}
-                  style={{ objectFit: 'contain' }}
-                />
-              </div>
+          {/* Invoice Section */}
+          <div className="mb-4">
+            <div
+              className="card"
+              style={{
+                borderRadius: '16px',
+                border: 'none',
+                backgroundColor: 'white',
+                boxShadow: '0px 0px 24.8px 0px #00000026'
+              }}
+            >
+              <div className="card-body p-4">
+                {/* Logo */}
+                <div className="text-start mb-1">
+                  <Image
+                    src={logo_img}
+                    alt="INNOVATE 360°"
+                    width={180}
+                    height={60}
+                    style={{ objectFit: 'contain' }}
+                  />
+                </div>
 
-              {/* Invoice Title */}
-              <h4 className="text-start mb-2" style={{ color: '#3D3D3D', fontSize: '24px', fontWeight: '600' }}>
-                Invoice
-              </h4>
+                {/* Invoice Title */}
+                <h4 className="text-start mb-2" style={{ color: '#3D3D3D', fontSize: '24px', fontWeight: '600' }}>
+                  Invoice
+                </h4>
 
-              {/* Invoice Number */}
-              <div className="mb-4 d-flex gap-2">
-                <label className="form-label" style={{ fontSize: '14px', color: '#3D3D3D', fontWeight: '500' }}>
-                  Invoice Number
-                </label>
-                <div style={{ fontSize: '15px', color: '#3D3D3D', fontWeight: '600' }}>
-                  UYWD9813GJHW
+                {/* Invoice Number */}
+                <div className="mb-4 d-flex gap-2">
+                  <label className="form-label" style={{ fontSize: '14px', color: '#3D3D3D', fontWeight: '500' }}>
+                    Invoice Number
+                  </label>
+                  <div style={{ fontSize: '15px', color: '#3D3D3D', fontWeight: '600' }}>
+                    UYWD9813GJHW
+                  </div>
+                </div>
+
+                {/* NIF Number */}
+                <div className="mb-4">
+                  <h6 className="fw-bold mb-3" style={{ color: '#3D3D3D', fontSize: '18px' }}>
+                    NIF Number
+                  </h6>
+                  <div className="d-flex justify-content-between align-items-center" style={{ position: 'relative' }}>
+                    <span style={{ fontSize: '14px', color: '#3D3D3D', fontWeight: '400' }}>
+                      Tax Identification Number
+                    </span>
+                    <div style={{
+                      flex: 1,
+                      height: '1px',
+                      background: 'repeating-linear-gradient(to right, #3D3D3D 0px, #3D3D3D 4px, transparent 4px, transparent 8px)',
+                      margin: '0 10px'
+                    }}></div>
+                    <span style={{ fontSize: '16px', color: '#3D3D3D', fontWeight: '500' }}>
+                      €50
+                    </span>
+                  </div>
                 </div>
               </div>
+            </div>
+          </div>
 
-              {/* NIF Number */}
-              <div className="mb-4">
-                <h6 className="fw-bold mb-3" style={{ color: '#3D3D3D', fontSize: '18px' }}>
-                  NIF Number
-                </h6>
-                <div className="d-flex justify-content-between align-items-center" style={{ position: 'relative' }}>
-                  <span style={{ fontSize: '14px', color: '#3D3D3D', fontWeight: '400' }}>
-                    Tax Identification Number
+          {/* Total Amount Section */}
+          <div className="mb-4">
+            <div
+              className="card"
+              style={{
+                borderRadius: '16px',
+                border: 'none',
+                backgroundColor: 'white',
+                boxShadow: '0px 0px 24.8px 0px #00000026'
+              }}
+            >
+              <div className="card-body p-4">
+                <h5 className="fw-bold mb-4" style={{ color: '#3D3D3D', fontSize: '18px' }}>
+                  Total Amount
+                </h5>
+
+                {/* Total */}
+                <div className="d-flex justify-content-between align-items-center mb-3" style={{ position: 'relative' }}>
+                  <span style={{ fontSize: '16px', color: '#3D3D3D', fontWeight: '500' }}>
+                    Total
                   </span>
                   <div style={{
                     flex: 1,
@@ -917,229 +1011,197 @@ function InvoiceSummary({ onNext }) {
                     background: 'repeating-linear-gradient(to right, #3D3D3D 0px, #3D3D3D 4px, transparent 4px, transparent 8px)',
                     margin: '0 10px'
                   }}></div>
-                  <span style={{ fontSize: '16px', color: '#3D3D3D', fontWeight: '500' }}>
-                    €50
+                  <span style={{ fontSize: '16px', color: '#28a745', fontWeight: '600' }}>
+                    €175
                   </span>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Total Amount Section */}
-        <div className="mb-4">
-          <div
-            className="card"
-            style={{
-              borderRadius: '16px',
-              border: 'none',
-              backgroundColor: 'white',
-              boxShadow: '0px 0px 24.8px 0px #00000026'
-            }}
-          >
-            <div className="card-body p-4">
-              <h5 className="fw-bold mb-4" style={{ color: '#3D3D3D', fontSize: '18px' }}>
-                Total Amount
-              </h5>
-
-              {/* Total */}
-              <div className="d-flex justify-content-between align-items-center mb-3" style={{ position: 'relative' }}>
-                <span style={{ fontSize: '16px', color: '#3D3D3D', fontWeight: '500' }}>
-                  Total
-                </span>
-                <div style={{
-                  flex: 1,
-                  height: '1px',
-                  background: 'repeating-linear-gradient(to right, #3D3D3D 0px, #3D3D3D 4px, transparent 4px, transparent 8px)',
-                  margin: '0 10px'
-                }}></div>
-                <span style={{ fontSize: '16px', color: '#28a745', fontWeight: '600' }}>
-                  €175
-                </span>
-              </div>
-            </div>
+          {/* Pay Button */}
+          <div className="text-center">
+            <button
+              type="button"
+              className="btn"
+              style={{
+                height: '48px',
+                borderRadius: '50px',
+                fontSize: '16px',
+                fontWeight: '600',
+                backgroundColor: '#28a745',
+                color: '#fff',
+                border: 'none',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                minWidth: '100px'
+              }}
+              onClick={onNext}
+            >
+              Pay
+            </button>
           </div>
         </div>
-
-        {/* Pay Button */}
-        <div className="text-center">
-          <button
-            type="button"
-            className="btn"
-            style={{
-              height: '48px',
-              borderRadius: '50px',
-              fontSize: '16px',
-              fontWeight: '600',
-              backgroundColor: '#28a745',
-              color: '#fff',
-              border: 'none',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-              minWidth: '100px'
-            }}
-            onClick={onNext}
-          >
-            Pay
-          </button>
-        </div>
       </div>
-    </div>
+    </>
   );
 }
 
 // ------------------- Payment Method Selector -------------------
-function PaymentMethodSelector({ selected, onSelect, onNext }) {
+function PaymentMethodSelector({ selected, onSelect, onNext, onBack }) {
   return (
-    <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '90vh' }}>
-      <div style={{ marginTop: '30px', marginBottom: '60px' }}>
-        {/* Title */}
-        <h4 className="fw-bold mb-2 text-center" style={{ color: '#3D3D3D', fontSize: '1.5rem' }}>
-          Payment Method
-        </h4>
+    <>
+      <button onClick={onBack}> <IoIosArrowBack /> Back</button>
+      <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '90vh' }}>
+        <div style={{ marginTop: '30px', marginBottom: '60px' }}>
+          {/* Title */}
+          <h4 className="fw-bold mb-2 text-center" style={{ color: '#3D3D3D', fontSize: '1.5rem' }}>
+            Payment Method
+          </h4>
 
-        {/* Subtitle */}
-        <p className="mb-2 text-center mx-auto" style={{ fontSize: '16px', color: '#3D3D3D', width: '500px' }}>
-          Please select a payment method to initiate your company registration process.
-        </p>
+          {/* Subtitle */}
+          <p className="mb-2 text-center mx-auto" style={{ fontSize: '16px', color: '#3D3D3D', width: '500px' }}>
+            Please select a payment method to initiate your company registration process.
+          </p>
 
-        {/* Payment Card */}
-        <div
-          className="card mx-auto"
-          style={{
-            width: '100%',
-            maxWidth: '600px',
-            minHeight: '450px',
-            borderRadius: '24px',
-            border: 'none',
-            backgroundColor: 'white',
-            boxShadow: '0px 0px 8.4px 0px #00000026',
-            marginTop: '20px'
-          }}
-        >
-          <div className="card-body p-4 d-flex flex-column justify-content-between">
-            <div>
-              {/* Payment System Header */}
-              <h5 className="fw-bold mb-3 text-left" style={{ color: '#28a745', fontSize: '1.2rem' }}>
-                Payment System
-              </h5>
+          {/* Payment Card */}
+          <div
+            className="card mx-auto"
+            style={{
+              width: '100%',
+              maxWidth: '600px',
+              minHeight: '450px',
+              borderRadius: '24px',
+              border: 'none',
+              backgroundColor: 'white',
+              boxShadow: '0px 0px 8.4px 0px #00000026',
+              marginTop: '20px'
+            }}
+          >
+            <div className="card-body p-4 d-flex flex-column justify-content-between">
+              <div>
+                {/* Payment System Header */}
+                <h5 className="fw-bold mb-3 text-left" style={{ color: '#28a745', fontSize: '1.2rem' }}>
+                  Payment System
+                </h5>
 
-              {/* Description */}
-              <p className=" mb-1 text-left" style={{ fontSize: '14px', color: '#3D3D3D' }}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit ipsum dolor sit amet.
-              </p>
-              <p className="text-left" style={{ fontSize: '14px', fontWeight: '600', color: '#3D3D3D' }}>
-                Choose the method you prefer to continue.
-              </p>
+                {/* Description */}
+                <p className=" mb-1 text-left" style={{ fontSize: '14px', color: '#3D3D3D' }}>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit ipsum dolor sit amet.
+                </p>
+                <p className="text-left" style={{ fontSize: '14px', fontWeight: '600', color: '#3D3D3D' }}>
+                  Choose the method you prefer to continue.
+                </p>
 
-              <hr className="mb-4 " />
+                <hr className="mb-4 " />
 
-              {/* Payment Options */}
-              <div className="d-flex flex-column gap-3">
-                {/* Pay via Bank */}
-                <label
-                  className={`border rounded-pill d-flex align-items-center ${selected === "bank"
-                    ? "border-success"
-                    : "border-secondary"
-                    }`}
-                  style={{
-                    cursor: "pointer",
-                    padding: '10px 20px',
-                    userSelect: "none",
-                    borderWidth: selected === "bank" ? '2px' : '1px',
-                    borderColor: selected === "bank" ? '#28a745' : '#e0e0e0',
-                    backgroundColor: selected === "bank" ? '#f8fff8' : 'transparent'
-                  }}
-                >
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="bank"
-                    checked={selected === "bank"}
-                    onChange={() => onSelect("bank")}
-                    className="form-check-input me-3"
+                {/* Payment Options */}
+                <div className="d-flex flex-column gap-3">
+                  {/* Pay via Bank */}
+                  {/* <label
+                    className={`border rounded-pill d-flex align-items-center ${selected === "bank"
+                      ? "border-success"
+                      : "border-secondary"
+                      }`}
                     style={{
                       cursor: "pointer",
-                      width: '20px',
-                      height: '20px',
-                      border: selected === "bank" ? '2px solid #28a745' : '2px solid #e0e0e0',
-                      backgroundColor: selected === "bank" ? '#28a745' : 'white'
+                      padding: '10px 20px',
+                      userSelect: "none",
+                      borderWidth: selected === "bank" ? '2px' : '1px',
+                      borderColor: selected === "bank" ? '#28a745' : '#e0e0e0',
+                      backgroundColor: selected === "bank" ? '#f8fff8' : 'transparent'
                     }}
-                  />
-                  <span style={{
-                    color: '#3D3D3D',
-                    fontSize: '16px',
-                    fontWeight: '500'
-                  }}>
-                    Pay via Bank
-                  </span>
-                </label>
+                  >
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="bank"
+                      checked={selected === "bank"}
+                      onChange={() => onSelect("bank")}
+                      className="form-check-input me-3"
+                      style={{
+                        cursor: "pointer",
+                        width: '20px',
+                        height: '20px',
+                        border: selected === "bank" ? '2px solid #28a745' : '2px solid #e0e0e0',
+                        backgroundColor: selected === "bank" ? '#28a745' : 'white'
+                      }}
+                    />
+                    <span style={{
+                      color: '#3D3D3D',
+                      fontSize: '16px',
+                      fontWeight: '500'
+                    }}>
+                      Pay via Bank
+                    </span>
+                  </label> */}
 
-                {/* Pay via Card */}
-                <label
-                  className={`border rounded-pill d-flex align-items-center ${selected === "card"
-                    ? "border-success"
-                    : "border-secondary"
-                    }`}
-                  style={{
-                    cursor: "pointer",
-                    padding: '10px 20px',
-                    userSelect: "none",
-                    borderWidth: selected === "card" ? '2px' : '1px',
-                    borderColor: selected === "card" ? '#28a745' : '#e0e0e0',
-                    backgroundColor: selected === "card" ? '#f8fff8' : 'transparent'
-                  }}
-                >
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="card"
-                    checked={selected === "card"}
-                    onChange={() => onSelect("card")}
-                    className="form-check-input me-3"
+                  {/* Pay via Card */}
+                  <label
+                    className={`border rounded-pill d-flex align-items-center ${selected === "card"
+                      ? "border-success"
+                      : "border-secondary"
+                      }`}
                     style={{
                       cursor: "pointer",
-                      width: '20px',
-                      height: '20px',
-                      border: selected === "card" ? '2px solid #28a745' : '2px solid #e0e0e0',
-                      backgroundColor: selected === "card" ? '#28a745' : 'white'
+                      padding: '10px 20px',
+                      userSelect: "none",
+                      borderWidth: selected === "card" ? '2px' : '1px',
+                      borderColor: selected === "card" ? '#28a745' : '#e0e0e0',
+                      backgroundColor: selected === "card" ? '#f8fff8' : 'transparent'
                     }}
-                  />
-                  <span style={{
-                    color: '#3D3D3D',
+                  >
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="card"
+                      checked={selected === "card"}
+                      onChange={() => onSelect("card")}
+                      className="form-check-input me-3"
+                      style={{
+                        cursor: "pointer",
+                        width: '20px',
+                        height: '20px',
+                        border: selected === "card" ? '2px solid #28a745' : '2px solid #e0e0e0',
+                        backgroundColor: selected === "card" ? '#28a745' : 'white'
+                      }}
+                    />
+                    <span style={{
+                      color: '#3D3D3D',
+                      fontSize: '16px',
+                      fontWeight: '500'
+                    }}>
+                      Pay via Card
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Next Button */}
+              <div className="d-flex justify-content-end mt-4">
+                <button
+                  type="button"
+                  className="btn"
+                  style={{
+                    backgroundColor: '#28a745',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '10px 24px',
                     fontSize: '16px',
-                    fontWeight: '500'
-                  }}>
-                    Pay via Card
-                  </span>
-                </label>
+                    fontWeight: '600',
+                    minWidth: '80px'
+                  }}
+                  onClick={onNext}
+                  disabled={!selected}
+                >
+                  Next
+                </button>
               </div>
             </div>
-
-            {/* Next Button */}
-            <div className="d-flex justify-content-end mt-4">
-              <button
-                type="button"
-                className="btn"
-                style={{
-                  backgroundColor: '#28a745',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '10px 24px',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  minWidth: '80px'
-                }}
-                onClick={onNext}
-                disabled={!selected}
-              >
-                Next
-              </button>
-            </div>
           </div>
-        </div>
 
+        </div>
       </div>
-    </div>
+    </>
   );
 }

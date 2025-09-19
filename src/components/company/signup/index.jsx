@@ -1,11 +1,11 @@
 import React from 'react';
-import HeaderTwo from '@/src/layout/headers/header-2';
 import Register from './create-account';
+import Topbar from '@/src/common/topbar';
 
 const HomeTwo = () => {
     return (
         <>
-            <HeaderTwo />
+            <Topbar />
             <main>
               <Register/>
             </main>

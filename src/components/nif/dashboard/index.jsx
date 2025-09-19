@@ -1,6 +1,6 @@
 import React from 'react';
 import Process from "./process";
-import Topbar from '../../company/common/topbar';
+import Topbar from '@/src/common/topbar';
 
 const HomeTwo = () => {
     return (

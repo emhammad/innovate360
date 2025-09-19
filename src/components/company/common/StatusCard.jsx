@@ -2,13 +2,13 @@ import React from 'react';
 import Image from 'next/image';
 
 
-const StatusCards = ({ panel, cardSteps, activeStep, completedSteps, handleStepClick, handleCheckboxChange }) => {
+const StatusCards = ({ panel, cardSteps, activeStep, completedSteps, handleStepClick, handleCheckboxChange, isStepAccessible }) => {
   return (
     <div className="d-flex flex-wrap justify-content-center gap-3 my-5">
       {cardSteps.map((step, idx) => (
         <div
           key={idx}
-          onClick={() => handleStepClick(idx)}
+          onClick={() => isStepAccessible(idx) ? handleStepClick(idx) : null}
           className="card text-start d-flex flex-column p-3"
 
           style={{
@@ -20,7 +20,8 @@ const StatusCards = ({ panel, cardSteps, activeStep, completedSteps, handleStepC
             borderRadius: '12.8px',
             boxShadow: '0px 0px 40px 0px #0000001A',
             border: 'none',
-            opacity: activeStep === idx ? 1 : 0.9
+            opacity: activeStep === idx ? 1 : (isStepAccessible(idx) ? 0.9 : 0.5),
+            cursor: isStepAccessible(idx) ? 'pointer' : 'not-allowed'
           }}
         >
           {/* Icon */}

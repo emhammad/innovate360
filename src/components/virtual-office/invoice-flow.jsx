@@ -1,7 +1,8 @@
 'use client'; // If using Next.js 13+ app directory
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import logo_img from "@assets/img/logo/innovate360.png";
 import WalletImage from "@assets/img/icon/payment-success.png";
 import InvoicePreview from '../admin/dashboard/InvoicePreview';
@@ -12,6 +13,44 @@ export default function InvoiceFlow() {
   const [step, setStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState(null); // 'card' or 'bank'
   const [showInvoicePreview, setShowInvoicePreview] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Handle hydration and localStorage initialization
+  useEffect(() => {
+    setIsHydrated(true);
+
+    // Initialize from localStorage after hydration
+    if (typeof window !== 'undefined') {
+      const savedStep = localStorage.getItem('virtualOfficeInvoiceStep');
+      const savedMethod = localStorage.getItem('virtualOfficePaymentMethod');
+
+      if (savedStep) {
+        setStep(parseInt(savedStep, 10));
+      }
+
+      if (savedMethod) {
+        setPaymentMethod(savedMethod);
+      }
+    }
+  }, []);
+
+  // Persist step changes to localStorage
+  useEffect(() => {
+    if (isHydrated && typeof window !== 'undefined') {
+      localStorage.setItem('virtualOfficeInvoiceStep', step.toString());
+    }
+  }, [step, isHydrated]);
+
+  // Persist paymentMethod changes to localStorage
+  useEffect(() => {
+    if (isHydrated && typeof window !== 'undefined') {
+      if (paymentMethod) {
+        localStorage.setItem('virtualOfficePaymentMethod', paymentMethod);
+      } else {
+        localStorage.removeItem('virtualOfficePaymentMethod');
+      }
+    }
+  }, [paymentMethod, isHydrated]);
 
   const handleViewInvoice = () => {
     setShowInvoicePreview(true);
@@ -21,34 +60,46 @@ export default function InvoiceFlow() {
     setShowInvoicePreview(false);
   };
 
+  // Show loading state until hydrated
+  if (!isHydrated) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '200px' }}>
+        <div className="spinner-border text-success" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       {showInvoicePreview ? (
         <InvoicePreview onClose={handleCloseInvoice} />
       ) : (
         <div>
-          {step === 1 && <InvoiceSummary onNext={() => setStep(2)} />}
+          {step === 1 && <InvoiceSummary onNext={() => setStep(2)} onBack={() => window.history.back()} />}
           {step === 2 && (
-        <PaymentMethodSelector
-          selected={paymentMethod}
-          onSelect={setPaymentMethod}
-          onNext={() => {
-            if (paymentMethod) {
-              // redirect or move to next step based on method
-              if (paymentMethod === 'card') {
-                setStep(3)
-              } else {
-                setStep(4)
-              }
-            }
-          }}
-        />
-      )}
-      {step === 3 && <CardPayment onBack={() => setStep(2)} onSuccess={() => setStep(6)} />}
-      {step === 4 && <BankDetails onBack={() => setStep(2)} onNext={() => setStep(5)} />}
-      {step === 5 && <UploadReceipt onNext={() => setStep(6)} />}
-      {step === 6 && <PaymentSuccess onDone={() => setStep(6)} />}
-      {step === 7 && <PaymentHistory />}
+            <PaymentMethodSelector
+              selected={paymentMethod}
+              onSelect={setPaymentMethod}
+              onNext={() => {
+                if (paymentMethod) {
+                  // redirect or move to next step based on method
+                  if (paymentMethod === 'card') {
+                    setStep(3)
+                  } else {
+                    setStep(4)
+                  }
+                }
+              }}
+              onBack={() => setStep(1)}
+            />
+          )}
+          {step === 3 && <CardPayment onBack={() => setStep(2)} onSuccess={() => setStep(6)} />}
+          {step === 4 && <BankDetails onBack={() => setStep(2)} onNext={() => setStep(5)} />}
+          {step === 5 && <UploadReceipt onBack={() => setStep(4)} onNext={() => setStep(6)} />}
+          {step === 6 && <PaymentSuccess onDone={() => setStep(6)} />}
+          {step === 7 && <PaymentHistory />}
 
         </div>
       )}
@@ -56,20 +107,32 @@ export default function InvoiceFlow() {
   );
 }
 function PaymentSuccess({ onDone }) {
+  const router = useRouter();
+
+  const handleDone = () => {
+    // Clear localStorage data
+    localStorage.removeItem('virtualOfficeInvoiceStep');
+    localStorage.removeItem('virtualOfficePaymentMethod');
+    localStorage.removeItem('virtualOfficeFormData');
+    
+    // Navigate to main dashboard
+    router.push('/virtual-office-address/main-dashboard');
+  };
+
   return (
     <div className="text-center py-5 w-100 d-flex justify-content-center align-items-center flex-column" style={{ minHeight: '90vh', backgroundColor: '#f8f9fa' }}>
       <Image src={WalletImage} alt="Success" style={{ width: '150px', height: '150px', objectFit: 'contain' }} className="mb-4" />
       <h5 style={{ color: '#3D3D3D', fontSize: '24px', fontWeight: '600' }}>Payment Successful</h5>
       <p className="mx-auto mt-2" style={{ maxWidth: '600px', fontSize: '16px', color: '#3D3D3D' }}>
-        Payment receipt has been submitted. It usually takes 24 hours to review. In case of a weekend, we’ll review on the next working day.
+        Payment receipt has been submitted. It usually takes 24 hours to review. In case of a weekend, we'll review on the next working day.
       </p>
-      <button onClick={onDone} className="btn btn-success rounded-pill px-5 mt-3" style={{
+      <button onClick={handleDone} className="btn btn-success rounded-pill px-5 mt-3" style={{
         height: '42px',
         fontSize: '16px',
         fontWeight: '600',
         minWidth: '350px',
         cursor: 'pointer',
-        backgroundColor: '#28a745',
+        backgroundColor: '#007C36',
         color: '#fff',
         border: 'none'
       }}>
@@ -105,7 +168,7 @@ function PaymentHistory() {
                 <span className="badge bg-success">Success</span>
               </td>
               <td>
-                <button 
+                <button
                   className="btn btn-link text-decoration-none text-success fw-bold p-0"
                   onClick={handleViewInvoice}
                   style={{ border: 'none', background: 'none' }}
@@ -126,7 +189,7 @@ function PaymentHistory() {
   );
 }
 
-function UploadReceipt({ onNext }) {
+function UploadReceipt({ onNext, onBack }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isUploaded, setIsUploaded] = useState(false);
   const fileInputRef = useRef(null);
@@ -238,9 +301,26 @@ function UploadReceipt({ onNext }) {
           </div>
         )}
 
-        {/* Next Button */}
+        {/* Buttons */}
         {isUploaded && (
-          <div className="text-center mt-4">
+          <div className="text-center mt-4 d-flex gap-3 justify-content-center">
+            <button
+              type="button"
+              className="btn"
+              onClick={onBack}
+              style={{
+                height: '48px',
+                borderRadius: '50px',
+                fontSize: '16px',
+                fontWeight: '600',
+                backgroundColor: 'transparent',
+                color: '#007C36',
+                border: '2px solid #007C36',
+                minWidth: '100px'
+              }}
+            >
+              Back
+            </button>
             <button
               type="button"
               className="btn"
@@ -859,9 +939,21 @@ function CardPayment({ onBack, onSuccess }) {
 }
 
 // ------------------- Invoice Summary -------------------
-function InvoiceSummary({ onNext }) {
+function InvoiceSummary({ onNext, onBack }) {
+  const [promoCode, setPromoCode] = useState("");
+  const [isPromoApplied, setIsPromoApplied] = useState(false);
+
+  const handleApplyPromo = () => {
+    if (promoCode.trim()) {
+      setIsPromoApplied(true);
+      console.log("Promo code applied:", promoCode);
+    }
+  };
+  const handleNext = () => {
+    onNext();
+  };
   return (
-    <div className="d-flex align-items-center justify-content-center w-100" style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
+    <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
       <div className="container" style={{ maxWidth: '600px', marginTop: '80px', marginBottom: '50px' }}>
 
         {/* Invoice Section */}
@@ -879,7 +971,7 @@ function InvoiceSummary({ onNext }) {
               {/* Logo */}
               <div className="text-start mb-1">
                 <Image
-                  src={logo_img}
+                  src="/assets/img/logo/innovate360.png"
                   alt="INNOVATE 360°"
                   width={180}
                   height={60}
@@ -902,6 +994,27 @@ function InvoiceSummary({ onNext }) {
                 </div>
               </div>
 
+              {/* Subscription Plan */}
+              <div className="mb-4">
+                <h6 className="fw-bold mb-3" style={{ color: '#3D3D3D', fontSize: '18px' }}>
+                  Subscription Plan
+                </h6>
+                <div className="d-flex justify-content-between align-items-center" style={{ position: 'relative' }}>
+                  <span style={{ fontSize: '16px', color: '#3D3D3D', fontWeight: '500' }}>
+                    SARL-S
+                  </span>
+                  <div style={{
+                    flex: 1,
+                    height: '1px',
+                    background: 'repeating-linear-gradient(to right, #3D3D3D 0px, #3D3D3D 4px, transparent 4px, transparent 8px)',
+                    margin: '0 10px'
+                  }}></div>
+                  <span style={{ fontSize: '16px', color: '#3D3D3D', fontWeight: '500' }}>
+                    €540
+                  </span>
+                </div>
+              </div>
+
               {/* NIF Number */}
               <div className="mb-4">
                 <h6 className="fw-bold mb-3" style={{ color: '#3D3D3D', fontSize: '18px' }}>
@@ -921,6 +1034,67 @@ function InvoiceSummary({ onNext }) {
                     €50
                   </span>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Apply Promo Code Section */}
+        <div className="mb-4">
+          <div
+            className="card"
+            style={{
+              borderRadius: '16px',
+              border: 'none',
+              backgroundColor: 'white',
+              boxShadow: '0px 0px 24.8px 0px #00000026'
+            }}
+          >
+            <div className="card-body p-4">
+              <h5 className="fw-bold mb-4" style={{ color: '#3D3D3D', fontSize: '18px' }}>
+                Apply Promo Code
+              </h5>
+
+              <div className="d-flex gap-3">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Promo Code"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                  style={{
+                    height: '54px',
+                    borderRadius: '50px',
+                    paddingTop: '15px',
+                    paddingRight: '20px',
+                    paddingBottom: '15px',
+                    paddingLeft: '20px',
+                    opacity: 1,
+                    borderWidth: '1px',
+                    border: '1px solid #3D3D3D40',
+                    background: 'transparent',
+                    fontSize: '14px',
+                    outline: 'none'
+                  }}
+                />
+                <button
+                  type="button"
+                  className="btn"
+                  style={{
+                    height: '54px',
+                    borderRadius: '50px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    backgroundColor: isPromoApplied ? '#28a745' : '#1D1B201F',
+                    color: isPromoApplied ? '#fff' : '#1D1B20',
+                    border: 'none',
+                    minWidth: '200px'
+                  }}
+                  onClick={handleApplyPromo}
+                  disabled={!promoCode.trim()}
+                >
+                  Apply
+                </button>
               </div>
             </div>
           </div>
@@ -954,15 +1128,48 @@ function InvoiceSummary({ onNext }) {
                   margin: '0 10px'
                 }}></div>
                 <span style={{ fontSize: '16px', color: '#28a745', fontWeight: '600' }}>
-                  €175
+                  €610
+                </span>
+              </div>
+
+              {/* Promo Discount */}
+              <div className="d-flex justify-content-between align-items-center" style={{ position: 'relative' }}>
+                <span style={{ fontSize: '16px', color: '#3D3D3D', fontWeight: '500' }}>
+                  Promo Discount
+                </span>
+                <div style={{
+                  flex: 1,
+                  height: '1px',
+                  background: 'repeating-linear-gradient(to right, #3D3D3D 0px, #3D3D3D 4px, transparent 4px, transparent 8px)',
+                  margin: '0 10px'
+                }}></div>
+                <span style={{ fontSize: '16px', color: '#3D3D3D', fontWeight: '500' }}>
+                  €560
                 </span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Pay Button */}
-        <div className="text-center">
+        {/* Buttons */}
+        <div className="text-center d-flex gap-3 justify-content-center">
+          <button
+            type="button"
+            className="btn"
+            onClick={onBack}
+            style={{
+              height: '48px',
+              borderRadius: '50px',
+              fontSize: '16px',
+              fontWeight: '600',
+              backgroundColor: 'transparent',
+              color: '#007C36',
+              border: '2px solid #007C36',
+              minWidth: '100px'
+            }}
+          >
+            Back
+          </button>
           <button
             type="button"
             className="btn"
@@ -977,9 +1184,9 @@ function InvoiceSummary({ onNext }) {
               boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
               minWidth: '100px'
             }}
-            onClick={onNext}
+            onClick={handleNext}
           >
-            Pay
+            Next
           </button>
         </div>
       </div>
@@ -988,7 +1195,7 @@ function InvoiceSummary({ onNext }) {
 }
 
 // ------------------- Payment Method Selector -------------------
-function PaymentMethodSelector({ selected, onSelect, onNext }) {
+function PaymentMethodSelector({ selected, onSelect, onNext, onBack }) {
   return (
     <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
       <div style={{ marginTop: '50px', marginBottom: '50px' }}>
@@ -1036,7 +1243,7 @@ function PaymentMethodSelector({ selected, onSelect, onNext }) {
               {/* Payment Options */}
               <div className="d-flex flex-column gap-3">
                 {/* Pay via Bank */}
-                <label
+                {/* <label
                   className={`border rounded-pill d-flex align-items-center ${selected === "bank"
                     ? "border-success"
                     : "border-secondary"
@@ -1072,7 +1279,7 @@ function PaymentMethodSelector({ selected, onSelect, onNext }) {
                   }}>
                     Pay via Bank
                   </span>
-                </label>
+                </label> */}
 
                 {/* Pay via Card */}
                 <label
@@ -1115,8 +1322,25 @@ function PaymentMethodSelector({ selected, onSelect, onNext }) {
               </div>
             </div>
 
-            {/* Next Button */}
-            <div className="d-flex justify-content-end mt-4">
+            {/* Buttons */}
+            <div className="d-flex justify-content-between mt-4">
+              <button
+                type="button"
+                className="btn"
+                onClick={onBack}
+                style={{
+                  backgroundColor: 'transparent',
+                  color: '#007C36',
+                  border: '2px solid #007C36',
+                  borderRadius: '8px',
+                  padding: '10px 24px',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  minWidth: '80px'
+                }}
+              >
+                Back
+              </button>
               <button
                 type="button"
                 className="btn"

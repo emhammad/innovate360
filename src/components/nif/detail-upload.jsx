@@ -1,17 +1,11 @@
 import { useState } from 'react';
-import Image from "next/image";
-import SuccessImage from "@assets/img/icon/payment-success.png";
 import { FaUpload, FaFileAlt, FaMinus } from 'react-icons/fa';
+import { useRouter } from 'next/router';
 
 export default function NIFUploadAndPreview() {
   const [passport, setPassport] = useState(null);
   const [proof, setProof] = useState(null);
-  const [step, setStep] = useState('upload'); // 'upload' | 'success'
-
-  // Called on upload step submit button
-  const handleContinue = () => {
-    window.location.href = "/nif-number/dashboard";
-  };
+  const router = useRouter();
 
   // Handle file upload and show preview immediately
   const handlePassportUpload = (e) => {
@@ -41,12 +35,11 @@ export default function NIFUploadAndPreview() {
     }
   };
 
-  // Final submit
+  // Final submit - navigate to NIF signup page
   const handleSubmit = () => {
     if (passport && proof) {
-      setPassport(null);
-      setProof(null);
-      setStep('success');
+      // Navigate to NIF signup page
+      router.push('/nif-number/signup');
     }
   };
 
@@ -54,18 +47,15 @@ export default function NIFUploadAndPreview() {
     <div className="py-5 d-flex justify-content-center align-items-center flex-column" style={{ minHeight: '90vh', backgroundColor: '#fcfcfc' }}>
       <div className="container">
         {/* Header */}
-        {step !== 'success' && (
-          <div className="text-center mb-4">
-            <h5 style={{ color: '#3D3D3D', fontSize: '24px', fontWeight: '600' }}>NIF Number</h5>
-            <p className="text-muted mx-auto mt-2" style={{ maxWidth: '600px', fontSize: '16px', color: '#3D3D3D' }}>
-              To get the NIF Number please provide the following details
-            </p>
-          </div>
-        )}
+        <div className="text-center mb-4">
+          <h5 style={{ color: '#3D3D3D', fontSize: '24px', fontWeight: '600' }}>NIF Number</h5>
+          <p className="text-muted mx-auto mt-2" style={{ maxWidth: '600px', fontSize: '16px', color: '#3D3D3D' }}>
+            To get the NIF Number please provide the following details
+          </p>
+        </div>
 
         {/* UPLOAD STEP */}
-        {step === 'upload' && (
-          <div className="row justify-content-center mb-4">
+        <div className="row justify-content-center mb-4">
             {/* Passport / Utility Bill */}
             <div className="col-md-10 d-flex align-items-center justify-content-between mb-4">
               <div className="col-5" style={{ color: '#007C36', fontWeight: '400', fontSize: '18px' }}>
@@ -104,7 +94,7 @@ export default function NIFUploadAndPreview() {
                       onClick={() => removeFile('passport')}
                       className="remove-file btn btn-link text-decoration-none text-muted p-0 bg-white"
                       aria-label="Remove file"
-                      style={{width : '30px'}}
+                      style={{ width: '30px' }}
                     >
                       <FaMinus />
                     </button>
@@ -151,7 +141,7 @@ export default function NIFUploadAndPreview() {
                       onClick={() => removeFile('proof')}
                       className="remove-file btn btn-link text-decoration-none text-muted p-0 bg-white"
                       aria-label="Remove file"
-                      style={{width : '30px'}}
+                      style={{ width: '30px' }}
                     >
                       <FaMinus />
                     </button>
@@ -185,50 +175,6 @@ export default function NIFUploadAndPreview() {
               </div>
             </div>
           </div>
-        )}
-
-        {
-          step == 'success' && (
-            <>
-              <div className="d-flex justify-content-center align-items-center">
-                <div className="text-center">
-                  {/* Placeholder image - replace src with your actual image path */}
-                  <Image
-                    src={SuccessImage}
-                    alt="Success"
-                    style={{ width: "180px", marginBottom: "20px" }}
-                  />
-
-                  <h5 className="fw-semibold mb-2">
-                    Great! We have received your Details
-                  </h5>
-
-                  <p className="text-muted mb-4">
-                    And we have created an account for you so that you can track your progress
-                  </p>
-
-
-                  <button style={{
-                    width: '100%',
-                    height: '42px',
-                    borderRadius: '25px',
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    backgroundColor: '#007C36',
-                    color: '#fff',
-                    border: 'none',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                    maxWidth: '400px',
-                    marginTop: "70px"
-                  }} onClick={handleContinue}>
-                    Continue
-                  </button>
-                </div>
-              </div>
-
-            </>
-          )
-        }
       </div>
     </div>
   );

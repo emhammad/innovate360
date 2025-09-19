@@ -1,11 +1,11 @@
 import React from 'react';
-import HeaderTwo from '@/src/layout/headers/header-2';
+import Topbar from '@/src/common/topbar';
 import Pay from './invoice-flow';
 
 const HomeTwo = () => {
     return (
         <>
-            <HeaderTwo />
+            <Topbar />
             <main>
               <Pay/>
             </main>

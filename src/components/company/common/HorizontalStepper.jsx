@@ -1,19 +1,24 @@
 import React from 'react';
 
-const HorizontalStepper = ({ steps, activeStep, completedSteps, handleStepClick }) => {
+const HorizontalStepper = ({ steps, activeStep, completedSteps, handleStepClick, isStepAccessible }) => {
   return (
     <ul className="list-unstyled d-flex justify-content-between align-items-center position-relative p-0 m-0" style={{ marginTop: '40px' }}>
       {steps.map((step, index) => {
         const isActive = index === activeStep;
         const isCompleted = completedSteps.includes(index);
         const isLast = index === steps.length - 1;
+        const isAccessible = isStepAccessible ? isStepAccessible(index) : true;
 
         return (
           <li
             key={index}
             className="d-flex flex-column align-items-center text-center flex-grow-1 position-relative"
-            style={{ minWidth: '120px', cursor: 'pointer' }}
-            onClick={() => handleStepClick(index)}
+            style={{ 
+              minWidth: '120px', 
+              cursor: isAccessible ? 'pointer' : 'not-allowed',
+              opacity: isAccessible ? 1 : 0.5
+            }}
+            onClick={() => isAccessible ? handleStepClick(index) : null}
           >
             {/* Line connector (before) */}
             {index !== 0 && (

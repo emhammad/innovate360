@@ -35,10 +35,9 @@ export default function SignupForm() {
   };
 
   const handleContinue = () => {
-    // Redirect to dashboard with step parameter to start from step 1
+    // Redirect to NIF success page
     console.log("Continue clicked");
-    window.location.href = "/company/dashboard?step=1";
-    // You can use router.push("/next-step") if needed
+    window.location.href = "/company/dashboard?tab=0&step=1";
   };
 
   const togglePasswordVisibility = () => {
@@ -226,9 +225,10 @@ export default function SignupForm() {
             className="btn btn-success w-100 mt-4"
             style={{
               borderRadius: '25px',
-              height: '48px',
+              height: '42px',
               fontSize: '16px',
-              fontWeight: '600'
+              fontWeight: '600',
+              backgroundColor: '#007C36',
             }}
           >
             Signup
@@ -236,7 +236,7 @@ export default function SignupForm() {
         </form>
 
         {/* Back to Login Link */}
-        <div className="text-center mt-4">
+        <div className="text-center mt-2">
           <p className="text-muted mb-0" style={{ fontSize: '14px' }}>
             <a href="/company" className="text-success text-decoration-none" style={{ fontWeight: '500' }}>Go Back</a>
           </p>

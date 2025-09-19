@@ -30,7 +30,8 @@ export default function SuccessScreen({ onContinue }) {
             backgroundColor: '#007C36',
             width: '80%',
             borderRadius: '25px',
-            height: '48px',
+            height: '42px',
+            backgroundColor: '#007C36',
             fontSize: '16px',
             fontWeight: '600'
           }} onClick={onContinue}>
