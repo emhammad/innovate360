@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
-import Topbar from '@/src/components/company/common/topbar';
+import Topbar from '@/src/common/topbar';
 import ChooseCompanyType from '@/src/components/company/steps/ChooseCompanyType';
 
 const ChooseCompanyTypePage = () => {

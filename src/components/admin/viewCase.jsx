@@ -1,6 +1,6 @@
 import React from 'react';
 import CaseDetail from "./dashboard/CaseDetail";
-import Topbar from '../company/common/topbar';
+import Topbar from '@/src/common/topbar';
 
 const HomeTwo = () => {
     return (
