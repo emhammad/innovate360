@@ -16,6 +16,12 @@ import AnalyticDashboard from "./dashboard";
 import Transaction from "./Transaction";
 import ChatBox from "./ChatBox";
 import AllLawyers from "./AllLawyers";
+import Profile from "./Profile";
+import CustomerSupport from "./CustomerSupport";
+
+import { CiUser } from "react-icons/ci";
+import { SlEarphonesAlt } from "react-icons/sl";
+
 export default function CompanySetupPage() {
 
   const [activeTab, setactiveTab] = useState(0);
@@ -40,6 +46,10 @@ export default function CompanySetupPage() {
         return <ChatBox />;
       case 3:
         return <AllLawyers />;
+      case 4:
+        return <CustomerSupport />;
+      case 5:
+        return <Profile />;
       default:
         return <div className="text-muted">Coming soon...</div>;
     }
@@ -117,7 +127,7 @@ export default function CompanySetupPage() {
               />
             </div>
             <div
-              className="d-flex align-items-center justify-content-center"
+              className="d-flex align-items-center justify-content-center mb-4"
               style={{
                 width: "40px",
                 height: "40px",
@@ -133,6 +143,38 @@ export default function CompanySetupPage() {
                 size={activeTab === 3 ? 20 : 25}
                 color={activeTab === 3 ? "#007C36" : "#a5d0b8"}
               />
+            </div>
+            <div
+              className="d-flex align-items-center justify-content-center mb-4"
+              style={{
+                width: "40px",
+                height: "40px",
+                borderRadius: "25px",
+                border: '1px solid ',
+                filter: activeTab === 4 ? '' : 'brightness(3.5)',
+                backgroundColor: activeTab === 4 ? "#EDFF8B" : "transparent",
+                cursor: "pointer"
+              }}
+              role="button"
+              onClick={() => handleNavClick(4)}
+            >
+              <SlEarphonesAlt style={{ color: activeTab === 4 ? '#3D3D3D' : '#fff' }} />
+            </div>
+            <div
+              className="d-flex align-items-center justify-content-center mb-4"
+              style={{
+                width: "40px",
+                height: "40px",
+                borderRadius: "25px",
+                border: '1px solid ',
+                filter: activeTab === 5 ? '' : 'brightness(3.5)',
+                backgroundColor: activeTab === 5 ? "#EDFF8B" : "transparent",
+                cursor: "pointer"
+              }}
+              role="button"
+              onClick={() => handleNavClick(5)}
+            >
+              <CiUser style={{ color: activeTab === 5 ? '#3D3D3D' : '#fff', fontSize: '20px' }} />
             </div>
           </div>
           <div className="flex-grow-1">

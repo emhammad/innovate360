@@ -19,7 +19,7 @@ import Stepper from "./stepper";
 import Transactions from "./Transaction";
 import AnalyticDashboard from "../AnalyticDashboard";
 import ChatBox from "./ChatBox";
-import MainDashboard from "../main-dashboard";
+// import MainDashboard from "../main-dashboard";
 export default function CompanySetupPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeTab, setactiveTab] = useState(0);
@@ -140,8 +140,8 @@ export default function CompanySetupPage() {
         return <AnalyticDashboard />;
       case 3:
         return <ChatBox />;
-      case 4:
-        return <MainDashboard />;
+      // case 4:
+      //   return <MainDashboard />;
       default:
         return <div className="text-muted">Coming soon...</div>;
     }

@@ -12,27 +12,24 @@ import VirtualOfficeIcon from "@assets/img/icon/document-text.png";
 import VirtualOfficeIconActive from "@assets/img/icon/list-icon.png";
 import CompanyIcon from "@assets/img/sideNav/dashboard.png";
 import CompanyIconActive from "@assets/img/icon/buildings.png";
-// Company dashboard tab icons
 import CardIcon from "@assets/img/sideNav/card.png";
 import CardIconActive from "@assets/img/icon/card.png";
-import ChatIcon from "@assets/img/sideNav/chat.png";
-import ChatIconActive from "@assets/img/icon/message-notif.png";
-// Import your step components
 import NifAnalyticDashboard from "../../components/nif/AnalyticDashboard"
 import MainDashboard from "./dashboard-screen"
-import VirtualOfficeMainDashboard from "../../components/virtual-office/main-dashboard"
-import CompanySetupPage from "../../components/company/dashboard/process"
-// Import individual Company dashboard components
 import Stepper from "../../components/company/dashboard/stepper"
 import Transactions from "../../components/company/dashboard/Transaction"
 import CompanyAnalyticDashboard from "../../components/company/AnalyticDashboard"
 import ChatBox from "../../components/company/dashboard/ChatBox"
-import CompanyMainDashboard from "../../components/company/main-dashboard"
+import CustomerSupport from "./CustomerSupport"
+import Profile from "./Profile"
 import Topbar from "@/src/common/topbar";
+
+import { CiUser } from "react-icons/ci";
+import { SlEarphonesAlt } from "react-icons/sl";
 
 export default function MainDashboardPage() {
     const router = useRouter();
-    const [activeTab, setactiveTab] = useState(1); // Set Dashboard as default
+    const [activeTab, setactiveTab] = useState(1); // Set as default
     const [activeStep, setActiveStep] = useState(0); // Track the active step from AnalyticDashboard
     const [showPaymentFlow, setShowPaymentFlow] = useState(false); // Track payment flow state
     const [selectedService, setSelectedService] = useState('nif'); // Track selected service type
@@ -53,13 +50,13 @@ export default function MainDashboardPage() {
     const getVisibleTabs = () => {
         switch (selectedService) {
             case 'nif':
-                return [1, 2]; // Dashboard and NifAnalyticDashboard
+                return [1, 2, 7, 8]; // Dashboard, NifAnalyticDashboard, CustomerSupport, and Profile
             case 'company':
-                return [1, 3, 4, 5, 6]; // All except NifAnalyticDashboard (case 2)
+                return [1, 3, 4, 5, 6, 7, 8]; // All except NifAnalyticDashboard (case 2) + CustomerSupport + Profile
             case 'virtual-office':
-                return [1]; // Only MainDashboard
+                return [1, 7, 8]; // MainDashboard, CustomerSupport, and Profile
             default:
-                return [1];
+                return [1, 7, 8];
         }
     };
 
@@ -89,6 +86,10 @@ export default function MainDashboardPage() {
                 return <CompanyAnalyticDashboard />;
             case 6:
                 return <ChatBox />;
+            case 7:
+                return <CustomerSupport />;
+            case 8:
+                return <Profile />;
             default:
                 return <MainDashboard />;
         }
@@ -249,7 +250,45 @@ export default function MainDashboardPage() {
                                 </div>
                             )}
 
+                            {/* Customer Support Tab - Available for all services */}
+                            {visibleTabs.includes(7) && (
+                                <div
+                                    className="d-flex align-items-center justify-content-center mb-4"
+                                    style={{
+                                        width: "40px",
+                                        height: "40px",
+                                        borderRadius: "25px",
+                                        border: '1px solid ',
+                                        filter: activeTab === 7 ? '' : 'brightness(3.5)',
+                                        backgroundColor: activeTab === 7 ? "#EDFF8B" : "transparent",
+                                        cursor: "pointer"
+                                    }}
+                                    role="button"
+                                    onClick={() => handleNavClick(7)}
+                                >
+                                    <SlEarphonesAlt style={{ color: activeTab === 7 ? '#3D3D3D' : '#fff' }} />
+                                </div>
+                            )}
 
+                            {/* Profile Tab - Available for all services */}
+                            {visibleTabs.includes(8) && (
+                                <div
+                                    className="d-flex align-items-center justify-content-center mb-4"
+                                    style={{
+                                        width: "40px",
+                                        height: "40px",
+                                        borderRadius: "25px",
+                                        border: '1px solid ',
+                                        filter: activeTab === 8 ? '' : 'brightness(3.5)',
+                                        backgroundColor: activeTab === 8 ? "#EDFF8B" : "transparent",
+                                        cursor: "pointer"
+                                    }}
+                                    role="button"
+                                    onClick={() => handleNavClick(8)}
+                                >
+                                    <CiUser style={{ color: activeTab === 8 ? '#3D3D3D' : '#fff', fontSize: '20px' }} />
+                                </div>
+                            )}
 
                         </div>
                     )}

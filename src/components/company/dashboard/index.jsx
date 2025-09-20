@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Process from "./process";
-import Topbar from '../common/topbar';
+import Topbar from '@/src/common/topbar';
 
 const HomeTwo = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);

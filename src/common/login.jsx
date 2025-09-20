@@ -156,7 +156,8 @@ export default function Login() {
                 borderRadius: '25px',
                 height: '48px',
                 fontSize: '16px',
-                fontWeight: '600'
+                fontWeight: '600',
+                backgroundColor: '#007C36'
               }}
             >
               Login

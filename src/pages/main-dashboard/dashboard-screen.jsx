@@ -420,7 +420,7 @@ const CreateCaseModal = ({ onClose, onSubmit }) => {
                 <p className="text-muted mb-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit ipsum dolor sit amet.</p>
                 <h6 className="mb-4" style={{ fontWeight: '600', fontSize: '16px', color: '#3D3D3D' }}>Choose the service you prefer to continue</h6>
 
-                <div className="wc-screen row justify-content-center mt-4 px-3">
+                <div className="wc-screen row justify-content-center mt-4">
                     {/* Card 1: NIF Number */}
                     <div className="col-md-4 mb-4">
                         <div className="hm-custom-card" style={{ boxShadow: '0px 0px 40px 0px #0000001A' }}>
@@ -444,7 +444,7 @@ const CreateCaseModal = ({ onClose, onSubmit }) => {
                                     fontWeight: '500',
                                     width: '100%',
                                     background: '#007C36'
-                                }}>Buy Now</a>
+                                }} onClick={() => localStorage.setItem('selectedService', 'nif')}>Buy Now</a>
                             </div>
                         </div>
                     </div>
@@ -472,7 +472,7 @@ const CreateCaseModal = ({ onClose, onSubmit }) => {
                                     fontWeight: '500',
                                     width: '100%',
                                     background: '#007C36'
-                                }}>Register Now</a>
+                                }} onClick={() => localStorage.setItem('selectedService', 'company')}>Register Now</a>
                             </div>
                         </div>
                     </div>
@@ -500,7 +500,7 @@ const CreateCaseModal = ({ onClose, onSubmit }) => {
                                     fontWeight: '500',
                                     width: '100%',
                                     background: '#007C36'
-                                }}>Create Now</a>
+                                }} onClick={() => localStorage.setItem('selectedService', 'virtual-office')}>Create Now</a>
                             </div>
                         </div>
                     </div>
