@@ -116,7 +116,7 @@ function PaymentSuccess({ onDone }) {
     localStorage.removeItem('virtualOfficeFormData');
     
     // Navigate to main dashboard
-    router.push('/virtual-office-address/main-dashboard');
+    router.push('/main-dashboard');
   };
 
   return (

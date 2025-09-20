@@ -16,16 +16,16 @@ export default function Home({ onStepChange, onPaymentFlowChange }) {
   // Handle hydration and localStorage initialization
   useEffect(() => {
     setIsHydrated(true);
-    
+
     // Initialize from localStorage after hydration
     if (typeof window !== 'undefined') {
       const savedStep = localStorage.getItem('nifActiveStep');
       const savedCompleted = localStorage.getItem('nifCompletedSteps');
-      
+
       if (savedStep) {
         setActiveStep(parseInt(savedStep, 10));
       }
-      
+
       if (savedCompleted) {
         setCompletedSteps(JSON.parse(savedCompleted));
       }
@@ -70,10 +70,10 @@ export default function Home({ onStepChange, onPaymentFlowChange }) {
   const isStepAccessible = (step) => {
     // Step 0 is always accessible
     if (step === 0) return true;
-    
+
     // If all steps are completed, allow free navigation
     if (completedSteps.length >= 2) return true;
-    
+
     // Only allow next step or completed steps
     return step === activeStep + 1 || completedSteps.includes(step);
   };
@@ -128,13 +128,13 @@ export default function Home({ onStepChange, onPaymentFlowChange }) {
         return <DocProccess />;
       case 1:
         if (showPaymentFlow) {
-          return <InvoiceFlow 
-            onBackToStep0={() => handleStepChange(0)} 
+          return <InvoiceFlow
+            onBackToStep0={() => handleStepChange(0)}
             onBackToSummary={handleBackToSummary}
             onNextToStep2={() => {
               markStepCompleted(1);
               handleStepChange(2);
-            }} 
+            }}
           />;
         } else {
           return <InvoiceSummary onPayNow={handlePayNow} />;

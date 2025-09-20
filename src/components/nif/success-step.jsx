@@ -8,7 +8,7 @@ export default function NIFSuccessStep() {
 
   const handleContinue = () => {
     // Navigate to dashboard after successful NIF submission
-    router.push('/nif-number/dashboard');
+    router.push('/main-dashboard');
   };
 
   return (

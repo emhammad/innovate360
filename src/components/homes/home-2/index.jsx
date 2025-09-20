@@ -1,7 +1,7 @@
 import React from 'react';
 import HeaderTwo from '@/src/layout/headers/header-2';
 import WelcomeScreen from './welcome';
-import Topbar from '@/src/components/company/common/topbar';
+import Topbar from '@/src/common/topbar';
 
 const HomeTwo = () => {
     return (

@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 
 
-const StatusCards = ({ panel, cardSteps, activeStep, completedSteps, handleStepClick, handleCheckboxChange, isStepAccessible }) => {
+const StatusCards = ({ panel, cardSteps, activeStep, completedSteps, handleStepClick, handleCheckboxChange, isStepAccessible = () => true }) => {
   return (
     <div className="d-flex flex-wrap justify-content-center gap-3 my-5">
       {cardSteps.map((step, idx) => (
@@ -21,7 +21,7 @@ const StatusCards = ({ panel, cardSteps, activeStep, completedSteps, handleStepC
             boxShadow: '0px 0px 40px 0px #0000001A',
             border: 'none',
             opacity: activeStep === idx ? 1 : (isStepAccessible(idx) ? 0.9 : 0.5),
-            cursor: isStepAccessible(idx) ? 'pointer' : 'not-allowed'
+            cursor: (isStepAccessible(idx)) ? 'pointer' : 'not-allowed'
           }}
         >
           {/* Icon */}

@@ -105,7 +105,7 @@ const Topbar = () => {
                                  </div>
                               ) : (
                                  /* Login Button - Only show when not authenticated */
-                                 <Link href="/company/signin">
+                                 <Link href="/signin">
                                     <button
                                        style={{
                                           backgroundColor: '#FCFCFC4D',

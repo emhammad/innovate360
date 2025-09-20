@@ -37,7 +37,7 @@ export default function SignupForm() {
   const handleContinue = () => {
     // Redirect to NIF success page
     console.log("Continue clicked");
-    window.location.href = "/company/dashboard?tab=0&step=1";
+    window.location.href = "/main-dashboard?tab=0&step=1";
   };
 
   const togglePasswordVisibility = () => {
