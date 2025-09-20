@@ -27,23 +27,39 @@ export default function CompanyNameStep({
   const [activeStep, setActiveStep] = useState(initialStep);
   const [completedSteps, setCompletedSteps] = useState(initialCompletedSteps);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   // Check authentication status on component mount
   useEffect(() => {
     // Check authentication status
     const authStatus = localStorage.getItem('isAuthenticated');
-    const token = localStorage.getItem('authToken');
+    const user = localStorage.getItem('currentUser');
 
-    if (authStatus === 'true' && token) {
+    if (authStatus === 'true' && user) {
       setIsAuthenticated(true);
+      setCurrentUser(JSON.parse(user));
+      // If user is authenticated and no specific initial step is set, start at step 1
+      if (initialStep === 0) {
+        setActiveStep(1);
+      }
     }
-  }, []);
+  }, [initialStep]);
+
+  // Update active step when authentication status changes
+  useEffect(() => {
+    if (isAuthenticated && activeStep === 0) {
+      setActiveStep(1);
+    }
+  }, [isAuthenticated, activeStep]);
 
   // Update stepper state when initial props change
   useEffect(() => {
-    setActiveStep(initialStep);
+    // Only update if not authenticated or if a specific step is provided
+    if (!isAuthenticated || initialStep !== 0) {
+      setActiveStep(initialStep);
+    }
     setCompletedSteps(initialCompletedSteps);
-  }, [initialStep, initialCompletedSteps]);
+  }, [initialStep, initialCompletedSteps, isAuthenticated]);
 
   const steps = [
     { title: "Choose company name", descrip: "Provide at least 5 names" },
@@ -60,6 +76,11 @@ export default function CompanyNameStep({
   ];
 
   const handleStepClick = (index) => {
+    // If user is authenticated, don't allow going back to step 0 (company name selection)
+    if (isAuthenticated && index === 0) {
+      return;
+    }
+
     // Only allow navigation to:
     // 1. Current step (no change)
     // 2. Completed steps (going back)
@@ -109,7 +130,10 @@ export default function CompanyNameStep({
   };
 
   const getStepComponent = () => {
-    switch (activeStep) {
+    // If user is authenticated, adjust the step mapping since step 0 is hidden
+    const stepIndex = isAuthenticated ? activeStep : activeStep;
+    
+    switch (stepIndex) {
       case 0:
         return <ChooseCompanyName onNext={handleNextStep} />;
       case 1:
@@ -148,7 +172,7 @@ export default function CompanyNameStep({
             minHeight: '100vh'
           }}
         >
-          {/* Logo */}
+          {/* Logo or User Info */}
           <div className="mb-4 d-flex justify-content-start">
             {!isAuthenticated && (
               <Image
@@ -164,6 +188,11 @@ export default function CompanyNameStep({
           {/* Steps List */}
           <ul className="list-unstyled position-relative flex-grow-1" style={{ paddingLeft: '0' }}>
             {steps.map((step, index) => {
+              // Skip step 0 (company name) if user is authenticated
+              if (isAuthenticated && index === 0) {
+                return null;
+              }
+
               const isActive = index === activeStep;
               const isCompleted = completedSteps.includes(index);
               const isLast = index === steps.length - 1;
@@ -277,9 +306,13 @@ export default function CompanyNameStep({
           </ul>
 
           {/* Footer */}
-          <div className="mt-auto d-flex justify-content-between align-items-center" style={{ color: isAuthenticated ? '#666' : '#FCFCFCB2', fontSize: '12px' }}>
-            <span>© INNOVATE360</span>
-            <span>Get Help</span>
+          <div className="mt-auto">
+
+            <div className="d-flex justify-content-between align-items-center" style={{ color: '#FCFCFCB2', fontSize: '12px' }}>
+              <span>© INNOVATE360</span>
+              <span>Get Help</span>
+            </div>
+
           </div>
         </div>
 

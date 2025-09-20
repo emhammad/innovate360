@@ -1,11 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import PhoneInput from "react-phone-input-2";
 import 'react-phone-input-2/lib/bootstrap.css';
 import SuccessScreen from "./SuccessScreen";
 import Image from 'next/image';
 
 export default function SignupForm() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -15,29 +17,75 @@ export default function SignupForm() {
 
   const [submitted, setSubmitted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  // Check if user is already authenticated
+  useEffect(() => {
+    const authStatus = localStorage.getItem('isAuthenticated');
+    const currentUser = localStorage.getItem('currentUser');
+    
+    if (authStatus === 'true' && currentUser) {
+      const user = JSON.parse(currentUser);
+      // If user is already logged in and it's a company user, redirect to dashboard
+      if (user.service === 'company') {
+        router.push('/main-dashboard');
+      }
+    }
+  }, [router]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    // Clear error when user starts typing
+    if (error) {
+      setError('');
+    }
   };
 
   const handlePhoneChange = (value) => {
     setFormData({ ...formData, phone: value });
+    // Clear error when user starts typing
+    if (error) {
+      setError('');
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Store mock token in localStorage
-    localStorage.setItem('authToken', 'mock-jwt-token-12345');
-    localStorage.setItem('isAuthenticated', 'true');
-    // Simulate successful submission
-    setSubmitted(true);
+    setIsLoading(true);
+    setError('');
+
+    try {
+      // Create a new company user object
+      const newUser = {
+        id: Date.now(), // Simple ID generation
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        service: 'company', // Always company for this signup page
+        role: 'Company User',
+        phone: formData.phone,
+        profileImage: '/assets/img/team/team-2.jpg' // Default company user image
+      };
+
+      // Store user data in localStorage
+      localStorage.setItem('currentUser', JSON.stringify(newUser));
+      localStorage.setItem('selectedService', 'company');
+      localStorage.setItem('isAuthenticated', 'true');
+      
+      // Simulate successful submission
+      setSubmitted(true);
+    } catch (err) {
+      setError('An error occurred during signup. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleContinue = () => {
-    // Redirect to NIF success page
-    console.log("Continue clicked");
-    window.location.href = "/main-dashboard?tab=0&step=1";
+    // Redirect to main dashboard
+    router.push('/main-dashboard');
   };
 
   const togglePasswordVisibility = () => {
@@ -69,6 +117,18 @@ export default function SignupForm() {
         </div>
 
         <form onSubmit={handleSubmit}>
+          {/* Error Message */}
+          {error && (
+            <div className="alert alert-danger" role="alert" style={{ 
+              fontSize: '14px', 
+              padding: '8px 12px',
+              borderRadius: '8px',
+              marginBottom: '16px'
+            }}>
+              {error}
+            </div>
+          )}
+
           {/* Name Input */}
           <div className="mb-3 position-relative">
             <input
@@ -223,22 +283,24 @@ export default function SignupForm() {
           <button
             type="submit"
             className="btn btn-success w-100 mt-4"
+            disabled={isLoading}
             style={{
               borderRadius: '25px',
               height: '42px',
               fontSize: '16px',
               fontWeight: '600',
               backgroundColor: '#007C36',
+              opacity: isLoading ? 0.7 : 1
             }}
           >
-            Signup
+            {isLoading ? 'Creating Account...' : 'Signup'}
           </button>
         </form>
 
         {/* Back to Login Link */}
         <div className="text-center mt-2">
           <p className="text-muted mb-0" style={{ fontSize: '14px' }}>
-            <a href="/company" className="text-success text-decoration-none" style={{ fontWeight: '500' }}>Go Back</a>
+            Already have an account? <a href="/signin" className="text-success text-decoration-none" style={{ fontWeight: '500' }}>Sign In</a>
           </p>
         </div>
       </div>

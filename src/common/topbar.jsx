@@ -1,33 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import useSticky from '@/src/hooks/use-sticky';
 import logo_img from "@assets/img/logo/innovate.svg";
 import loginIcon from "@assets/img/icon/login.png";
 
 const Topbar = () => {
    const { sticky } = useSticky()
-   const [businessName] = useState("BusinessName"); // You can get this from props or context
+   const router = useRouter();
+   const [currentUser, setCurrentUser] = useState(null);
    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
    useEffect(() => {
       // Check authentication status on component mount
       const authStatus = localStorage.getItem('isAuthenticated');
-      const token = localStorage.getItem('authToken');
+      const user = localStorage.getItem('currentUser');
 
-      if (authStatus === 'true' && token) {
+      if (authStatus === 'true' && user) {
          setIsAuthenticated(true);
+         setCurrentUser(JSON.parse(user));
       }
    }, []);
 
    const handleLogout = () => {
       // Clear authentication data
-      localStorage.removeItem('authToken');
+      localStorage.removeItem('currentUser');
+      localStorage.removeItem('selectedService');
       localStorage.removeItem('isAuthenticated');
       // Update state
       setIsAuthenticated(false);
+      setCurrentUser(null);
       // Redirect to login page
-      window.location.href = '/';
+      router.push('/');
    };
 
    return (
@@ -52,22 +57,40 @@ const Topbar = () => {
                         <div className="col-md-3">
                            <div className="tp-header-main-right d-flex align-items-end justify-content-xl-end">
                               {/* Login/Logout Section */}
-                              {isAuthenticated ? (
+                              {isAuthenticated && currentUser ? (
                                  <div className="d-flex align-items-center" style={{ gap: '12px' }}>
-                                    {/* Business Name Tag */}
-                                    <div
-                                       style={{
-                                          backgroundColor: '#FCFCFC4D',
-                                          color: '#EDFF8B',
-                                          padding: '4px 16px',
-                                          borderRadius: '20px',
-                                          fontSize: '14px',
-                                          fontWeight: '500',
-                                          border: 'none',
-                                          cursor: 'default'
-                                       }}
-                                    >
-                                       {businessName}
+                                    {/* User Info */}
+                                    <div className="d-flex align-items-center" style={{ gap: '8px' }}>
+                                       <Image
+                                          src={currentUser.profileImage || "/assets/img/team/team-1.jpg"}
+                                          alt="User Avatar"
+                                          width={32}
+                                          height={32}
+                                          className="rounded-circle"
+                                          style={{ objectFit: 'cover' }}
+                                       />
+                                       <div>
+                                          <div
+                                             style={{
+                                                color: '#EDFF8B',
+                                                fontSize: '14px',
+                                                fontWeight: '500',
+                                                lineHeight: '1.2'
+                                             }}
+                                          >
+                                             {currentUser.name}
+                                          </div>
+                                          <div
+                                             style={{
+                                                color: '#EDFF8B',
+                                                fontSize: '11px',
+                                                opacity: 0.8,
+                                                lineHeight: '1.2'
+                                             }}
+                                          >
+                                             {currentUser.service.toUpperCase()} Service
+                                          </div>
+                                       </div>
                                     </div>
 
                                     {/* Logout Button */}

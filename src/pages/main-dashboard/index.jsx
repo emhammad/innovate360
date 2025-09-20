@@ -35,6 +35,14 @@ export default function MainDashboardPage() {
     const [selectedService, setSelectedService] = useState('nif'); // Track selected service type
 
     useEffect(() => {
+        // Check if user is authenticated
+        const isAuthenticated = localStorage.getItem('isAuthenticated');
+        if (!isAuthenticated) {
+            router.push('/signin');
+            return;
+        }
+
+
         // Read service from localStorage
         const service = localStorage.getItem('selectedService');
         if (service && ['nif', 'company', 'virtual-office'].includes(service)) {
@@ -44,7 +52,8 @@ export default function MainDashboardPage() {
             setSelectedService('nif');
             localStorage.setItem('selectedService', 'nif');
         }
-    }, []);
+    }, [router]);
+
 
     // Define which tabs to show based on selected service
     const getVisibleTabs = () => {

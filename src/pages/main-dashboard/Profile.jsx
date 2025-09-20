@@ -1,15 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 export default function Profile() {
     const [formData, setFormData] = useState({
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        phone: '+1 234 567 8900',
+        name: '',
+        email: '',
+        phone: '',
         password: '••••••••'
     });
 
     const [isEditing, setIsEditing] = useState(false);
+    const [currentUser, setCurrentUser] = useState(null);
+
+    useEffect(() => {
+        // Get current user from localStorage
+        const user = localStorage.getItem('currentUser');
+        if (user) {
+            const userData = JSON.parse(user);
+            setCurrentUser(userData);
+            setFormData({
+                name: userData.name,
+                email: userData.email,
+                phone: userData.phone,
+                password: '••••••••'
+            });
+        }
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -33,18 +49,27 @@ export default function Profile() {
     const handleCancel = () => {
         setIsEditing(false);
         // Reset form data to original values
-        setFormData({
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            phone: '+1 234 567 8900',
-            password: '••••••••'
-        });
+        if (currentUser) {
+            setFormData({
+                name: currentUser.name,
+                email: currentUser.email,
+                phone: currentUser.phone,
+                password: '••••••••'
+            });
+        }
     };
 
     return (
         <div style={{ padding: '35px' }}>
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h5 style={{ fontWeight: '600', color: '#3D3D3D', fontSize: '24px' }}>Profile</h5>
+                <div>
+                    <h5 style={{ fontWeight: '600', color: '#3D3D3D', fontSize: '24px' }}>Profile</h5>
+                    {currentUser && (
+                        <p style={{ color: '#6c757d', fontSize: '14px', margin: '5px 0 0 0' }}>
+                            {currentUser.role} • {currentUser.service.toUpperCase()} Service
+                        </p>
+                    )}
+                </div>
             </div>
 
             <div
@@ -62,7 +87,7 @@ export default function Profile() {
                 {/* Profile Picture */}
                 <div className="position-relative mb-4">
                     <Image
-                        src="/assets/img/team/team-1.jpg"
+                        src={currentUser?.profileImage || "/assets/img/team/team-1.jpg"}
                         alt="Profile Picture"
                         width={120}
                         height={120}

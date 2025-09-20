@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import Image from "next/image";
+import Topbar from "@/src/common/topbar";
 
 // Active state icons
 import DashboardIconActive from "@assets/img/icon/buildings.png";
@@ -22,6 +23,7 @@ import ChatBox from "./ChatBox";
 // import MainDashboard from "../main-dashboard";
 export default function CompanySetupPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   const [activeTab, setactiveTab] = useState(0);
   const [initialStep, setInitialStep] = useState(0);
   const [initialCompletedSteps, setInitialCompletedSteps] = useState([]);
@@ -29,11 +31,11 @@ export default function CompanySetupPage() {
   useEffect(() => {
     // Check authentication status on component mount
     const authStatus = localStorage.getItem('isAuthenticated');
-    const token = localStorage.getItem('authToken');
-    const isAuthenticated = authStatus === 'true' && token;
+    const user = localStorage.getItem('currentUser');
 
-    if (isAuthenticated) {
+    if (authStatus === 'true' && user) {
       setIsAuthenticated(true);
+      setCurrentUser(JSON.parse(user));
     }
 
     // Check URL parameters only once on component mount
@@ -94,8 +96,8 @@ export default function CompanySetupPage() {
     if (index === 0) {
       // For stepper tab, check if user is authenticated
       const authStatus = localStorage.getItem('isAuthenticated');
-      const token = localStorage.getItem('authToken');
-      const isAuthenticated = authStatus === 'true' && token;
+      const user = localStorage.getItem('currentUser');
+      const isAuthenticated = authStatus === 'true' && user;
 
       if (!url.searchParams.has('step')) {
         // If no step parameter, set based on authentication status
@@ -133,6 +135,8 @@ export default function CompanySetupPage() {
           initialCompletedSteps={initialCompletedSteps}
           shouldCheckUrlParams={activeTab === 0}
           onStepChange={handleStepChange}
+          isAuthenticated={isAuthenticated}
+          currentUser={currentUser}
         />;
       case 1:
         return <Transactions />;
@@ -152,9 +156,10 @@ export default function CompanySetupPage() {
         <title>Company Setup - Innovate360</title>
       </Head>
 
+      {/* Topbar - Show only when authenticated */}
+      {isAuthenticated && <Topbar />}
+
       <div className="d-flex flex-column" style={{ minHeight: "90vh" }}>
-
-
         <div className="d-flex flex-grow-1">
           {/* Left icon sidebar - Show only when authenticated */}
           {isAuthenticated && (
@@ -261,11 +266,7 @@ export default function CompanySetupPage() {
           )}
           <div className="flex-grow-1">
             <div className="container-fluid p-0">
-
               {getTabComponent()}
-
-              {/* Dynamic step content */}
-
             </div>
           </div>
 

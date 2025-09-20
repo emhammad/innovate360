@@ -2,12 +2,58 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { authenticateUser } from '../data/users';
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Clear error when user starts typing
+    if (error) setError('');
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+
+    try {
+      // Authenticate user
+      const user = authenticateUser(formData.email, formData.password);
+
+      if (user) {
+        // Store user data in localStorage
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        localStorage.setItem('selectedService', user.service);
+        localStorage.setItem('isAuthenticated', 'true');
+
+        // Redirect to main dashboard
+        router.push('/main-dashboard');
+      } else {
+        setError('Invalid email or password. Please try again.');
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -44,13 +90,24 @@ export default function Login() {
             <p className="text-muted mb-0" style={{ fontSize: '14px' }}>Login to continue</p>
           </div>
 
-          <form>
+          <form onSubmit={handleSubmit}>
+            {/* Error Message */}
+            {error && (
+              <div className="alert alert-danger mb-3" style={{ fontSize: '14px', borderRadius: '8px' }}>
+                {error}
+              </div>
+            )}
+
             {/* Email Input */}
             <div className="mb-3 position-relative">
               <input
                 type="email"
                 className="form-control"
+                name="email"
                 placeholder="Enter your email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
                 style={{
                   width: '100%',
                   height: '54px',
@@ -86,7 +143,11 @@ export default function Login() {
               <input
                 type={showPassword ? "text" : "password"}
                 className="form-control"
+                name="password"
                 placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleInputChange}
+                required
                 style={{
                   width: '100%',
                   height: '54px',
@@ -147,22 +208,21 @@ export default function Login() {
             {/* Login Button */}
             <button
               type="submit"
-              onClick={(e) => {
-                e.preventDefault();
-                window.location.href = '/company/dashboard';
-              }}
+              disabled={isLoading}
               className="btn btn-success w-100 mt-2"
               style={{
                 borderRadius: '25px',
                 height: '48px',
                 fontSize: '16px',
                 fontWeight: '600',
-                backgroundColor: '#007C36'
+                backgroundColor: '#007C36',
+                opacity: isLoading ? 0.7 : 1
               }}
             >
-              Login
+              {isLoading ? 'Logging in...' : 'Login'}
             </button>
           </form>
+
         </div>
       </div>
     </>
