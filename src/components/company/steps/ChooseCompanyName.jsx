@@ -145,7 +145,8 @@ export default function ChooseCompanyName({ onNext }) {
               backgroundColor: isAllFieldsFilled ? '#28a745' : '#1D1B201F',
               border: 'none',
               boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-              color: isAllFieldsFilled ? 'white' : '#1D1B20'
+              color: isAllFieldsFilled ? 'white' : '#1D1B20',
+              marginBottom: '80px'
             }}
             onClick={(e) => {
               e.preventDefault();

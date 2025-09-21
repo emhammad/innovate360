@@ -3,6 +3,7 @@ import { useState } from "react";
 import AnalyticsIcon from "@assets/img/icon/chart.png";
 import Image from "next/image";
 import SearchIcon from "@assets/img/icon/search-icon.svg";
+import { useRouter } from "next/router";
 
 const data = [
     // NIF Service Cases
@@ -15,24 +16,7 @@ const data = [
         assignedTo: "Matthew Anderson",
         service: "nif"
     },
-    {
-        caseNumber: "NIF-002",
-        caseName: "Sarah Wilson",
-        email: "sarah.wilson@nif.com",
-        approvalRequests: "NIF Application, Tax Registration, Business License..",
-        status: { text: "Invoice Paid", color: "text-success", icon: <FaArrowUp size={12} /> },
-        assignedTo: "Jane Cooper",
-        service: "nif"
-    },
-    {
-        caseNumber: "NIF-003",
-        caseName: "Michael Brown",
-        email: "michael.brown@nif.com",
-        approvalRequests: "NIF Application, Tax Registration, Business License..",
-        status: { text: "Case Closed", color: "text-success", icon: <FaArrowUp size={12} /> },
-        assignedTo: "Wade Warren",
-        service: "nif"
-    },
+
 
     // Company Service Cases
     {
@@ -44,44 +28,10 @@ const data = [
         assignedTo: "Brooklyn Simmons",
         service: "company"
     },
-    {
-        caseNumber: "COMP-002",
-        caseName: "David Miller",
-        email: "david.miller@company.com",
-        approvalRequests: "Company Registration, Business Name, Articles of Incorporation..",
-        status: { text: "Invoice Paid", color: "text-success", icon: <FaArrowUp size={12} /> },
-        assignedTo: "Jenny Wilson",
-        service: "company"
-    },
-    {
-        caseNumber: "COMP-003",
-        caseName: "Lisa Garcia",
-        email: "lisa.garcia@company.com",
-        approvalRequests: "Company Registration, Business Name, Articles of Incorporation..",
-        status: { text: "Case Closed", color: "text-success", icon: <FaArrowUp size={12} /> },
-        assignedTo: "Esther Howard",
-        service: "company"
-    },
+
 
     // Virtual Office Service Cases
-    {
-        caseNumber: "VO-001",
-        caseName: "Robert Johnson",
-        email: "robert.johnson@virtual.com",
-        approvalRequests: "Virtual Office Setup, Mail Forwarding, Business Address..",
-        status: { text: "Pending", color: "text-danger", icon: <FaArrowDown size={12} /> },
-        assignedTo: "Leslie Alexander",
-        service: "virtual-office"
-    },
-    {
-        caseNumber: "VO-002",
-        caseName: "Amanda Taylor",
-        email: "amanda.taylor@virtual.com",
-        approvalRequests: "Virtual Office Setup, Mail Forwarding, Business Address..",
-        status: { text: "Invoice Paid", color: "text-success", icon: <FaArrowUp size={12} /> },
-        assignedTo: "Guy Hawkins",
-        service: "virtual-office"
-    },
+
     {
         caseNumber: "VO-003",
         caseName: "James Wilson",
@@ -112,13 +62,26 @@ export default function VirtualOfficeMainDashboard() {
 }
 
 const Content = () => {
+    const router = useRouter();
     const [step, setSetp] = useState('caseList');
     const [Id, setId] = useState(0);
     const [search, setSearch] = useState("");
     const [showCreateModal, setShowCreateModal] = useState(false);
 
     const handleViewClick = (id) => {
-        setSetp("viewCase")
+        const selectedCase = data[id];
+
+        if (selectedCase.service === "nif") {
+            // For NIF service, set flag and show NIF analytics as submenu
+            localStorage.setItem('fromNifSuccess', 'true');
+            window.location.href = '/main-dashboard';
+        } else if (selectedCase.service === "company") {
+            // For Company service, redirect to company dashboard
+            window.location.href = '/company/dashboard';
+        } else if (selectedCase.service === "virtual-office") {
+            // For Virtual Office service, show virtual office dashboard
+            setSetp("viewCase");
+        }
     };
 
     const handleSearchChange = (e) => {
@@ -410,7 +373,147 @@ const Content = () => {
             {
                 step == 'viewCase' &&
                 (
-                    <div>Case Detail Component</div>
+                    <div style={{ padding: '35px' }}>
+                        <div className="d-flex justify-content-between align-items-center mb-4">
+                            <h5 style={{ fontWeight: '600', color: '#3D3D3D', fontSize: '24px' }}>Virtual Office Dashboard</h5>
+                            <button
+                                className="btn btn-outline-secondary"
+                                onClick={() => setSetp('caseList')}
+                                style={{
+                                    borderRadius: '25px',
+                                    padding: '8px 24px',
+                                    fontSize: '14px',
+                                    fontWeight: '500'
+                                }}
+                            >
+                                Back to Cases
+                            </button>
+                        </div>
+
+                        <div className="row">
+                            <div className="col-md-6 mb-4">
+                                <div className="card" style={{ borderRadius: '16px', border: '1px solid #e9ecef' }}>
+                                    <div className="card-body text-center">
+                                        <div className="mb-3">
+                                            <div
+                                                className="rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                                                style={{
+                                                    width: '60px',
+                                                    height: '60px',
+                                                    backgroundColor: '#007C36',
+                                                    color: 'white'
+                                                }}
+                                            >
+                                                <Image
+                                                    src="/assets/img/icon/buildings.png"
+                                                    alt="Virtual Office Icon"
+                                                    width={30}
+                                                    height={30}
+                                                    style={{ filter: 'brightness(0) invert(1)' }}
+                                                />
+                                            </div>
+                                        </div>
+                                        <h6 className="card-title" style={{ color: '#3D3D3D', fontWeight: '600' }}>
+                                            Active Virtual Offices
+                                        </h6>
+                                        <h3 className="mb-0" style={{ color: '#007C36', fontWeight: '700' }}>
+                                            12
+                                        </h3>
+                                        <small className="text-muted">+2 this month</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-md-6 mb-4">
+                                <div className="card" style={{ borderRadius: '16px', border: '1px solid #e9ecef' }}>
+                                    <div className="card-body text-center">
+                                        <div className="mb-3">
+                                            <div
+                                                className="rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                                                style={{
+                                                    width: '60px',
+                                                    height: '60px',
+                                                    backgroundColor: '#ffc107',
+                                                    color: 'white'
+                                                }}
+                                            >
+                                                <Image
+                                                    src="/assets/img/icon/chart.png"
+                                                    alt="Revenue Icon"
+                                                    width={30}
+                                                    height={30}
+                                                    style={{ filter: 'brightness(0) invert(1)' }}
+                                                />
+                                            </div>
+                                        </div>
+                                        <h6 className="card-title" style={{ color: '#3D3D3D', fontWeight: '600' }}>
+                                            Monthly Revenue
+                                        </h6>
+                                        <h3 className="mb-0" style={{ color: '#ffc107', fontWeight: '700' }}>
+                                            €2,400
+                                        </h3>
+                                        <small className="text-muted">+15% from last month</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="card" style={{ borderRadius: '16px', border: '1px solid #e9ecef' }}>
+                            <div className="card-body">
+                                <h6 className="card-title mb-3" style={{ color: '#3D3D3D', fontWeight: '600' }}>
+                                    Recent Virtual Office Activities
+                                </h6>
+                                <div className="table-responsive">
+                                    <table className="table table-borderless">
+                                        <thead>
+                                            <tr style={{ backgroundColor: '#f8f9fa' }}>
+                                                <th style={{ fontSize: '14px', fontWeight: '600', color: '#6c757d' }}>Office ID</th>
+                                                <th style={{ fontSize: '14px', fontWeight: '600', color: '#6c757d' }}>Client Name</th>
+                                                <th style={{ fontSize: '14px', fontWeight: '600', color: '#6c757d' }}>Address</th>
+                                                <th style={{ fontSize: '14px', fontWeight: '600', color: '#6c757d' }}>Status</th>
+                                                <th style={{ fontSize: '14px', fontWeight: '600', color: '#6c757d' }}>Last Activity</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style={{ fontSize: '14px', color: '#007C36', fontWeight: '600' }}>VO-001</td>
+                                                <td style={{ fontSize: '14px', color: '#3D3D3D' }}>Robert Johnson</td>
+                                                <td style={{ fontSize: '14px', color: '#6c757d' }}>123 Business Ave, Lisbon</td>
+                                                <td>
+                                                    <span className="badge" style={{ backgroundColor: '#E6F4EA', color: '#28a745', padding: '4px 12px', borderRadius: '20px' }}>
+                                                        Active
+                                                    </span>
+                                                </td>
+                                                <td style={{ fontSize: '14px', color: '#6c757d' }}>2 hours ago</td>
+                                            </tr>
+                                            <tr>
+                                                <td style={{ fontSize: '14px', color: '#007C36', fontWeight: '600' }}>VO-002</td>
+                                                <td style={{ fontSize: '14px', color: '#3D3D3D' }}>Amanda Taylor</td>
+                                                <td style={{ fontSize: '14px', color: '#6c757d' }}>456 Corporate St, Porto</td>
+                                                <td>
+                                                    <span className="badge" style={{ backgroundColor: '#FFF3CD', color: '#856404', padding: '4px 12px', borderRadius: '20px' }}>
+                                                        Pending
+                                                    </span>
+                                                </td>
+                                                <td style={{ fontSize: '14px', color: '#6c757d' }}>1 day ago</td>
+                                            </tr>
+                                            <tr>
+                                                <td style={{ fontSize: '14px', color: '#007C36', fontWeight: '600' }}>VO-003</td>
+                                                <td style={{ fontSize: '14px', color: '#3D3D3D' }}>James Wilson</td>
+                                                <td style={{ fontSize: '14px', color: '#6c757d' }}>789 Enterprise Blvd, Braga</td>
+                                                <td>
+                                                    <span className="badge" style={{ backgroundColor: '#E6F4EA', color: '#28a745', padding: '4px 12px', borderRadius: '20px' }}>
+                                                        Active
+                                                    </span>
+                                                </td>
+                                                <td style={{ fontSize: '14px', color: '#6c757d' }}>3 days ago</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 )
             }
 
