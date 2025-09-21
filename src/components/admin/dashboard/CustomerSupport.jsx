@@ -52,6 +52,8 @@ const supportData = [
 export default function CustomerSupport() {
     const [search, setSearch] = useState("");
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [showViewModal, setShowViewModal] = useState(false);
+    const [selectedTicket, setSelectedTicket] = useState(null);
     const [tickets, setTickets] = useState(supportData); // Use state for tickets to allow adding new ones
 
     const handleSearchChange = (e) => {
@@ -64,6 +66,16 @@ export default function CustomerSupport() {
 
     const handleCloseModal = () => {
         setShowCreateModal(false);
+    };
+
+    const handleViewTicket = (ticket) => {
+        setSelectedTicket(ticket);
+        setShowViewModal(true);
+    };
+
+    const handleCloseViewModal = () => {
+        setShowViewModal(false);
+        setSelectedTicket(null);
     };
 
     const handleSubmitTicket = (formData) => {
@@ -260,6 +272,7 @@ export default function CustomerSupport() {
                                                 <button
                                                     className="btn btn-link fw-semibold"
                                                     type="button"
+                                                    onClick={() => handleViewTicket({ id, subject, date, status, assignedTo })}
                                                     style={{
                                                         color: "#007C36",
                                                         textDecoration: "none",
@@ -322,6 +335,14 @@ export default function CustomerSupport() {
                 <CreateTicketModal
                     onClose={handleCloseModal}
                     onSubmit={handleSubmitTicket}
+                />
+            )}
+
+            {/* View Ticket Modal */}
+            {showViewModal && selectedTicket && (
+                <ViewTicketModal
+                    ticket={selectedTicket}
+                    onClose={handleCloseViewModal}
                 />
             )}
         </>
@@ -585,6 +606,220 @@ const CreateTicketModal = ({ onClose, onSubmit }) => {
                             </button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// View Ticket Modal Component
+const ViewTicketModal = ({ ticket, onClose }) => {
+    const getStatusStyle = (status) => {
+        switch (status) {
+            case "Resolved":
+                return {
+                    backgroundColor: "#E6F4EA",
+                    color: "#28a745",
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    borderRadius: "999px",
+                    padding: "4px 12px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    width: "fit-content",
+                };
+            case "Pending":
+                return {
+                    backgroundColor: "#FEE7E6",
+                    color: "#dc3545",
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    borderRadius: "999px",
+                    padding: "4px 12px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    width: "fit-content",
+                };
+            case "In Progress":
+                return {
+                    backgroundColor: "#FFF3CD",
+                    color: "#856404",
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    borderRadius: "999px",
+                    padding: "4px 12px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    width: "fit-content",
+                };
+            default:
+                return {
+                    backgroundColor: "#f8f9fa",
+                    color: "#6c757d",
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    borderRadius: "999px",
+                    padding: "4px 12px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    width: "fit-content",
+                };
+        }
+    };
+
+    return (
+        <div
+            className="modal fade show d-block"
+            style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}
+            tabIndex="-1"
+        >
+            <div className="modal-dialog" style={{ maxWidth: '600px' }}>
+                <div
+                    className="modal-content"
+                    style={{
+                        borderRadius: '24px',
+                        border: 'none',
+                        boxShadow: '0px 0px 24.8px 0px #00000026',
+                        padding: '24px'
+                    }}
+                >
+                    <div
+                        className="modal-header"
+                        style={{
+                            borderBottom: 'none',
+                            padding: '0 0 20px 0'
+                        }}
+                    >
+                        <h4
+                            className="modal-title fw-bold"
+                            style={{
+                                color: '#3D3D3D',
+                                fontSize: '20px',
+                                margin: 0,
+                                fontWeight: '400'
+                            }}
+                        >
+                            Ticket Details
+                        </h4>
+                        <button
+                            type="button"
+                            className="btn-close"
+                            onClick={onClose}
+                            style={{
+                                fontSize: '16px',
+                                opacity: 0.7
+                            }}
+                        ></button>
+                    </div>
+
+                    <div className="modal-body" style={{ padding: '0 0 20px 0' }}>
+                        {/* Ticket Information */}
+                        <div className="row mb-4">
+                            <div className="col-md-6">
+                                <div className="mb-3">
+                                    <label className="form-label fw-semibold" style={{ color: '#6c757d', fontSize: '14px' }}>
+                                        Ticket ID
+                                    </label>
+                                    <div className="form-control-plaintext" style={{ color: '#3D3D3D', fontSize: '16px' }}>
+                                        #{ticket.id}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-6">
+                                <div className="mb-3">
+                                    <label className="form-label fw-semibold" style={{ color: '#6c757d', fontSize: '14px' }}>
+                                        Status
+                                    </label>
+                                    <div>
+                                        <span style={getStatusStyle(ticket.status)}>
+                                            {ticket.status}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="row mb-4">
+                            <div className="col-md-6">
+                                <div className="mb-3">
+                                    <label className="form-label fw-semibold" style={{ color: '#6c757d', fontSize: '14px' }}>
+                                        Subject
+                                    </label>
+                                    <div className="form-control-plaintext" style={{ color: '#3D3D3D', fontSize: '16px' }}>
+                                        {ticket.subject}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-6">
+                                <div className="mb-3">
+                                    <label className="form-label fw-semibold" style={{ color: '#6c757d', fontSize: '14px' }}>
+                                        Date Created
+                                    </label>
+                                    <div className="form-control-plaintext" style={{ color: '#3D3D3D', fontSize: '16px' }}>
+                                        {ticket.date}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mb-4">
+                            <label className="form-label fw-semibold" style={{ color: '#6c757d', fontSize: '14px' }}>
+                                Assigned To
+                            </label>
+                            <div className="form-control-plaintext" style={{ color: '#3D3D3D', fontSize: '16px' }}>
+                                {ticket.assignedTo}
+                            </div>
+                        </div>
+
+                        {/* Description Section */}
+                        <div className="mb-4">
+                            <label className="form-label fw-semibold" style={{ color: '#6c757d', fontSize: '14px' }}>
+                                Description
+                            </label>
+                            <div
+                                className="form-control-plaintext"
+                                style={{
+                                    color: '#3D3D3D',
+                                    fontSize: '16px',
+                                    backgroundColor: '#f8f9fa',
+                                    padding: '15px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #e9ecef',
+                                    minHeight: '100px'
+                                }}
+                            >
+                                {ticket.subject === "Login not working" &&
+                                    "I'm unable to log into my account. When I enter my credentials, I get an error message saying 'Invalid username or password'. I've tried resetting my password but haven't received any email. Please help me resolve this issue as soon as possible."
+                                }
+                                {ticket.subject === "Payment Submitted but no response" &&
+                                    "I submitted my payment for the company registration service 3 days ago but haven't received any confirmation or response. The payment was processed successfully from my end. Please check the status and provide an update."
+                                }
+                                {ticket.subject === "NIF Documents not received" &&
+                                    "I completed the NIF application process last week but haven't received the required documents yet. The status shows as 'Processing' but it's been longer than expected. Could you please check the status and provide an update?"
+                                }
+                                {ticket.subject === "Company registration delay" &&
+                                    "My company registration has been in progress for over 2 weeks now, which is longer than the estimated timeframe. I need this completed urgently for my business operations. Please expedite the process and provide a timeline."
+                                }
+                                {ticket.subject === "Virtual office address issue" &&
+                                    "I'm having trouble with my virtual office address. The documents I received have an incorrect address format. I need this corrected as it's affecting my business registration with other authorities."
+                                }
+                                {ticket.subject === "Document verification pending" &&
+                                    "I uploaded all the required documents for verification 5 days ago but the status still shows as 'Pending Review'. I need this completed to proceed with my application. Please prioritize this review."
+                                }
+                            </div>
+                        </div>
+
+                        {/* Additional Information */}
+                        <div className="mb-4">
+                            <label className="form-label fw-semibold" style={{ color: '#6c757d', fontSize: '14px' }}>
+                                Priority
+                            </label>
+                            <div className="form-control-plaintext" style={{ color: '#3D3D3D', fontSize: '16px' }}>
+                                {ticket.status === "Resolved" ? "Low" : ticket.status === "In Progress" ? "High" : "Medium"}
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

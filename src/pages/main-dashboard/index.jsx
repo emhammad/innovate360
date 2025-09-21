@@ -4,18 +4,19 @@ import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-import SideNavDashboardIcon from "@assets/img/icon/card.png";
-import SideNavDashboardIconActive from "@assets/img/icon/card.png";
-import CardIcon from "@assets/img/sideNav/card.png";
-import CardIconActive from "@assets/img/icon/card.png";
-import ChatIcon from "@assets/img/sideNav/chat.png";
-import ChatIconActive from "@assets/img/icon/message-notif.png";
 import MainDashboard from "./dashboard-screen"
 import Transactions from "../../components/company/dashboard/Transaction"
 import ChatBox from "../../components/company/dashboard/ChatBox"
 import CustomerSupport from "./CustomerSupport"
 import Profile from "./Profile"
 import Topbar from "@/src/common/topbar";
+
+import DashboardIcon from "@assets/img/sideNav/dashboard.png";
+import DashboardIconActive from "@assets/img/sideNav/dashboard-active.png";
+import CardIcon from "@assets/img/sideNav/card.png";
+import CardIconActive from "@assets/img/sideNav/card-active.png";
+import ChatIcon from "@assets/img/sideNav/chat.png";
+import ChatIconActive from "@assets/img/sideNav/chat-active.png";
 
 import NifDashboard from '../../components/nif/AnalyticDashboard';
 
@@ -87,16 +88,13 @@ export default function MainDashboardPage() {
                                 width: "40px",
                                 height: "40px",
                                 borderRadius: "25px",
-                                border: '1px solid ',
-                                filter: activeTab === 1 ? '' : 'brightness(3.5)',
-                                backgroundColor: activeTab === 1 ? "#EDFF8B" : "transparent",
                                 cursor: "pointer"
                             }}
                             role="button"
                             onClick={() => handleNavClick(1)}
                         >
                             <Image
-                                src={activeTab === 1 ? SideNavDashboardIconActive : SideNavDashboardIcon}
+                                src={activeTab === 1 ? DashboardIconActive : DashboardIcon}
                                 alt="Dashboard"
                                 width={activeTab === 1 ? '25px' : '35px'}
                                 height={activeTab === 1 ? '25px' : '35px'}
@@ -110,9 +108,6 @@ export default function MainDashboardPage() {
                                 width: "40px",
                                 height: "40px",
                                 borderRadius: "25px",
-                                border: '1px solid ',
-                                filter: activeTab === 2 ? '' : 'brightness(3.5)',
-                                backgroundColor: activeTab === 2 ? "#EDFF8B" : "transparent",
                                 cursor: "pointer"
                             }}
                             role="button"
@@ -133,9 +128,6 @@ export default function MainDashboardPage() {
                                 width: "40px",
                                 height: "40px",
                                 borderRadius: "25px",
-                                border: '1px solid ',
-                                filter: activeTab === 3 ? '' : 'brightness(3.5)',
-                                backgroundColor: activeTab === 3 ? "#EDFF8B" : "transparent",
                                 cursor: "pointer"
                             }}
                             role="button"
@@ -156,15 +148,14 @@ export default function MainDashboardPage() {
                                 width: "40px",
                                 height: "40px",
                                 borderRadius: "25px",
-                                border: '1px solid ',
-                                filter: activeTab === 4 ? '' : 'brightness(3.5)',
+                                border: '1px solid rgb(176, 213, 192)',
                                 backgroundColor: activeTab === 4 ? "#EDFF8B" : "transparent",
                                 cursor: "pointer"
                             }}
                             role="button"
                             onClick={() => handleNavClick(4)}
                         >
-                            <SlEarphonesAlt style={{ color: activeTab === 4 ? '#3D3D3D' : '#fff' }} />
+                            <SlEarphonesAlt style={{ color: activeTab === 4 ? '#3D3D3D' : 'rgb(176, 213, 192)' , fontWeight: '800' }} />
                         </div>
 
                         {/* Profile Tab */}
@@ -174,15 +165,14 @@ export default function MainDashboardPage() {
                                 width: "40px",
                                 height: "40px",
                                 borderRadius: "25px",
-                                border: '1px solid ',
-                                filter: activeTab === 5 ? '' : 'brightness(3.5)',
+                                border: '1px solid rgb(176, 213, 192)',
                                 backgroundColor: activeTab === 5 ? "#EDFF8B" : "transparent",
                                 cursor: "pointer"
                             }}
                             role="button"
                             onClick={() => handleNavClick(5)}
                         >
-                            <CiUser style={{ color: activeTab === 5 ? '#3D3D3D' : '#fff', fontSize: '20px' }} />
+                            <CiUser style={{ color: activeTab === 5 ? '#3D3D3D' : 'rgb(176, 213, 192)', fontSize: '20px' , fontWeight: '800' }} />
                         </div>
 
                     </div>
@@ -206,7 +196,7 @@ export default function MainDashboardPage() {
                                         }}
                                     >
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                            <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                         </svg>
                                         Back to Main Dashboard
                                     </button>
