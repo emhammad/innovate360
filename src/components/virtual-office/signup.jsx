@@ -25,11 +25,8 @@ export default function VirtualOfficeSignupForm() {
     const currentUser = localStorage.getItem('currentUser');
     
     if (authStatus === 'true' && currentUser) {
-      const user = JSON.parse(currentUser);
-      // If user is already logged in and it's a virtual office user, redirect to dashboard
-      if (user.service === 'virtual-office') {
-        router.push('/main-dashboard');
-      }
+      // If user is already logged in, redirect to payment
+      router.push('/virtual-office-address/success');
     }
   }, [router]);
 
@@ -56,25 +53,23 @@ export default function VirtualOfficeSignupForm() {
     setError('');
 
     try {
-      // Create a new virtual office user object
+      // Create a new user object
       const newUser = {
         id: Date.now(), // Simple ID generation
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        service: 'virtual-office', // Always virtual-office for this signup page
-        role: 'Virtual Office User',
+        role: 'Admin User',
         phone: formData.phone,
-        profileImage: '/assets/img/team/team-3.jpg' // Default virtual office user image
+        profileImage: '/assets/img/team/team-1.jpg' // Default user image
       };
 
       // Store user data in localStorage
       localStorage.setItem('currentUser', JSON.stringify(newUser));
-      localStorage.setItem('selectedService', 'virtual-office');
       localStorage.setItem('isAuthenticated', 'true');
       
       // Navigate to main dashboard
-      router.push('/main-dashboard');
+      router.push('/virtual-office-address/success');
     } catch (err) {
       setError('An error occurred during signup. Please try again.');
     } finally {

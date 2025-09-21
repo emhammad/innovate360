@@ -7,7 +7,9 @@ export default function NIFSuccessStep() {
   const router = useRouter();
 
   const handleContinue = () => {
-    // Navigate to dashboard after successful NIF submission
+    // Set flag in localStorage to indicate coming from NIF success
+    localStorage.setItem('fromNifSuccess', 'true');
+    // Navigate to main dashboard
     router.push('/main-dashboard');
   };
 

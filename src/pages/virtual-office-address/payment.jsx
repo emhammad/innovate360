@@ -9,7 +9,7 @@ const index = () => {
             <SEO pageTitle="virtual office Address - Payment" />
             <Payment />
         </Wrapper>
-    ); 
+    );
 };
 
 export default index;

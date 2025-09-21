@@ -23,13 +23,10 @@ export default function NIFSignupForm() {
   useEffect(() => {
     const authStatus = localStorage.getItem('isAuthenticated');
     const currentUser = localStorage.getItem('currentUser');
-    
+
     if (authStatus === 'true' && currentUser) {
-      const user = JSON.parse(currentUser);
-      // If user is already logged in and it's a NIF user, redirect to dashboard
-      if (user.service === 'nif') {
-        router.push('/main-dashboard');
-      }
+      // If user is already logged in, redirect to sucess
+      router.push('/nif-number/success');
     }
   }, [router]);
 
@@ -56,25 +53,23 @@ export default function NIFSignupForm() {
     setError('');
 
     try {
-      // Create a new NIF user object
+      // Create a new user object
       const newUser = {
         id: Date.now(), // Simple ID generation
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        service: 'nif', // Always nif for this signup page
-        role: 'NIF User',
+        role: 'Admin User',
         phone: formData.phone,
-        profileImage: '/assets/img/team/team-1.jpg' // Default NIF user image
+        profileImage: '/assets/img/team/team-1.jpg' // Default user image
       };
 
       // Store user data in localStorage
       localStorage.setItem('currentUser', JSON.stringify(newUser));
-      localStorage.setItem('selectedService', 'nif');
       localStorage.setItem('isAuthenticated', 'true');
-      
+
       // Navigate to main dashboard
-      router.push('/main-dashboard');
+      router.push('/nif-number/success');
     } catch (err) {
       setError('An error occurred during signup. Please try again.');
     } finally {
@@ -113,8 +108,8 @@ export default function NIFSignupForm() {
               <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
                 {/* Error Message */}
                 {error && (
-                  <div className="alert alert-danger" role="alert" style={{ 
-                    fontSize: '14px', 
+                  <div className="alert alert-danger" role="alert" style={{
+                    fontSize: '14px',
                     padding: '8px 12px',
                     borderRadius: '8px',
                     marginBottom: '16px'

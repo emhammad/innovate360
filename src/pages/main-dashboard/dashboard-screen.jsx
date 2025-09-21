@@ -5,69 +5,91 @@ import Image from "next/image";
 import SearchIcon from "@assets/img/icon/search-icon.svg";
 
 const data = [
+    // NIF Service Cases
     {
-        caseNumber: "CASE-001",
+        caseNumber: "NIF-001",
         caseName: "John Doe",
-        email: "john.doe@email.com",
-        approvalRequests: "Maxfter Inc, CodeNova, ByteCrafters..",
+        email: "john.doe@nif.com",
+        approvalRequests: "NIF Application, Tax Registration, Business License..",
         status: { text: "Pending", color: "text-danger", icon: <FaArrowDown size={12} /> },
         assignedTo: "Matthew Anderson",
+        service: "nif"
     },
     {
-        caseNumber: "CASE-002",
+        caseNumber: "NIF-002",
         caseName: "Sarah Wilson",
-        email: "sarah.wilson@email.com",
-        approvalRequests: "TechCorp, InnovateLab, DataFlow..",
+        email: "sarah.wilson@nif.com",
+        approvalRequests: "NIF Application, Tax Registration, Business License..",
         status: { text: "Invoice Paid", color: "text-success", icon: <FaArrowUp size={12} /> },
         assignedTo: "Jane Cooper",
+        service: "nif"
     },
     {
-        caseNumber: "CASE-003",
+        caseNumber: "NIF-003",
         caseName: "Michael Brown",
-        email: "michael.brown@email.com",
-        approvalRequests: "CloudTech, SecureNet, WebDev..",
-        status: { text: "Name Applied", color: "text-danger", icon: <FaArrowDown size={12} /> },
-        assignedTo: "Wade Warren",
-    },
-    {
-        caseNumber: "CASE-004",
-        caseName: "Emily Davis",
-        email: "emily.davis@email.com",
-        approvalRequests: "StartupHub, GrowthCo, ScaleUp..",
-        status: { text: "Invoice Paid", color: "text-success", icon: <FaArrowUp size={12} /> },
-        assignedTo: "Brooklyn Simmons",
-    },
-    {
-        caseNumber: "CASE-005",
-        caseName: "David Miller",
-        email: "david.miller@email.com",
-        approvalRequests: "FinancePro, MoneyFlow, InvestCo..",
+        email: "michael.brown@nif.com",
+        approvalRequests: "NIF Application, Tax Registration, Business License..",
         status: { text: "Case Closed", color: "text-success", icon: <FaArrowUp size={12} /> },
-        assignedTo: "Jenny Wilson",
+        assignedTo: "Wade Warren",
+        service: "nif"
+    },
+
+    // Company Service Cases
+    {
+        caseNumber: "COMP-001",
+        caseName: "Emily Davis",
+        email: "emily.davis@company.com",
+        approvalRequests: "Company Registration, Business Name, Articles of Incorporation..",
+        status: { text: "Name Applied", color: "text-danger", icon: <FaArrowDown size={12} /> },
+        assignedTo: "Brooklyn Simmons",
+        service: "company"
     },
     {
-        caseNumber: "CASE-006",
+        caseNumber: "COMP-002",
+        caseName: "David Miller",
+        email: "david.miller@company.com",
+        approvalRequests: "Company Registration, Business Name, Articles of Incorporation..",
+        status: { text: "Invoice Paid", color: "text-success", icon: <FaArrowUp size={12} /> },
+        assignedTo: "Jenny Wilson",
+        service: "company"
+    },
+    {
+        caseNumber: "COMP-003",
         caseName: "Lisa Garcia",
-        email: "lisa.garcia@email.com",
-        approvalRequests: "HealthTech, MedFlow, CareCo..",
+        email: "lisa.garcia@company.com",
+        approvalRequests: "Company Registration, Business Name, Articles of Incorporation..",
         status: { text: "Case Closed", color: "text-success", icon: <FaArrowUp size={12} /> },
         assignedTo: "Esther Howard",
+        service: "company"
     },
+
+    // Virtual Office Service Cases
     {
-        caseNumber: "CASE-007",
+        caseNumber: "VO-001",
         caseName: "Robert Johnson",
-        email: "robert.johnson@email.com",
-        approvalRequests: "EduTech, LearnFlow, StudyCo..",
-        status: { text: "Name Applied", color: "text-danger", icon: <FaArrowDown size={12} /> },
+        email: "robert.johnson@virtual.com",
+        approvalRequests: "Virtual Office Setup, Mail Forwarding, Business Address..",
+        status: { text: "Pending", color: "text-danger", icon: <FaArrowDown size={12} /> },
         assignedTo: "Leslie Alexander",
+        service: "virtual-office"
     },
     {
-        caseNumber: "CASE-008",
+        caseNumber: "VO-002",
         caseName: "Amanda Taylor",
-        email: "amanda.taylor@email.com",
-        approvalRequests: "RetailPro, ShopFlow, TradeCo..",
-        status: { text: "Case Closed", color: "text-success", icon: <FaArrowUp size={12} /> },
+        email: "amanda.taylor@virtual.com",
+        approvalRequests: "Virtual Office Setup, Mail Forwarding, Business Address..",
+        status: { text: "Invoice Paid", color: "text-success", icon: <FaArrowUp size={12} /> },
         assignedTo: "Guy Hawkins",
+        service: "virtual-office"
+    },
+    {
+        caseNumber: "VO-003",
+        caseName: "James Wilson",
+        email: "james.wilson@virtual.com",
+        approvalRequests: "Virtual Office Setup, Mail Forwarding, Business Address..",
+        status: { text: "Case Closed", color: "text-success", icon: <FaArrowUp size={12} /> },
+        assignedTo: "Alex Thompson",
+        service: "virtual-office"
     },
 ];
 

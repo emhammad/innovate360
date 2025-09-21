@@ -114,7 +114,7 @@ function PaymentSuccess({ onDone }) {
     localStorage.removeItem('virtualOfficeInvoiceStep');
     localStorage.removeItem('virtualOfficePaymentMethod');
     localStorage.removeItem('virtualOfficeFormData');
-    
+
     // Navigate to main dashboard
     router.push('/main-dashboard');
   };

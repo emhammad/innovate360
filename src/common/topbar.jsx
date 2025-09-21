@@ -26,7 +26,6 @@ const Topbar = () => {
    const handleLogout = () => {
       // Clear authentication data
       localStorage.removeItem('currentUser');
-      localStorage.removeItem('selectedService');
       localStorage.removeItem('isAuthenticated');
       // Update state
       setIsAuthenticated(false);
@@ -88,7 +87,7 @@ const Topbar = () => {
                                                 lineHeight: '1.2'
                                              }}
                                           >
-                                             {currentUser.service.toUpperCase()} Service
+                                             {currentUser.role || 'Admin User'}
                                           </div>
                                        </div>
                                     </div>

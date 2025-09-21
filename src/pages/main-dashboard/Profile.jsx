@@ -66,7 +66,7 @@ export default function Profile() {
                     <h5 style={{ fontWeight: '600', color: '#3D3D3D', fontSize: '24px' }}>Profile</h5>
                     {currentUser && (
                         <p style={{ color: '#6c757d', fontSize: '14px', margin: '5px 0 0 0' }}>
-                            {currentUser.role} • {currentUser.service.toUpperCase()} Service
+                            {currentUser.role || 'Admin User'}
                         </p>
                     )}
                 </div>

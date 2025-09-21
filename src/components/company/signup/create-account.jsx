@@ -26,11 +26,8 @@ export default function SignupForm() {
     const currentUser = localStorage.getItem('currentUser');
     
     if (authStatus === 'true' && currentUser) {
-      const user = JSON.parse(currentUser);
-      // If user is already logged in and it's a company user, redirect to dashboard
-      if (user.service === 'company') {
-        router.push('/main-dashboard');
-      }
+      // If user is already logged in, redirect to dashboard
+      router.push('/main-dashboard');
     }
   }, [router]);
 
@@ -57,21 +54,19 @@ export default function SignupForm() {
     setError('');
 
     try {
-      // Create a new company user object
+      // Create a new user object
       const newUser = {
         id: Date.now(), // Simple ID generation
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        service: 'company', // Always company for this signup page
-        role: 'Company User',
+        role: 'Admin User',
         phone: formData.phone,
-        profileImage: '/assets/img/team/team-2.jpg' // Default company user image
+        profileImage: '/assets/img/team/team-1.jpg' // Default user image
       };
 
       // Store user data in localStorage
       localStorage.setItem('currentUser', JSON.stringify(newUser));
-      localStorage.setItem('selectedService', 'company');
       localStorage.setItem('isAuthenticated', 'true');
       
       // Simulate successful submission

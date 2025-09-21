@@ -41,7 +41,6 @@ export default function Login() {
       if (user) {
         // Store user data in localStorage
         localStorage.setItem('currentUser', JSON.stringify(user));
-        localStorage.setItem('selectedService', user.service);
         localStorage.setItem('isAuthenticated', 'true');
 
         // Redirect to main dashboard
@@ -64,7 +63,7 @@ export default function Login() {
       <div className="d-flex justify-content-center align-items-center vh-100">
         <div className="card" style={{
           width: '580px',
-          height: '450px',
+          minHeight: '450px',
           borderRadius: '24px',
           paddingTop: '24px',
           paddingRight: '24px',

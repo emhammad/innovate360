@@ -168,7 +168,6 @@ export default function Home({ onStepChange, onPaymentFlowChange }) {
   return (
     <div className="container-fluid pb-4 pt-4">
       {activeStep === 1 && showPaymentFlow ? "" : <>
-        <h6 className="mb-4" style={{ fontSize: '24px', color: '#3D3D3D', fontWeight: '600' }}>Dashboard</h6>
 
         <HorizontalStepper
           steps={cardSteps}

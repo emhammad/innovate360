@@ -1,34 +1,13 @@
-// User data for different services
+// Single user who can access all services
 export const users = [
     {
         id: 1,
         name: 'John Doe',
-        email: 'john.doe@nif.com',
-        password: 'nif123',
-        service: 'nif',
-        role: 'NIF Service User',
+        email: 'admin@innovate360.com',
+        password: 'admin123',
+        role: 'Admin User',
         phone: '+1 234 567 8900',
         profileImage: '/assets/img/team/team-1.jpg'
-    },
-    {
-        id: 2,
-        name: 'Sarah Wilson',
-        email: 'sarah.wilson@company.com',
-        password: 'company123',
-        service: 'company',
-        role: 'Company Service User',
-        phone: '+1 234 567 8901',
-        profileImage: '/assets/img/team/team-2.jpg'
-    },
-    {
-        id: 3,
-        name: 'Mike Johnson',
-        email: 'mike.johnson@virtual.com',
-        password: 'virtual123',
-        service: 'virtual-office',
-        role: 'Virtual Office User',
-        phone: '+1 234 567 8902',
-        profileImage: '/assets/img/team/team-3.jpg'
     }
 ];
 
