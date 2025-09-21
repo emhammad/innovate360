@@ -91,7 +91,6 @@ export default function Home() {
   };
   return (
     <div className="container-fluid p-4">
-      <h3 className="mb-4" style={{ fontWeight: '600', color: '#333' }}> Dashboard</h3>
       <HorizontalStepper
         steps={cardSteps}
         activeStep={activeStep}

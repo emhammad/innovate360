@@ -23,9 +23,8 @@ export default function PaymentCard({ onNext, onBack }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (onNext) {
-      onNext(formData);
-    }
+    // Redirect to payment success page after card payment
+    window.location.href = '/company/payment-success';
   };
 
   const isFormValid = formData.email && formData.cardNumber && formData.expiryDate &&

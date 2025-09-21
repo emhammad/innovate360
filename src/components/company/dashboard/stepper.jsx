@@ -18,7 +18,6 @@ import UploadIdDetails from "../steps/UploadDetails";
 import MaritalStatus from "../steps/MaritalStatus";
 
 export default function CompanyNameStep({
-  shouldCheckUrlParams = false,
   initialStep = 0,
   initialCompletedSteps = [],
   onStepChange
@@ -27,7 +26,6 @@ export default function CompanyNameStep({
   const [activeStep, setActiveStep] = useState(initialStep);
   const [completedSteps, setCompletedSteps] = useState(initialCompletedSteps);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
 
   // Check authentication status on component mount
   useEffect(() => {
@@ -37,29 +35,14 @@ export default function CompanyNameStep({
 
     if (authStatus === 'true' && user) {
       setIsAuthenticated(true);
-      setCurrentUser(JSON.parse(user));
-      // If user is authenticated and no specific initial step is set, start at step 1
-      if (initialStep === 0) {
-        setActiveStep(1);
-      }
     }
-  }, [initialStep]);
-
-  // Update active step when authentication status changes
-  useEffect(() => {
-    if (isAuthenticated && activeStep === 0) {
-      setActiveStep(1);
-    }
-  }, [isAuthenticated, activeStep]);
+  }, []);
 
   // Update stepper state when initial props change
   useEffect(() => {
-    // Only update if not authenticated or if a specific step is provided
-    if (!isAuthenticated || initialStep !== 0) {
-      setActiveStep(initialStep);
-    }
+    setActiveStep(initialStep);
     setCompletedSteps(initialCompletedSteps);
-  }, [initialStep, initialCompletedSteps, isAuthenticated]);
+  }, [initialStep, initialCompletedSteps]);
 
   const steps = [
     { title: "Choose company name", descrip: "Provide at least 5 names" },
@@ -76,37 +59,7 @@ export default function CompanyNameStep({
   ];
 
   const handleStepClick = (index) => {
-    // If user is authenticated, don't allow going back to step 0 (company name selection)
-    if (isAuthenticated && index === 0) {
-      return;
-    }
-
-    // Only allow navigation to:
-    // 1. Current step (no change)
-    // 2. Completed steps (going back)
-    // 3. Next step if current step is completed
-    const isCurrentStep = index === activeStep;
-    const isCompletedStep = completedSteps.includes(index);
-    const isNextStep = index === activeStep + 1;
-    const isCurrentStepCompleted = completedSteps.includes(activeStep);
-
-    // Allow navigation if:
-    // - It's the current step
-    // - It's a completed step (going back)
-    // - It's the next step and current step is completed
-    const canNavigate = isCurrentStep || isCompletedStep || (isNextStep && isCurrentStepCompleted);
-
-    if (!canNavigate) {
-      return; // Don't allow navigation to unfilled future steps
-    }
-
-    if (index !== activeStep) {
-      setCompletedSteps((prev) =>
-        index > activeStep
-          ? [...new Set([...prev, activeStep])]
-          : prev.filter((step) => step !== activeStep)
-      );
-    }
+    // Allow navigation to any step
     setActiveStep(index);
 
     // Notify parent component about step change
@@ -132,7 +85,7 @@ export default function CompanyNameStep({
   const getStepComponent = () => {
     // If user is authenticated, adjust the step mapping since step 0 is hidden
     const stepIndex = isAuthenticated ? activeStep : activeStep;
-    
+
     switch (stepIndex) {
       case 0:
         return <ChooseCompanyName onNext={handleNextStep} />;
@@ -188,21 +141,10 @@ export default function CompanyNameStep({
           {/* Steps List */}
           <ul className="list-unstyled position-relative flex-grow-1" style={{ paddingLeft: '0' }}>
             {steps.map((step, index) => {
-              // Skip step 0 (company name) if user is authenticated
-              if (isAuthenticated && index === 0) {
-                return null;
-              }
 
               const isActive = index === activeStep;
               const isCompleted = completedSteps.includes(index);
               const isLast = index === steps.length - 1;
-
-              // Determine if this step is clickable
-              const isCurrentStep = index === activeStep;
-              const isCompletedStep = completedSteps.includes(index);
-              const isNextStep = index === activeStep + 1;
-              const isCurrentStepCompleted = completedSteps.includes(activeStep);
-              const isClickable = isCurrentStep || isCompletedStep || (isNextStep && isCurrentStepCompleted);
 
               return (
                 <li
@@ -211,8 +153,7 @@ export default function CompanyNameStep({
                   role="button"
                   onClick={() => handleStepClick(index)}
                   style={{
-                    cursor: isClickable ? "pointer" : "not-allowed",
-                    // opacity: isClickable ? 1 : 0.5
+                    cursor: "pointer"
                   }}
                 >
                   {/* Step Circle */}

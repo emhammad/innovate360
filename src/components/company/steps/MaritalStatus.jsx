@@ -1,8 +1,22 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function MaritalStatus({ onNext, onBack }) {
   const [status, setStatus] = useState("Married");
+
+  useEffect(() => {
+    // Load saved marital status from localStorage
+    const savedStatus = localStorage.getItem('maritalStatus');
+    if (savedStatus) {
+      setStatus(savedStatus);
+    }
+  }, []);
+
+  const handleStatusChange = (newStatus) => {
+    setStatus(newStatus);
+    // Save to localStorage whenever status changes
+    localStorage.setItem('maritalStatus', newStatus);
+  };
 
   return (
     <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '90vh' }}>
@@ -32,7 +46,7 @@ export default function MaritalStatus({ onNext, onBack }) {
                 name="maritalStatus"
                 value={option}
                 checked={status === option}
-                onChange={() => setStatus(option)}
+                onChange={() => handleStatusChange(option)}
                 className="form-check-input me-3"
                 style={{ cursor: "pointer" }}
               />
@@ -47,6 +61,8 @@ export default function MaritalStatus({ onNext, onBack }) {
           className="btn btn-success w-100 py-2 mb-3"
           style={{ borderRadius: "25px", marginTop: '80px' }}
           onClick={() => {
+            // Save marital status to localStorage
+            localStorage.setItem('maritalStatus', status);
             // Navigate to choose company type page
             window.location.href = '/company/choose-company-type';
           }}

@@ -17,9 +17,10 @@ const PaymentSuccessPage = () => {
   }, []);
 
   const handleNext = (data) => {
-    // Handle payment success completion - redirect to dashboard
+    // Handle payment success completion - redirect to Analytics tab
     console.log('Payment success data:', data);
-    // Redirect to dashboard
+    // Set Analytics tab in localStorage and redirect to company dashboard
+    localStorage.setItem('companyActiveTab', '2');
     window.location.href = '/company/dashboard';
   };
 

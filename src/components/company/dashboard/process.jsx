@@ -38,60 +38,48 @@ export default function CompanySetupPage() {
       setCurrentUser(JSON.parse(user));
     }
 
-    // Check URL parameters only once on component mount
-    const urlParams = new URLSearchParams(window.location.search);
-    const stepParam = urlParams.get('step');
-    const tabParam = urlParams.get('tab');
-
-    // Set initial tab based on URL parameters
-    if (tabParam) {
-      const tabIndex = parseInt(tabParam);
+    // Set initial tab from localStorage or default to 0
+    const savedTab = localStorage.getItem('companyActiveTab');
+    if (savedTab) {
+      const tabIndex = parseInt(savedTab);
       if (tabIndex >= 0 && tabIndex <= 2) {
         setactiveTab(tabIndex);
       }
-    } else if (stepParam) {
-      // If there's a step parameter but no tab parameter, assume tab=0 (stepper)
-      setactiveTab(0);
     } else {
-      // If no parameters, set to stepper tab
       setactiveTab(0);
     }
 
-    // Handle step parameter or set default based on authentication
-    if (stepParam) {
-      // Set the step from URL parameter
-      const stepNumber = parseInt(stepParam);
+    // Set initial step from localStorage or default based on authentication
+    const savedStep = localStorage.getItem('companyActiveStep');
+    const savedCompletedSteps = localStorage.getItem('companyCompletedSteps');
+
+    if (savedStep) {
+      const stepNumber = parseInt(savedStep);
       setInitialStep(stepNumber);
 
-      // Mark all previous steps as completed
-      const completedStepsArray = [];
-      for (let i = 0; i < stepNumber; i++) {
-        completedStepsArray.push(i);
+      if (savedCompletedSteps) {
+        setInitialCompletedSteps(JSON.parse(savedCompletedSteps));
+      } else {
+        // Mark all previous steps as completed
+        const completedStepsArray = [];
+        for (let i = 0; i < stepNumber; i++) {
+          completedStepsArray.push(i);
+        }
+        setInitialCompletedSteps(completedStepsArray);
       }
-      setInitialCompletedSteps(completedStepsArray);
     } else if (isAuthenticated) {
-      // If user is authenticated and no step parameter, go to step 1
+      // If user is authenticated and no saved step, go to step 1
       setInitialStep(1);
       setInitialCompletedSteps([0]);
-
-      // Update URL to reflect this
-      const url = new URL(window.location);
-      url.searchParams.set('tab', '0');
-      url.searchParams.set('step', '1');
-      window.history.replaceState({}, '', url);
     }
   }, []);
   const handleNavClick = (index) => {
     // Allow all tabs: Stepper (0), Transactions (1), Analytics (2), Chat (3), Company Name (4)
     if (index >= 0 && index <= 4) {
       setactiveTab(index);
+      // Save active tab to localStorage
+      localStorage.setItem('companyActiveTab', index.toString());
     }
-
-    // Update URL parameters based on the selected tab
-    const url = new URL(window.location);
-
-    // Always set the tab parameter
-    url.searchParams.set('tab', index.toString());
 
     if (index === 0) {
       // For stepper tab, check if user is authenticated
@@ -99,32 +87,25 @@ export default function CompanySetupPage() {
       const user = localStorage.getItem('currentUser');
       const isAuthenticated = authStatus === 'true' && user;
 
-      if (!url.searchParams.has('step')) {
-        // If no step parameter, set based on authentication status
-        if (isAuthenticated) {
-          url.searchParams.set('step', '1');
-          // Update initial state for authenticated users
-          setInitialStep(1);
-          setInitialCompletedSteps([0]);
-        } else {
-          url.searchParams.set('step', '0');
-        }
+      // Set step based on authentication status
+      if (isAuthenticated) {
+        setInitialStep(1);
+        setInitialCompletedSteps([0]);
+        localStorage.setItem('companyActiveStep', '1');
+        localStorage.setItem('companyCompletedSteps', JSON.stringify([0]));
+      } else {
+        setInitialStep(0);
+        setInitialCompletedSteps([]);
+        localStorage.setItem('companyActiveStep', '0');
+        localStorage.setItem('companyCompletedSteps', JSON.stringify([]));
       }
-    } else {
-      // For other tabs, remove step parameter
-      url.searchParams.delete('step');
     }
-
-    // Update the URL without causing a page reload
-    window.history.pushState({}, '', url);
   };
 
   const handleStepChange = (step, completedSteps) => {
-    // Update URL parameters when stepper step changes
-    const url = new URL(window.location);
-    url.searchParams.set('step', step.toString());
-    url.searchParams.set('tab', '0'); // Ensure tab=0 is always present for stepper
-    window.history.pushState({}, '', url);
+    // Save step and completed steps to localStorage
+    localStorage.setItem('companyActiveStep', step.toString());
+    localStorage.setItem('companyCompletedSteps', JSON.stringify(completedSteps));
   };
 
   const getTabComponent = () => {
@@ -133,21 +114,12 @@ export default function CompanySetupPage() {
         return <Stepper
           initialStep={initialStep}
           initialCompletedSteps={initialCompletedSteps}
-          shouldCheckUrlParams={activeTab === 0}
           onStepChange={handleStepChange}
-          isAuthenticated={isAuthenticated}
-          currentUser={currentUser}
         />;
-      case 1:
-        return <Transactions />;
       case 2:
         return <AnalyticDashboard />;
-      case 3:
-        return <ChatBox />;
-      // case 4:
-      //   return <MainDashboard />;
       default:
-        return <div className="text-muted">Coming soon...</div>;
+        return <AnalyticDashboard />;
     }
   };
   return (
@@ -186,25 +158,7 @@ export default function CompanySetupPage() {
                   height={activeTab ? '25px' : '35px'}
                 />
               </div>
-              <div
-                className="d-flex align-items-center justify-content-center mb-4"
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "25px",
-                  backgroundColor: activeTab === 1 ? "#EDFF8B" : "transparent",
-                  cursor: "pointer"
-                }}
-                role="button"
-                onClick={() => handleNavClick(1)}
-              >
-                <Image
-                  src={activeTab === 1 ? CardIconActive : CardIcon}
-                  alt="Card"
-                  width={activeTab ? '25px' : '35px'}
-                  height={activeTab ? '25px' : '35px'}
-                />
-              </div>
+
               <div
                 className="d-flex align-items-center justify-content-center mb-4"
                 style={{
@@ -224,48 +178,35 @@ export default function CompanySetupPage() {
                   height={activeTab ? '25px' : '35px'}
                 />
               </div>
-              <div
-                className="d-flex align-items-center justify-content-center mb-4"
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "25px",
-                  backgroundColor: activeTab === 3 ? "#EDFF8B" : "transparent",
-                  cursor: "pointer"
-                }}
-                role="button"
-                onClick={() => handleNavClick(3)}
-              >
-                <Image
-                  src={activeTab === 3 ? ChatIconActive : ChatIcon}
-                  alt="Chat"
-                  width={activeTab ? '25px' : '35px'}
-                  height={activeTab ? '25px' : '35px'}
-                />
-              </div>
-              <div
-                className="d-flex align-items-center justify-content-center"
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "25px",
-                  backgroundColor: activeTab === 4 ? "#EDFF8B" : "transparent",
-                  cursor: "pointer"
-                }}
-                role="button"
-                onClick={() => handleNavClick(4)}
-              >
-                <Image
-                  src={activeTab === 4 ? DashboardIconActive : DashboardIcon}
-                  alt="Main Dashboard"
-                  width={activeTab ? '25px' : '35px'}
-                  height={activeTab ? '25px' : '35px'}
-                />
-              </div>
+
             </div>
           )}
           <div className="flex-grow-1">
             <div className="container-fluid p-0">
+              {/* Back to Main Dashboard Button - Only show when authenticated */}
+              {isAuthenticated && (
+                <div className="d-flex align-items-center mb-3" style={{ padding: '20px 0 0 20px' }}>
+                  <button
+                    onClick={() => window.location.href = '/main-dashboard'}
+                    style={{
+                      backgroundColor: 'transparent',
+                      color: '#007C36',
+                      borderRadius: '20px',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                    }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    Back to Main Dashboard
+                  </button>
+                </div>
+              )}
               {getTabComponent()}
             </div>
           </div>

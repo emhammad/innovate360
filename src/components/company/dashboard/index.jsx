@@ -9,7 +9,7 @@ const HomeTwo = () => {
         // Check authentication status on component mount
         const authStatus = localStorage.getItem('isAuthenticated');
         const token = localStorage.getItem('authToken');
-        
+
         if (authStatus === 'true' && token) {
             setIsAuthenticated(true);
         }
@@ -19,7 +19,7 @@ const HomeTwo = () => {
         <>
             {isAuthenticated && <Topbar />}
             <main>
-              <Process/>
+                <Process />
             </main>
 
         </>

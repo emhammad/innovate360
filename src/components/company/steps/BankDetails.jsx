@@ -10,9 +10,8 @@ export default function BankDetails({ onNext, onBack }) {
     };
 
     const handleNext = () => {
-        if (onNext) {
-            onNext("bank-payment");
-        }
+        // Redirect to payment success page after bank payment
+        window.location.href = '/company/payment-success';
     };
 
     return (
@@ -213,9 +212,9 @@ export default function BankDetails({ onNext, onBack }) {
                                 <span style={{ fontSize: '16px', color: '#3D3D3D', fontWeight: '500' }}>
                                     Promo Discount
                                 </span>
-                                <div style={{ 
-                                    flex: 1, 
-                                    height: '1px', 
+                                <div style={{
+                                    flex: 1,
+                                    height: '1px',
                                     background: 'repeating-linear-gradient(to right, #3D3D3D 0px, #3D3D3D 4px, transparent 4px, transparent 8px)',
                                     margin: '0 10px'
                                 }}></div>
@@ -229,9 +228,9 @@ export default function BankDetails({ onNext, onBack }) {
                                 <span style={{ fontSize: '16px', color: '#3D3D3D', fontWeight: '500' }}>
                                     Total After Discount
                                 </span>
-                                <div style={{ 
-                                    flex: 1, 
-                                    height: '1px', 
+                                <div style={{
+                                    flex: 1,
+                                    height: '1px',
                                     background: 'repeating-linear-gradient(to right, #3D3D3D 0px, #3D3D3D 4px, transparent 4px, transparent 8px)',
                                     margin: '0 10px'
                                 }}></div>

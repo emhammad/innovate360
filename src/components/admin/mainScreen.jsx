@@ -22,9 +22,8 @@ const HomeTwo = () => {
     }, []);
 
     const handleLogout = () => {
-        // Clear authentication data
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('isAuthenticated');
+        // Clear all localStorage data
+        localStorage.clear();
         // Update state
         setIsAuthenticated(false);
         // Redirect to login page

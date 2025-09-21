@@ -17,10 +17,10 @@ const PaymentCardPage = () => {
   }, []);
 
   const handleNext = (paymentData) => {
-    // Handle payment data - you can redirect to payment gateway or next step
+    // Handle payment data - redirect to payment success
     console.log('Payment data:', paymentData);
-    // For now, redirect to dashboard
-    window.location.href = '/company/dashboard';
+    // Redirect to payment success page
+    window.location.href = '/company/payment-success';
   };
 
   const handleBack = () => {

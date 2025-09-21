@@ -17,10 +17,10 @@ const BankDetailsPage = () => {
   }, []);
 
   const handleNext = (data) => {
-    // Handle bank payment completion - you can redirect to next step or dashboard
+    // Handle bank payment completion - redirect to payment success
     console.log('Bank payment data:', data);
-    // For now, redirect to dashboard
-    window.location.href = '/company/dashboard';
+    // Redirect to payment success page
+    window.location.href = '/company/payment-success';
   };
 
   const handleBack = () => {

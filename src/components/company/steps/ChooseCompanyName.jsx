@@ -1,18 +1,63 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function ChooseCompanyName() {
+export default function ChooseCompanyName({ onNext }) {
   const [names, setNames] = useState(['', '', '', '', '']);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // Check authentication status
+    const authStatus = localStorage.getItem('isAuthenticated');
+    const user = localStorage.getItem('currentUser');
+    
+    if (authStatus === 'true' && user) {
+      setIsAuthenticated(true);
+    }
+
+    // Load saved company names from localStorage
+    const savedNames = localStorage.getItem('companyNames');
+    if (savedNames) {
+      try {
+        const parsedNames = JSON.parse(savedNames);
+        // Ensure we have at least 5 empty strings if saved data is shorter
+        const paddedNames = [...parsedNames];
+        while (paddedNames.length < 5) {
+          paddedNames.push('');
+        }
+        setNames(paddedNames);
+      } catch (error) {
+        console.error('Error parsing saved company names:', error);
+      }
+    }
+  }, []);
 
   const updateName = (index, value) => {
     const updated = [...names];
     updated[index] = value;
     setNames(updated);
+    
+    // Save to localStorage whenever names change
+    localStorage.setItem('companyNames', JSON.stringify(updated));
   };
 
-  const addMore = () => setNames([...names, '']);
+  const addMore = () => {
+    const updated = [...names, ''];
+    setNames(updated);
+    // Save to localStorage when adding more names
+    localStorage.setItem('companyNames', JSON.stringify(updated));
+  };
 
   // Check if all 5 fields are filled
   const isAllFieldsFilled = names.slice(0, 5).every(name => name.trim() !== '');
+
+  const handleNext = () => {
+    if (isAuthenticated && onNext) {
+      // If user is authenticated, use stepper navigation
+      onNext();
+    } else {
+      // If user is not authenticated, redirect to signup
+      window.location.href = '/company/signup';
+    }
+  };
 
   return (
     <div className='w-100'>
@@ -104,7 +149,7 @@ export default function ChooseCompanyName() {
             }}
             onClick={(e) => {
               e.preventDefault();
-              window.location.href = '/company/signup';
+              handleNext();
             }}
             disabled={!isAllFieldsFilled}
           >

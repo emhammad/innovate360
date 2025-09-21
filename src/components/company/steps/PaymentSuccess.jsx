@@ -3,15 +3,15 @@ import Image from "next/image";
 
 export default function PaymentSuccess({ onNext, onBack }) {
   const handleDone = () => {
-    if (onNext) {
-      onNext("payment-successful");
-    }
+    // Set Analytics tab in localStorage and redirect to company dashboard
+    localStorage.setItem('companyActiveTab', '2');
+    window.location.href = '/company/dashboard';
   };
 
   return (
     <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh', backgroundColor: 'white' }}>
       <div className="text-center" style={{ padding: '40px' }}>
-        
+
         {/* Payment Success Icon */}
         <div className="mb-4">
           <Image

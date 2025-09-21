@@ -63,7 +63,34 @@ export default function CompanyDocuments() {
               className="mb-4"
             />
             <h5 className="mb-2" style={{ color: '#3D3D3D', fontWeight: '600' }}>Great! Your company is successfully registered</h5>
-            <p className="small" style={{ color: '#3D3D3D' }}>This case is closed</p>
+            <p className="small mb-4" style={{ color: '#3D3D3D' }}>This case is closed</p>
+
+            {/* Go to Main Dashboard Button */}
+            <button
+              onClick={() => window.location.href = '/main-dashboard'}
+              style={{
+                backgroundColor: '#007C36',
+                color: 'white',
+                borderRadius: '25px',
+                fontSize: '16px',
+                fontWeight: '600',
+                padding: '8px 32px',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = '#005a2a';
+                e.target.style.transform = 'translateY(-1px)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = '#007C36';
+                e.target.style.transform = 'translateY(0)';
+              }}
+            >
+              Go to Main Dashboard
+            </button>
           </div>
         )}
 

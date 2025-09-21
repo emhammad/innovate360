@@ -24,9 +24,8 @@ const Topbar = () => {
    }, []);
 
    const handleLogout = () => {
-      // Clear authentication data
-      localStorage.removeItem('currentUser');
-      localStorage.removeItem('isAuthenticated');
+      // Clear all localStorage data
+      localStorage.clear();
       // Update state
       setIsAuthenticated(false);
       setCurrentUser(null);

@@ -80,7 +80,7 @@ export default function SignupForm() {
 
   const handleContinue = () => {
     // Redirect to main dashboard
-    router.push('/main-dashboard');
+    router.push('/company/dashboard');
   };
 
   const togglePasswordVisibility = () => {
