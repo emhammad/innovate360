@@ -79,8 +79,8 @@ const Content = () => {
             // For Company service, redirect to company dashboard
             window.location.href = '/company/dashboard';
         } else if (selectedCase.service === "virtual-office") {
-            // For Virtual Office service, show virtual office dashboard
-            setSetp("viewCase");
+            // For Virtual Office service, do nothing (no action)
+            return;
         }
     };
 
