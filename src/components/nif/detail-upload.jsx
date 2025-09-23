@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { FaUpload, FaFileAlt, FaMinus } from 'react-icons/fa';
 import { useRouter } from 'next/router';
+import UploadImage from "@assets/img/icon/upload-icon.png";
+import Image from 'next/image';
 
 export default function NIFUploadAndPreview() {
   const [passport, setPassport] = useState(null);
@@ -44,7 +46,7 @@ export default function NIFUploadAndPreview() {
   };
 
   return (
-    <div className="py-5 d-flex justify-content-center align-items-center flex-column" style={{ minHeight: '90vh', backgroundColor: '#fcfcfc' }}>
+    <div className="d-flex justify-content-center align-items-center flex-column" style={{ minHeight: '90vh', backgroundColor: '#fcfcfc' }}>
       <div className="container">
         {/* Header */}
         <div className="text-center mb-4">
@@ -55,126 +57,126 @@ export default function NIFUploadAndPreview() {
         </div>
 
         {/* UPLOAD STEP */}
-        <div className="row justify-content-center mb-4">
-            {/* Passport / Utility Bill */}
-            <div className="col-md-10 d-flex align-items-center justify-content-between mb-4">
-              <div className="col-5" style={{ color: '#007C36', fontWeight: '400', fontSize: '18px' }}>
-                1. Passport / EU Identification Card
-              </div>
-              <div className="col-6 bg-white">
-                {!passport ? (
-                  <label
-                    className="w-100 border rounded-3 p-4 py-3 text-center text-muted"
-                    style={{ borderStyle: 'dashed', cursor: 'pointer' }}
-                  >
-                    <FaUpload className="mb-2 fs-4" />
-                    <br />
-                    Click to upload or drag and drop
-                    <br />
-                    <small>SVG, PNG, JPG or GIF (max. 800×400px)</small>
-                    <input
-                      type="file"
-                      accept="image/*,.pdf"
-                      className="d-none"
-                      onChange={handlePassportUpload}
-                    />
-                  </label>
-                ) : (
-                  <div className="border rounded d-flex align-items-center justify-content-between px-3 py-2 bg-white">
-                    <div className="d-flex align-items-center gap-2">
-                      <FaFileAlt className="text-muted" />
-                      <div>
-                        <div>{passport.name}</div>
-                        <div className="text-muted" style={{ fontSize: '0.8rem' }}>
-                          {Math.round(passport.size / 1024)} KB
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => removeFile('passport')}
-                      className="remove-file btn btn-link text-decoration-none text-muted p-0 bg-white"
-                      aria-label="Remove file"
-                      style={{ width: '30px' }}
-                    >
-                      <FaMinus />
-                    </button>
-                  </div>
-                )}
-              </div>
+        <div className="row justify-content-center">
+          {/* Passport / Utility Bill */}
+          <div className="col-md-10 d-flex align-items-center justify-content-between mb-4">
+            <div className="col-5" style={{ color: '#007C36', fontWeight: '400', fontSize: '18px' }}>
+              1. Passport / EU Identification Card
             </div>
-
-            {/* Proof of Address */}
-            <div className="col-md-10 d-flex align-items-center justify-content-between mb-4">
-              <div className="col-5" style={{ color: '#007C36', fontWeight: '400', fontSize: '18px' }}>
-                2. Proof of Address (Utility Bill or Bank Statement)
-              </div>
-              <div className="col-6 bg-white">
-                {!proof ? (
-                  <label
-                    className="w-100 border rounded-3 p-4 py-3 text-center text-muted"
-                    style={{ borderStyle: 'dashed', cursor: 'pointer' }}
-                  >
-                    <FaUpload className="mb-2 fs-4" />
-                    <br />
-                    Click to upload or drag and drop
-                    <br />
-                    <small>SVG, PNG, JPG or GIF (max. 800×400px)</small>
-                    <input
-                      type="file"
-                      accept="image/*,.pdf"
-                      className="d-none"
-                      onChange={handleProofUpload}
-                    />
-                  </label>
-                ) : (
-                  <div className="border rounded d-flex align-items-center justify-content-between px-3 py-2 bg-white">
-                    <div className="d-flex align-items-center gap-2">
-                      <FaFileAlt className="text-muted" />
-                      <div>
-                        <div>{proof.name}</div>
-                        <div className="text-muted" style={{ fontSize: '0.8rem' }}>
-                          {Math.round(proof.size / 1024)} KB
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => removeFile('proof')}
-                      className="remove-file btn btn-link text-decoration-none text-muted p-0 bg-white"
-                      aria-label="Remove file"
-                      style={{ width: '30px' }}
-                    >
-                      <FaMinus />
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Submit button */}
-            <div className="row justify-content-center mt-4">
-              <div className="col-md-5 text-center">
-                <button
-                  disabled={!passport || !proof}
-                  className="btn w-100 mb-2"
-                  onClick={handleSubmit}
-                  style={{
-                    borderRadius: '20px',
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    backgroundColor: !passport || !proof ? "#1D1B201F" : '#007C36',
-                    color: '#fff',
-                    border: 'none',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                  }}
+            <div className="col-6 bg-white">
+              {!passport ? (
+                <label
+                  className="w-100 border rounded-3 p-4 py-3 text-center text-muted"
+                  style={{ borderStyle: 'dashed', cursor: 'pointer' }}
                 >
-                  Submit
-                </button>
-                <a href="#" className="text-success text-decoration-none fw-semibold">
-                  Go Back
-                </a>
-              </div>
+                  <Image src={UploadImage} alt="Upload" className="mb-2 fs-4" />
+                  <br />
+                  <strong>Click to upload</strong> or drag and drop
+                  <br />
+                  <small>SVG, PNG, JPG or GIF (max. 800×400px)</small>
+                  <input
+                    type="file"
+                    accept="image/*,.pdf"
+                    className="d-none"
+                    onChange={handlePassportUpload}
+                  />
+                </label>
+              ) : (
+                <div className="border rounded-3 d-flex align-items-center justify-content-between px-3 py-2 bg-white">
+                  <div className="d-flex align-items-center gap-2">
+                    <FaFileAlt className="text-muted" />
+                    <div>
+                      <div>{passport.name}</div>
+                      <div className="text-muted" style={{ fontSize: '0.8rem' }}>
+                        {Math.round(passport.size / 1024)} KB
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => removeFile('passport')}
+                    className="remove-file btn btn-link text-decoration-none text-muted p-0 bg-white"
+                    aria-label="Remove file"
+                    style={{ width: '30px' }}
+                  >
+                    <FaMinus style={{ marginBottom: '2px' }} />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
+
+          {/* Proof of Address */}
+          <div className="col-md-10 d-flex align-items-center justify-content-between mb-4">
+            <div className="col-5" style={{ color: '#007C36', fontWeight: '400', fontSize: '18px' }}>
+              2. Proof of Address (Utility Bill or Bank Statement)
+            </div>
+            <div className="col-6 bg-white">
+              {!proof ? (
+                <label
+                  className="w-100 border rounded-3 p-4 py-3 text-center text-muted"
+                  style={{ borderStyle: 'dashed', cursor: 'pointer' }}
+                >
+                  <Image src={UploadImage} alt="Upload" className="mb-2 fs-4" />
+                  <br />
+                  <strong>Click to upload</strong> or drag and drop
+                  <br />
+                  <small>SVG, PNG, JPG or GIF (max. 800×400px)</small>
+                  <input
+                    type="file"
+                    accept="image/*,.pdf"
+                    className="d-none"
+                    onChange={handleProofUpload}
+                  />
+                </label>
+              ) : (
+                <div className="border rounded d-flex align-items-center justify-content-between px-3 py-2 bg-white">
+                  <div className="d-flex align-items-center gap-2">
+                    <FaFileAlt className="text-muted" />
+                    <div>
+                      <div>{proof.name}</div>
+                      <div className="text-muted" style={{ fontSize: '0.8rem' }}>
+                        {Math.round(proof.size / 1024)} KB
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => removeFile('proof')}
+                    className="remove-file btn btn-link text-decoration-none text-muted p-0 bg-white"
+                    aria-label="Remove file"
+                    style={{ width: '30px' }}
+                  >
+                    <FaMinus style={{ marginBottom: '2px' }} />
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Submit button */}
+          <div className="row justify-content-center mt-4">
+            <div className="col-md-5 text-center">
+              <button
+                disabled={!passport || !proof}
+                className="btn w-100 mb-2"
+                onClick={handleSubmit}
+                style={{
+                  borderRadius: '20px',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  backgroundColor: !passport || !proof ? "#1D1B201F" : '#007C36',
+                  color: '#fff',
+                  border: 'none',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                }}
+              >
+                Submit
+              </button>
+              <a href="/" className="text-success text-decoration-none fw-semibold">
+                Go Back
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

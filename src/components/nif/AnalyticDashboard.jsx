@@ -155,7 +155,7 @@ export default function Home({ onStepChange, onPaymentFlowChange }) {
   // Show loading state until hydrated
   if (!isHydrated) {
     return (
-      <div className="container-fluid pb-4 pt-4">
+      <div className="container-fluid pb-4 pt-2">
         <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '200px' }}>
           <div className="spinner-border text-success" role="status">
             <span className="visually-hidden">Loading...</span>
@@ -166,7 +166,7 @@ export default function Home({ onStepChange, onPaymentFlowChange }) {
   }
 
   return (
-    <div className="container-fluid pb-4 pt-4">
+    <div className="pt-2">
       {activeStep === 1 && showPaymentFlow ? "" : <>
 
         <HorizontalStepper

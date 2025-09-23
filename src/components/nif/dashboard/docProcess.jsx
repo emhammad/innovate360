@@ -32,8 +32,8 @@ export default function Documents() {
       {step === "list" && (
         <>
           {status === "none" && (
-            <div className="rounded-4 text-center p-5" style={{ backgroundColor: '#007C360D' }}>
-              <Image src={FilePreview} alt="No documents" width={200} height={150} className="mb-4" />
+            <div className="rounded-4 text-center p-4" style={{ backgroundColor: '#007C360D' }}>
+              <Image src={FilePreview} alt="No documents" width={200} height={150} className="mb-2" />
               <h6 className="mb-2" style={{ fontSize: '18px', color: '#3D3D3D', fontWeight: '600' }}>No documents uploaded</h6>
               <p style={{ fontSize: '14px', color: '#3D3D3D', fontWeight: '400' }}>Kindly wait till your documents are uploaded.</p>
             </div>

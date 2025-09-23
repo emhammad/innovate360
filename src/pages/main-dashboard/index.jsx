@@ -27,6 +27,7 @@ export default function MainDashboardPage() {
     const router = useRouter();
     const [activeTab, setactiveTab] = useState(1); // Set Dashboard as default
     const [showNifSubmenu, setShowNifSubmenu] = useState(false);
+    const [isInInvoiceFlow, setIsInInvoiceFlow] = useState(false);
 
     useEffect(() => {
         // Check if user is authenticated
@@ -53,7 +54,7 @@ export default function MainDashboardPage() {
     const getTabComponent = () => {
         switch (activeTab) {
             case 1:
-                return showNifSubmenu ? <NifDashboard /> : <MainDashboard />;
+                return showNifSubmenu ? <NifDashboard onPaymentFlowChange={setIsInInvoiceFlow} /> : <MainDashboard />;
             case 2:
                 return <Transactions />;
             case 3:
@@ -71,8 +72,8 @@ export default function MainDashboardPage() {
             <Head>
                 <title>Innovate360</title>
             </Head>
-            <Topbar />
             <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>
+            <Topbar />
 
 
                 <div className="d-flex flex-grow-1">
@@ -178,9 +179,9 @@ export default function MainDashboardPage() {
                     </div>
                     <div className="flex-grow-1">
                         <div className="container-fluid">
-                            {/* Back Button - Only show when NIF submenu is active */}
-                            {showNifSubmenu && (
-                                <div className="d-flex align-items-center mb-3" style={{ padding: '20px 0 0 20px' }}>
+                            {/* Back Button - Only show when NIF submenu is active and not in invoice flow */}
+                            {showNifSubmenu && !isInInvoiceFlow && (
+                                <div className="d-flex align-items-center" style={{ padding: '10px 0 0 0px' }}>
                                     <button
                                         onClick={() => setShowNifSubmenu(false)}
                                         style={{

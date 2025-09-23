@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 const StatusCards = ({ panel, cardSteps, activeStep, completedSteps, handleStepClick, handleCheckboxChange, isStepAccessible = () => true }) => {
   return (
-    <div className="d-flex flex-wrap justify-content-center gap-3 my-5">
+    <div className="d-flex flex-wrap justify-content-center gap-3 my-3">
       {cardSteps.map((step, idx) => (
         <div
           key={idx}

@@ -5,7 +5,6 @@ import Image from 'next/image';
 import logo_img from "@assets/img/logo/innovate360.png";
 import WalletImage from "@assets/img/icon/payment-success.png";
 import InvoicePreview from '../../admin/dashboard/InvoicePreview';
-import { IoIosArrowBack } from "react-icons/io";
 
 import {
   FaDownload
@@ -20,16 +19,16 @@ export default function InvoiceFlow({ onBackToStep0, onNextToStep2, onBackToSumm
   // Handle hydration and localStorage initialization
   useEffect(() => {
     setIsHydrated(true);
-    
+
     // Initialize from localStorage after hydration
     if (typeof window !== 'undefined') {
       const savedStep = localStorage.getItem('invoiceFlowStep');
       const savedMethod = localStorage.getItem('invoiceFlowPaymentMethod');
-      
+
       if (savedStep) {
         setStep(parseInt(savedStep, 10));
       }
-      
+
       if (savedMethod) {
         setPaymentMethod(savedMethod);
       }
@@ -136,7 +135,7 @@ function PaymentSuccess({ onDone, onNextStep }) {
 }
 function PaymentHistory() {
   return (
-    <div className="bg-light rounded p-4 mt-4">
+    <div className="bg-light rounded p-4">
       <h5 className="fw-bold mb-3">Payment History</h5>
       <div className="table-responsive">
         <table className="table table-borderless align-middle">
@@ -335,8 +334,8 @@ function BankDetails({ onBack, onNext }) {
   };
 
   return (
-    <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
-      <div className="container" style={{ maxWidth: '600px', marginTop: '30px', marginBottom: '50px' }}>
+    <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '90vh' }}>
+      <div className="container" style={{ maxWidth: '600px' }}>
 
         {/* Bank Details Section */}
         <div className="mb-4">
@@ -508,19 +507,120 @@ function CardPayment({ onBack, onSuccess }) {
     fullName: "",
     country: ""
   });
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
+    // Clear field error when user starts typing
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+    
+    // Add validation for card number to limit digits
+    if (name === 'cardNumber') {
+      // Remove all non-digit characters and limit to 16 digits
+      const digitsOnly = value.replace(/\D/g, '');
+      if (digitsOnly.length <= 16) {
+        // Format with spaces every 4 digits
+        const formatted = digitsOnly.replace(/(\d{4})(?=\d)/g, '$1 ');
+        setFormData(prev => ({
+          ...prev,
+          [name]: formatted
+        }));
+      }
+      return;
+    }
+    
+    // Add validation for CVV to limit to 3-4 digits
+    if (name === 'cvv') {
+      const digitsOnly = value.replace(/\D/g, '');
+      if (digitsOnly.length <= 4) {
+        setFormData(prev => ({
+          ...prev,
+          [name]: digitsOnly
+        }));
+      }
+      return;
+    }
+    
+    // Add validation for expiry date (MM/YY format)
+    if (name === 'expiryDate') {
+      const digitsOnly = value.replace(/\D/g, '');
+      if (digitsOnly.length <= 4) {
+        let formatted = digitsOnly;
+        if (digitsOnly.length >= 2) {
+          formatted = digitsOnly.substring(0, 2) + '/' + digitsOnly.substring(2, 4);
+        }
+        setFormData(prev => ({
+          ...prev,
+          [name]: formatted
+        }));
+      }
+      return;
+    }
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
   };
 
+  const validateForm = () => {
+    const errors = {};
+    
+    // Validate email
+    if (!formData.email) {
+      errors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = 'Please enter a valid email address';
+    }
+    
+    // Validate card number (must be exactly 16 digits)
+    const cardDigits = formData.cardNumber.replace(/\D/g, '');
+    if (!formData.cardNumber) {
+      errors.cardNumber = 'Card number is required';
+    } else if (cardDigits.length !== 16) {
+      errors.cardNumber = 'Card number must be 16 digits';
+    }
+    
+    // Validate expiry date (MM/YY format)
+    if (!formData.expiryDate) {
+      errors.expiryDate = 'Expiry date is required';
+    } else if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(formData.expiryDate)) {
+      errors.expiryDate = 'Please enter valid expiry date (MM/YY)';
+    }
+    
+    // Validate CVV (3-4 digits)
+    if (!formData.cvv) {
+      errors.cvv = 'CVV is required';
+    } else if (!/^\d{3,4}$/.test(formData.cvv)) {
+      errors.cvv = 'CVV must be 3-4 digits';
+    }
+    
+    // Validate full name
+    if (!formData.fullName.trim()) {
+      errors.fullName = 'Full name is required';
+    }
+    
+    // Validate country
+    if (!formData.country) {
+      errors.country = 'Country is required';
+    }
+    
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (onSuccess) {
-      onSuccess(formData);
+    if (validateForm()) {
+      if (onSuccess) {
+        onSuccess(formData);
+      }
     }
   };
 
@@ -528,13 +628,13 @@ function CardPayment({ onBack, onSuccess }) {
     formData.cvv && formData.fullName && formData.country;
 
   return (
-    <div className="d-flex flex-column flex-lg-row" style={{ minHeight: '100vh' }}>
+    <div className="d-flex flex-column flex-lg-row" style={{ minHeight: '90vh' }}>
       {/* Left Section - Logo and Price */}
       <div
         className="d-flex flex-column justify-content-start align-items-start col-12 col-lg-5 px-3 px-lg-5"
         style={{
           backgroundColor: 'white',
-          paddingTop: '80px',
+          paddingTop: '60px',
           paddingLeft: '60px',
         }}
       >
@@ -584,10 +684,10 @@ function CardPayment({ onBack, onSuccess }) {
 
       {/* Right Section - Payment Form */}
       <div
-        className="d-flex flex-column justify-content-center col-12 col-lg-6 px-3 px-lg-5"
+        className="d-flex flex-column justify-content-start col-12 col-lg-6 px-3 px-lg-5"
         style={{
           backgroundColor: 'transparent',
-          paddingTop: '80px'
+          paddingTop: '60px'
         }}
       >
         <div className="w-100" style={{ maxWidth: '500px', margin: '0 auto' }}>
@@ -608,7 +708,7 @@ function CardPayment({ onBack, onSuccess }) {
               <input
                 type="email"
                 name="email"
-                className="form-control"
+                className={`form-control ${fieldErrors.email ? 'is-invalid' : ''}`}
                 placeholder="example@mail.com"
                 value={formData.email}
                 onChange={handleInputChange}
@@ -622,12 +722,17 @@ function CardPayment({ onBack, onSuccess }) {
                   paddingLeft: '50px',
                   opacity: 1,
                   borderWidth: '1px',
-                  border: '1px solid #3D3D3D40',
+                  border: fieldErrors.email ? '1px solid #dc3545' : '1px solid #3D3D3D40',
                   background: 'transparent',
                   fontSize: '14px',
                   outline: 'none'
                 }}
               />
+              {fieldErrors.email && (
+                <div className="invalid-feedback" style={{ display: 'block', fontSize: '12px', color: '#dc3545', marginTop: '4px' }}>
+                  {fieldErrors.email}
+                </div>
+              )}
               <Image
                 src="/assets/img/icon/sms.png"
                 alt="Email Icon"
@@ -648,7 +753,7 @@ function CardPayment({ onBack, onSuccess }) {
               <input
                 type="text"
                 name="cardNumber"
-                className="form-control"
+                className={`form-control ${fieldErrors.cardNumber ? 'is-invalid' : ''}`}
                 placeholder="1234 1234 1234 1234"
                 value={formData.cardNumber}
                 onChange={handleInputChange}
@@ -662,12 +767,17 @@ function CardPayment({ onBack, onSuccess }) {
                   paddingLeft: '20px',
                   opacity: 1,
                   borderWidth: '1px',
-                  border: '1px solid #3D3D3D40',
+                  border: fieldErrors.cardNumber ? '1px solid #dc3545' : '1px solid #3D3D3D40',
                   background: 'transparent',
                   fontSize: '14px',
                   outline: 'none'
                 }}
               />
+              {fieldErrors.cardNumber && (
+                <div className="invalid-feedback" style={{ display: 'block', fontSize: '12px', color: '#dc3545', marginTop: '4px' }}>
+                  {fieldErrors.cardNumber}
+                </div>
+              )}
               {/* Payment Method Logos - Inside the input field */}
               <div
                 className="position-absolute d-flex align-items-center"
@@ -769,7 +879,7 @@ function CardPayment({ onBack, onSuccess }) {
                 <input
                   type="text"
                   name="expiryDate"
-                  className="form-control"
+                  className={`form-control ${fieldErrors.expiryDate ? 'is-invalid' : ''}`}
                   placeholder="MM/YY"
                   value={formData.expiryDate}
                   onChange={handleInputChange}
@@ -783,18 +893,23 @@ function CardPayment({ onBack, onSuccess }) {
                     paddingLeft: '20px',
                     opacity: 1,
                     borderWidth: '1px',
-                    border: '1px solid #3D3D3D40',
+                    border: fieldErrors.expiryDate ? '1px solid #dc3545' : '1px solid #3D3D3D40',
                     background: 'transparent',
                     fontSize: '14px',
                     outline: 'none'
                   }}
                 />
+                {fieldErrors.expiryDate && (
+                  <div className="invalid-feedback" style={{ display: 'block', fontSize: '12px', color: '#dc3545', marginTop: '4px' }}>
+                    {fieldErrors.expiryDate}
+                  </div>
+                )}
               </div>
               <div className="col-12 col-sm-6">
                 <input
                   type="text"
                   name="cvv"
-                  className="form-control"
+                  className={`form-control ${fieldErrors.cvv ? 'is-invalid' : ''}`}
                   placeholder="CVV/CVC"
                   value={formData.cvv}
                   onChange={handleInputChange}
@@ -808,12 +923,17 @@ function CardPayment({ onBack, onSuccess }) {
                     paddingLeft: '20px',
                     opacity: 1,
                     borderWidth: '1px',
-                    border: '1px solid #3D3D3D40',
+                    border: fieldErrors.cvv ? '1px solid #dc3545' : '1px solid #3D3D3D40',
                     background: 'transparent',
                     fontSize: '14px',
                     outline: 'none'
                   }}
                 />
+                {fieldErrors.cvv && (
+                  <div className="invalid-feedback" style={{ display: 'block', fontSize: '12px', color: '#dc3545', marginTop: '4px' }}>
+                    {fieldErrors.cvv}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -822,7 +942,7 @@ function CardPayment({ onBack, onSuccess }) {
               <input
                 type="text"
                 name="fullName"
-                className="form-control"
+                className={`form-control ${fieldErrors.fullName ? 'is-invalid' : ''}`}
                 placeholder="Full Name on Card"
                 value={formData.fullName}
                 onChange={handleInputChange}
@@ -836,12 +956,17 @@ function CardPayment({ onBack, onSuccess }) {
                   paddingLeft: '20px',
                   opacity: 1,
                   borderWidth: '1px',
-                  border: '1px solid #3D3D3D40',
+                  border: fieldErrors.fullName ? '1px solid #dc3545' : '1px solid #3D3D3D40',
                   background: 'transparent',
                   fontSize: '14px',
                   outline: 'none'
                 }}
               />
+              {fieldErrors.fullName && (
+                <div className="invalid-feedback" style={{ display: 'block', fontSize: '12px', color: '#dc3545', marginTop: '4px' }}>
+                  {fieldErrors.fullName}
+                </div>
+              )}
             </div>
 
             {/* Country or Region */}
@@ -849,7 +974,7 @@ function CardPayment({ onBack, onSuccess }) {
               <input
                 type="text"
                 name="country"
-                className="form-control"
+                className={`form-control ${fieldErrors.country ? 'is-invalid' : ''}`}
                 placeholder="Country or Region"
                 value={formData.country}
                 onChange={handleInputChange}
@@ -863,12 +988,17 @@ function CardPayment({ onBack, onSuccess }) {
                   paddingLeft: '20px',
                   opacity: 1,
                   borderWidth: '1px',
-                  border: '1px solid #3D3D3D40',
+                  border: fieldErrors.country ? '1px solid #dc3545' : '1px solid #3D3D3D40',
                   background: 'transparent',
                   fontSize: '14px',
                   outline: 'none'
                 }}
               />
+              {fieldErrors.country && (
+                <div className="invalid-feedback" style={{ display: 'block', fontSize: '12px', color: '#dc3545', marginTop: '4px' }}>
+                  {fieldErrors.country}
+                </div>
+              )}
               <div
                 className="position-absolute"
                 style={{
@@ -918,9 +1048,25 @@ function CardPayment({ onBack, onSuccess }) {
 function InvoiceSummary({ onNext, onBack }) {
   return (
     <>
-      <button onClick={onBack}> <IoIosArrowBack /> Back</button>
+      <button
+        style={{
+          backgroundColor: 'transparent',
+          color: '#007C36',
+          borderRadius: '20px',
+          fontSize: '14px',
+          fontWeight: '500',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+        }}
+        onClick={onBack}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        Back</button>
       <div className="d-flex align-items-center justify-content-center w-100" style={{ minHeight: '90vh' }}>
-        <div className="container" style={{ maxWidth: '600px', marginTop: '30px', marginBottom: '50px' }}>
+        <div className="container" style={{ maxWidth: '600px' }}>
 
           {/* Invoice Section */}
           <div className="mb-4">
@@ -961,7 +1107,7 @@ function InvoiceSummary({ onNext, onBack }) {
                 </div>
 
                 {/* NIF Number */}
-                <div className="mb-4">
+                <div className="mb-3">
                   <h6 className="fw-bold mb-3" style={{ color: '#3D3D3D', fontSize: '18px' }}>
                     NIF Number
                   </h6>
@@ -985,7 +1131,7 @@ function InvoiceSummary({ onNext, onBack }) {
           </div>
 
           {/* Total Amount Section */}
-          <div className="mb-4">
+          <div className="mb-3">
             <div
               className="card"
               style={{
@@ -1050,9 +1196,25 @@ function InvoiceSummary({ onNext, onBack }) {
 function PaymentMethodSelector({ selected, onSelect, onNext, onBack }) {
   return (
     <>
-      <button onClick={onBack}> <IoIosArrowBack /> Back</button>
+      <button
+        style={{
+          backgroundColor: 'transparent',
+          color: '#007C36',
+          borderRadius: '20px',
+          fontSize: '14px',
+          fontWeight: '500',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+        }}
+        onClick={onBack}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        Back</button>
       <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '90vh' }}>
-        <div style={{ marginTop: '30px', marginBottom: '60px' }}>
+        <div style={{ marginTop: '10px' }}>
           {/* Title */}
           <h4 className="fw-bold mb-2 text-center" style={{ color: '#3D3D3D', fontSize: '1.5rem' }}>
             Payment Method
@@ -1060,7 +1222,7 @@ function PaymentMethodSelector({ selected, onSelect, onNext, onBack }) {
 
           {/* Subtitle */}
           <p className="mb-2 text-center mx-auto" style={{ fontSize: '16px', color: '#3D3D3D', width: '500px' }}>
-            Please select a payment method to initiate your company registration process.
+            Please select a payment method to initiate your Nif registration process.
           </p>
 
           {/* Payment Card */}

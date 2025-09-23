@@ -60,7 +60,7 @@ export default function InvoiceSummary({ onPayNow }) {
     };
 
     return (
-        <div className="container-fluid pb-4 pt-4" style={{marginBottom: '60px'}}>
+        <div className="container-fluid pb-4 pt-4">
             <div className="row">
                 <div className="col-12">
                     <div className="p-3 rounded-4" style={{ backgroundColor: '#007C360D' }}>
@@ -70,8 +70,8 @@ export default function InvoiceSummary({ onPayNow }) {
                             border: 'none',
                             backgroundColor: 'white',
                             boxShadow: '0px 0px 24.8px 0px #00000026',
-                            marginTop: '20px',
-                            marginBottom: '20px'
+                            marginTop: '10px',
+                            marginBottom: '10px'
                         }}>
 
                             <div className="card-body" style={{ padding: '24px' }}>
@@ -142,7 +142,7 @@ export default function InvoiceSummary({ onPayNow }) {
                                 </div>
 
                                 {/* Pay Now Button */}
-                                <div className="text-center mt-4">
+                                <div className="text-center mt-3">
                                     <button
                                         onClick={onPayNow}
                                         className="btn"
