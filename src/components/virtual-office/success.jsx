@@ -27,7 +27,7 @@ export default function VirtualOfficeSuccess() {
           />
 
           <h5 className="fw-semibold mb-2">
-            Great! We have received your Details
+            Great! We have received your details
           </h5>
           <p className="text-muted mb-4">
             Your virtual office address application has been submitted successfully.

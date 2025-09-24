@@ -7,6 +7,8 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/bootstrap.css';
 import SuccessImage from "@assets/img/company/completed.png";
 import { useRouter } from 'next/router';
+import UploadImage from "@assets/img/icon/upload-icon.png";
+
 
 const VirtualOfficeForm = () => {
   const [file, setFile] = useState(null);
@@ -67,7 +69,7 @@ const VirtualOfficeForm = () => {
     }
   }, []);
   return (
-    <div className="container py-5 d-flex justify-content-center flex-column" style={{ minHeight: '70vh' }}>
+    <div className="container py-4 d-flex justify-content-center flex-column" style={{ minHeight: '70vh' }}>
       {/* Title */}
       {
         step !== 'success' && (
@@ -101,9 +103,9 @@ const VirtualOfficeForm = () => {
                      className="w-100 border rounded-5 p-4 py-3 text-center text-muted"
                      style={{ borderStyle: 'dashed', cursor: 'pointer' ,   border: '1px solid #3D3D3D40', }}
                    >
-                     <FaUpload className="mb-2 fs-4" />
+                     <Image src={UploadImage} alt="Upload" className="mb-2 fs-4" />
                      <br />
-                     Click to upload or drag and drop
+                     <strong>Click to upload</strong> or drag and drop
                      <br />
                      <small>SVG, PNG, JPG or GIF (max. 800×400px)</small>
                      <input

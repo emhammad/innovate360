@@ -25,7 +25,7 @@ export default function VirtualOfficeSignupForm() {
   useEffect(() => {
     const authStatus = localStorage.getItem('isAuthenticated');
     const currentUser = localStorage.getItem('currentUser');
-    
+
     if (authStatus === 'true' && currentUser) {
       // If user is already logged in, redirect to payment
       router.push('/virtual-office-address/success');
@@ -35,12 +35,12 @@ export default function VirtualOfficeSignupForm() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    
+
     // Clear general error when user starts typing
     if (error) {
       setError('');
     }
-    
+
     // Clear field-specific error
     if (fieldErrors[name]) {
       setFieldErrors({ ...fieldErrors, [name]: '' });
@@ -85,12 +85,12 @@ export default function VirtualOfficeSignupForm() {
         profileImage: '/assets/img/team/team-1.jpg' // Default user image
       };
 
-      // Store user data in localStorage
-      localStorage.setItem('currentUser', JSON.stringify(newUser));
-      localStorage.setItem('isAuthenticated', 'true');
-      
-      // Navigate to main dashboard
-      router.push('/virtual-office-address/success');
+      // Store user data in localStorage (but not authenticated yet)
+      localStorage.setItem('pendingUser', JSON.stringify(newUser));
+      localStorage.setItem('isAuthenticated', 'false');
+
+      // Navigate to OTP verification
+      router.push('/virtual-office-address/otp');
     } catch (err) {
       setError('An error occurred during signup. Please try again.');
     } finally {
@@ -129,8 +129,8 @@ export default function VirtualOfficeSignupForm() {
               <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
                 {/* Error Message */}
                 {error && (
-                  <div className="alert alert-danger" role="alert" style={{ 
-                    fontSize: '14px', 
+                  <div className="alert alert-danger" role="alert" style={{
+                    fontSize: '14px',
                     padding: '8px 12px',
                     borderRadius: '8px',
                     marginBottom: '16px'
@@ -172,43 +172,45 @@ export default function VirtualOfficeSignupForm() {
                 </div>
 
                 {/* Email Input */}
-                <div className="mb-3 position-relative">
-                  <input
-                    type="email"
-                    className={`form-control ${fieldErrors.email ? 'is-invalid' : ''}`}
-                    placeholder="Enter your email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    style={{
-                      width: '100%',
-                      height: '50px',
-                      borderRadius: '50px',
-                      paddingTop: '15px',
-                      paddingRight: '50px',
-                      paddingBottom: '15px',
-                      paddingLeft: '50px',
-                      opacity: 1,
-                      borderWidth: '1px',
-                      border: fieldErrors.email ? '1px solid #dc3545' : '1px solid #79747E',
-                      background: 'transparent',
-                      fontSize: '14px'
-                    }}
-                  />
-                  <Image
-                    src="/assets/img/icon/sms.png"
-                    alt="Email Icon"
-                    width={20}
-                    height={20}
-                    className="position-absolute"
-                    style={{
-                      top: '50%',
-                      left: '20px',
-                      transform: 'translateY(-50%)',
-                      zIndex: 10
-                    }}
-                  />
+                <div className="mb-3">
+                  <div className="position-relative">
+                    <input
+                      type="email"
+                      className={`form-control ${fieldErrors.email ? 'is-invalid' : ''}`}
+                      placeholder="Enter your email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      style={{
+                        width: '100%',
+                        height: '50px',
+                        borderRadius: '50px',
+                        paddingTop: '15px',
+                        paddingRight: '50px',
+                        paddingBottom: '15px',
+                        paddingLeft: '50px',
+                        opacity: 1,
+                        borderWidth: '1px',
+                        border: fieldErrors.email ? '1px solid #dc3545' : '1px solid #79747E',
+                        background: 'transparent',
+                        fontSize: '14px'
+                      }}
+                    />
+                    <Image
+                      src="/assets/img/icon/sms.png"
+                      alt="Email Icon"
+                      width={20}
+                      height={20}
+                      className="position-absolute"
+                      style={{
+                        top: '50%',
+                        left: '20px',
+                        transform: 'translateY(-50%)',
+                        zIndex: 10
+                      }}
+                    />
+                  </div>
                   {fieldErrors.email && (
                     <div className="invalid-feedback" style={{ display: 'block', fontSize: '12px', color: '#dc3545', marginTop: '4px' }}>
                       {fieldErrors.email}
@@ -332,13 +334,6 @@ export default function VirtualOfficeSignupForm() {
                   {isLoading ? 'Creating Account...' : 'Signup'}
                 </button>
               </form>
-
-              {/* Back to Login Link */}
-              <div className="text-center mt-2">
-                <p className="text-muted mb-0" style={{ fontSize: '14px' }}>
-                  Already have an account? <a href="/signin" className="text-success text-decoration-none" style={{ fontWeight: '500' }}>Sign In</a>
-                </p>
-              </div>
             </div>
           </div>
         </div>

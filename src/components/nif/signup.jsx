@@ -172,7 +172,8 @@ export default function NIFSignupForm() {
                 </div>
 
                 {/* Email Input */}
-                <div className="mb-3 position-relative">
+                <div className="mb-3">
+                  <div className="position-relative">
                   <input
                     type="email"
                     className={`form-control ${fieldErrors.email ? 'is-invalid' : ''}`}
@@ -209,6 +210,7 @@ export default function NIFSignupForm() {
                       zIndex: 10
                     }}
                   />
+                  </div>
                   {fieldErrors.email && (
                     <div className="invalid-feedback" style={{ display: 'block', fontSize: '12px', color: '#dc3545', marginTop: '4px' }}>
                       {fieldErrors.email}
