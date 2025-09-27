@@ -1,126 +1,75 @@
 import { FaArrowUp, FaArrowDown, FaSearch } from "react-icons/fa";
 import { useState } from "react";
+import AnalyticsIcon from "@assets/img/icon/chart.png";
+import CardIconActive from "@assets/img/icon/card.png";
 import CaseDetail from "./CaseDetail";
+import AdminNifStepper from "./nifStepper/NifStepper";
+import Image from "next/image";
+
 const data = [
   {
-    caseName: "John Doe",
-    email: "olivia@untitledui.com",
-    approvalRequests: "Maxfter Inc, CodeNova, ByteCrafters..",
-    status: { text: "Pending", color: "text-danger", icon: <FaArrowDown size={12} /> },
-    assignedTo: "Matthew Anderson",
-  },
-  {
-    caseName: "John Doe",
-    email: "olivia@untitledui.com",
-    approvalRequests: "Maxfter Inc, CodeNova, ByteCrafters..",
+    caseNumber: "NIF-002",
+    caseName: "Sarah Wilson",
+    email: "sarah.wilson@nif.com",
+    approvalRequests: "NIF Application, Tax Registration, Business License..",
     status: { text: "Invoice Paid", color: "text-success", icon: <FaArrowUp size={12} /> },
     assignedTo: "Jane Cooper",
+    service: "nif"
   },
   {
-    caseName: "John Doe",
-    email: "olivia@untitledui.com",
-    approvalRequests: "Maxfter Inc, CodeNova, ByteCrafters..",
-    status: { text: "Name Applied", color: "text-danger", icon: <FaArrowDown size={12} /> },
+    caseNumber: "COMP-002",
+    caseName: "Michael Brown",
+    email: "michael.brown@company.com",
+    approvalRequests: "Company Registration, Business Name, Articles of Incorporation..",
+    status: { text: "Case Closed", color: "text-success", icon: <FaArrowUp size={12} /> },
     assignedTo: "Wade Warren",
-  },
-  {
-    caseName: "John Doe",
-    email: "olivia@untitledui.com",
-    approvalRequests: "Maxfter Inc, CodeNova, ByteCrafters..",
-    status: { text: "Invoice Paid", color: "text-success", icon: <FaArrowUp size={12} /> },
-    assignedTo: "Brooklyn Simmons",
-  },
-  {
-    caseName: "John Doe",
-    email: "olivia@untitledui.com",
-    approvalRequests: "Maxfter Inc, CodeNova, ByteCrafters..",
-    status: { text: "Case Closed", color: "text-success", icon: <FaArrowUp size={12} /> },
-    assignedTo: "Jenny Wilson",
-  },
-  {
-    caseName: "John Doe",
-    email: "olivia@untitledui.com",
-    approvalRequests: "Maxfter Inc, CodeNova, ByteCrafters..",
-    status: { text: "Case Closed", color: "text-success", icon: <FaArrowUp size={12} /> },
-    assignedTo: "Esther Howard",
-  },
-  {
-    caseName: "John Doe",
-    email: "olivia@untitledui.com",
-    approvalRequests: "Maxfter Inc, CodeNova, ByteCrafters..",
-    status: { text: "Name Applied", color: "text-danger", icon: <FaArrowDown size={12} /> },
-    assignedTo: "Leslie Alexander",
-  },
-  {
-    caseName: "John Doe",
-    email: "olivia@untitledui.com",
-    approvalRequests: "Maxfter Inc, CodeNova, ByteCrafters..",
-    status: { text: "Case Closed", color: "text-success", icon: <FaArrowUp size={12} /> },
-    assignedTo: "Guy Hawkins",
-  },
+    service: "company"
+  }
 ];
 
 
 export default function Dashboard() {
-
   const [step, setSetp] = useState('caseList');
   const [Id, setId] = useState(0);
   const [search, setSearch] = useState("");
-  const [caseData, setCaseData] = useState(data);
 
   const handleViewClick = (id) => {
-    setSetp("viewCase")
+    const selectedCase = data[id];
+
+    if (selectedCase.service === "nif") {
+      // Navigate to NIF stepper in admin dashboard
+      setSetp("nifStepper");
+    } else if (selectedCase.service === "company") {
+      setSetp('viewCase');
+    } 
   };
 
-  const handleStatusChange = (index, newStatus) => {
-    const updatedData = [...caseData];
-    updatedData[index].status = {
-      text: newStatus,
-      color: newStatus === "Invoice Paid" || newStatus === "Case Closed" ? "text-success" : "text-danger",
-      icon: newStatus === "Invoice Paid" || newStatus === "Case Closed" ? <FaArrowUp size={12} /> : <FaArrowDown size={12} />
-    };
-    setCaseData(updatedData);
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
   };
 
-  const filtered = caseData.filter((item) =>
+  // Filter data based on search term
+  const filteredData = data.filter(item =>
+    item.caseNumber.toLowerCase().includes(search.toLowerCase()) ||
     item.caseName.toLowerCase().includes(search.toLowerCase()) ||
     item.email.toLowerCase().includes(search.toLowerCase()) ||
-    item.approvalRequests.toLowerCase().includes(search.toLowerCase())
+    item.approvalRequests.toLowerCase().includes(search.toLowerCase()) ||
+    item.assignedTo.toLowerCase().includes(search.toLowerCase()) ||
+    item.status.text.toLowerCase().includes(search.toLowerCase())
   );
 
   const getStatusStyle = (status) => {
-    let backgroundColor, textColor;
-
-    switch (status.text) {
-      case "Name Applied":
-        backgroundColor = "#FFEDEB";
-        textColor = "#dc3545";
-        break;
-      case "Invoice Paid":
-        backgroundColor = "#EDFF8B";
-        textColor = "#28a745";
-        break;
-      case "Pending":
-        backgroundColor = "#FFF4ED";
-        textColor = "#dc3545";
-        break;
-      case "Case Closed":
-        backgroundColor = "#ECFDF3";
-        textColor = "#28a745";
-        break;
-      default:
-        backgroundColor = "#FFF4ED";
-        textColor = "#dc3545";
-    }
-
+    const isSuccess = status.text === "Invoice Paid" || status.text === "Case Closed";
     return {
-      backgroundColor: backgroundColor,
-      color: textColor,
+      backgroundColor: isSuccess ? "#E6F4EA" : "#FEE7E6",
+      color: isSuccess ? "#28a745" : "#dc3545",
       fontWeight: 500,
       fontSize: "14px",
       borderRadius: "999px",
-      padding: "2px 18px",
-      display: "inline-block",
+      padding: "4px 18px",
+      display: "inline-flex",
+      alignItems: "center",
+      gap: "4px",
       width: "fit-content",
     };
   };
@@ -134,7 +83,7 @@ export default function Dashboard() {
               <div className="position-relative" style={{ maxWidth: "300px" }}>
                 <input
                   type="text"
-                  placeholder="Search Cases"
+                  placeholder="Search here"
                   className="form-control"
                   style={{
                     width: "100%",
@@ -146,7 +95,7 @@ export default function Dashboard() {
                     border: '1px solid #3D3D3D',
                   }}
                   value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  onChange={handleSearchChange}
                 />
                 <FaSearch
                   style={{
@@ -159,6 +108,107 @@ export default function Dashboard() {
                     pointerEvents: 'none'
                   }}
                 />
+              </div>
+            </div>
+
+            <div className="d-flex gap-4 mb-4">
+              {/* Total Cases Card */}
+              <div
+                className="flex-fill rounded-3 px-4 py-2"
+                style={{
+                  backgroundColor: '#E6F4EA',
+                  borderRadius: '16px',
+                  position: 'relative'
+                }}
+              >
+                <div className="d-flex align-items-center gap-2 mb-3">
+                  <div
+                    className="rounded-circle d-flex align-items-center justify-content-center"
+                    style={{
+                      width: '42px',
+                      height: '42px',
+                      backgroundColor: '#28a745',
+                      color: 'white'
+                    }}
+                  >
+                    <Image
+                      src={AnalyticsIcon}
+                      alt="Analytics Icon"
+                      width={20}
+                      height={20}
+                      style={{
+                        filter: 'brightness(0) invert(1)'
+                      }}
+                    />
+                  </div>
+                  <h6 className="mb-0 fw-bold" style={{ color: '#3D3D3D', fontSize: '14px' }}>
+                    Total Cases
+                  </h6>
+                </div>
+                <div className="mb-2">
+
+                  <h2 className="mb-0 fw-bold" style={{ color: '#3D3D3D', fontSize: '28px' }}>
+                    1,274
+                  </h2>
+                </div>
+                <div className="d-flex align-items-center">
+                  <FaArrowUp
+                    size={12}
+                    style={{ color: '#28a745', marginRight: '4px' }}
+                  />
+                  <small style={{ color: '#28a745', fontSize: '12px', fontWeight: '500' }}>
+                    12% increase from last month
+                  </small>
+                </div>
+              </div>
+
+              {/* Invoice Paid Card */}
+              <div
+                className="flex-fill rounded-3 px-4 py-2"
+                style={{
+                  backgroundColor: '#FFF3CD',
+                  borderRadius: '16px',
+                  position: 'relative'
+                }}
+              >
+                <div className="d-flex align-items-center gap-2 mb-3">
+                  <div
+                    className="rounded-circle d-flex align-items-center justify-content-center"
+                    style={{
+                      width: '42px',
+                      height: '42px',
+                      backgroundColor: '#FFC107',
+                      color: '#3D3D3D'
+                    }}
+                  >
+                    <Image
+                      src={CardIconActive}
+                      alt="Card Icon"
+                      width={20}
+                      height={20}
+                      style={{
+                        filter: 'brightness(0) invert(1)'
+                      }}
+                    />
+                  </div>
+                  <h6 className="mb-0 fw-bold" style={{ color: '#3D3D3D', fontSize: '14px' }}>
+                    Invoice Paid
+                  </h6>
+                </div>
+                <div className="mb-2">
+                  <h2 className="mb-0 fw-bold" style={{ color: '#3D3D3D', fontSize: '28px' }}>
+                    $53,00932
+                  </h2>
+                </div>
+                <div className="d-flex align-items-center">
+                  <FaArrowDown
+                    size={12}
+                    style={{ color: '#dc3545', marginRight: '4px' }}
+                  />
+                  <small style={{ color: '#dc3545', fontSize: '12px', fontWeight: '500' }}>
+                    10% decrease from last month
+                  </small>
+                </div>
               </div>
             </div>
 
@@ -177,68 +227,63 @@ export default function Dashboard() {
               <table className="table table-borderless table-striped mb-0">
                 <thead>
                   <tr style={{ backgroundColor: "#3D3D3D0D" }}>
-                    <th style={{ fontSize: '14px', padding: '12px' }}>Cases</th>
-                    <th style={{ fontSize: '14px', padding: '12px' }}>Approval Requests</th>
-                    <th style={{ fontSize: '14px', padding: '12px' }}>Status</th>
-                    <th style={{ fontSize: '14px', padding: '12px' }}>Action</th>
+                    <th style={{ fontSize: '14px', padding: '12px ' }}>Case Number</th>
+                    <th style={{ fontSize: '14px', padding: '12px ' }}>Cases</th>
+                    <th style={{ fontSize: '14px', padding: '12px ' }}>Approval Requests</th>
+                    <th style={{ fontSize: '14px', padding: '12px ' }}>Status</th>
+                    <th style={{ fontSize: '14px', padding: '12px ' }}>Assigned To</th>
+                    <th style={{ fontSize: '14px', padding: '12px ' }}>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filtered.map(({ caseName, email, approvalRequests, status, assignedTo }, i) => (
-                    <tr
-                      key={i}
-                      style={{
-                        borderBottom: "1px solid #f2f2f2",
-                        backgroundColor: i % 2 === 1 ? "#f8f9fa" : "#fff",
-                        height: "48px",
-                      }}
-                    >
-                      <td style={{ fontSize: '14px', padding: '12px' }} className="text-wrap d-flex flex-column justify-content-center">
-                        <span className="mb-0" style={{ lineHeight: '1.3' }}>{caseName}</span>
-                        <span className="text-muted" style={{ fontSize: '12px' }}>{email}</span>
-                      </td>
-                      <td style={{ fontSize: '14px', padding: '12px' }} className="text-wrap">{approvalRequests}</td>
-                      <td style={{ fontSize: '14px', padding: '12px' }}>
-                        <select
-                          value={status.text}
-                          onChange={(e) => handleStatusChange(i, e.target.value)}
-                          style={{
-                            ...getStatusStyle(status),
-                            border: 'none',
-                            outline: 'none',
-                            cursor: 'pointer',
-                            appearance: 'none',
-                            backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
-                            backgroundPosition: 'right 8px center',
-                            backgroundRepeat: 'no-repeat',
-                            backgroundSize: '16px',
-                            paddingRight: '32px',
-                            minWidth: '120px'
-                          }}
-                        >
-                          <option value="Pending">Pending</option>
-                          <option value="Invoice Paid">Invoice Paid</option>
-                          <option value="Name Applied">Name Applied</option>
-                          <option value="Case Closed">Case Closed</option>
-                        </select>
-                      </td>
-                      <td style={{ fontSize: '14px', padding: '12px' }}>
-                        <button
-                          className="btn btn-link fw-semibold"
-                          type="button"
-                          style={{
-                            color: "#28a745",
-                            textDecoration: "none",
-                            padding: 0,
-                            fontSize: '14px',
-                          }}
-                          onClick={() => handleViewClick(i)}
-                        >
-                          View
-                        </button>
+                  {filteredData.length > 0 ? (
+                    filteredData.map(({ caseNumber, caseName, email, approvalRequests, status, assignedTo }, i) => (
+                      <tr
+                        key={i}
+                        style={{
+                          borderBottom: "1px solid #f2f2f2",
+                          backgroundColor: i % 2 === 1 ? "#f8f9fa" : "#fff",
+                          height: "48px",
+                        }}
+                      >
+                        <td style={{ fontSize: '14px', padding: '12px', verticalAlign: 'middle' }}>
+                          <div className="fw-semibold" style={{ color: "#007C36" }}>{caseNumber}</div>
+                        </td>
+                        <td style={{ fontSize: '14px', padding: '12px', verticalAlign: 'middle' }}>
+                          <div className="fw-semibold" style={{ color: "#3D3D3D" }}>{caseName}</div>
+                          <div style={{ color: "#6c757d", fontSize: "12px" }}>{email}</div>
+                        </td>
+                        <td style={{ fontSize: '14px', padding: '12px', verticalAlign: 'middle' }}>{approvalRequests}</td>
+                        <td style={{ fontSize: '14px', padding: '12px', verticalAlign: 'middle' }}>
+                          <span style={getStatusStyle(status)}>
+                            {status.icon} {status.text}
+                          </span>
+                        </td>
+                        <td style={{ fontSize: '14px', padding: '12px', verticalAlign: 'middle' }}>{assignedTo}</td>
+                        <td style={{ fontSize: '14px', padding: '12px', verticalAlign: 'middle' }}>
+                          <button
+                            className="btn btn-link fw-semibold"
+                            type="button"
+                            onClick={() => handleViewClick(i)}
+                            style={{
+                              color: "#007C36",
+                              textDecoration: "none",
+                              padding: 0,
+                              fontSize: '14px',
+                            }}
+                          >
+                            View
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6" className="text-center py-4" style={{ color: '#6c757d' }}>
+                        No cases found matching your search criteria
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
@@ -248,6 +293,12 @@ export default function Dashboard() {
         step == 'viewCase' &&
         (
           <CaseDetail CaseId={Id} />
+        )
+      }
+      {
+        step == 'nifStepper' &&
+        (
+          <AdminNifStepper />
         )
       }
     </>

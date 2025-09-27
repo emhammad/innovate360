@@ -95,10 +95,28 @@ export default function Home(CaseId) {
         return <Registration />;
     }
   };
+  
+  const handleBackToDashboard = () => {
+    // Navigate back to admin dashboard
+    window.location.href = '/lawyer/dashboard';
+  };
+
   return (
     <div className="container-fluid py-5 pt-4">
-      <h3 className='mb-2' style={{ fontWeight: '600', color: '#3D3D3D' }}>John Doe</h3>
-      <p className='mb-4 ' style={{ fontSize: '14px', color: '#6C757D' }}>olivia@untitledui.com</p>
+      {/* Back Button */}
+      <div className="d-flex justify-content-start mb-3">
+        <button
+          className="btn"
+          onClick={handleBackToDashboard}
+          style={{
+            borderRadius: '20px',
+            fontSize: '14px',
+            padding: '8px 16px'
+          }}
+        >
+          ← Back to Dashboard
+        </button>
+      </div>
       <HorizontalStepper
         steps={cardSteps}
         activeStep={activeStep}

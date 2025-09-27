@@ -8,6 +8,8 @@ export default function VirtualOfficeSuccess() {
   const router = useRouter();
 
   const handleContinue = () => {
+      // Set flag in localStorage to indicate coming from NIF success
+    localStorage.setItem('fromVirtalService', 'true');
     // Navigate to payment page
     router.push('/virtual-office-address/payment');
   };

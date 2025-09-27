@@ -72,15 +72,13 @@ const Content = () => {
         const selectedCase = data[id];
 
         if (selectedCase.service === "nif") {
-            // For NIF service, set flag and show NIF analytics as submenu
             localStorage.setItem('fromNifSuccess', 'true');
             window.location.href = '/main-dashboard';
         } else if (selectedCase.service === "company") {
-            // For Company service, redirect to company dashboard
             window.location.href = '/company/dashboard';
         } else if (selectedCase.service === "virtual-office") {
-            // For Virtual Office service, do nothing (no action)
-            return;
+            localStorage.setItem('fromVirtalService', 'true');
+            window.location.href = '/main-dashboard';
         }
     };
 

@@ -3,64 +3,37 @@ import { useState } from "react";
 import AnalyticsIcon from "@assets/img/icon/chart.png";
 import CardIconActive from "@assets/img/icon/card.png";
 import CaseDetail from "./CaseDetail";
+import VirtualOfficeStepper from "./virtualOfficeStepper/VirtualOfficeStepper";
+import AdminNifStepper from "./nifStepper/AdminNifStepper";
 import Image from "next/image";
 const data = [
   {
-    caseName: "John Doe",
-    email: "olivia@untitledui.com",
-    approvalRequests: "Maxfter Inc, CodeNova, ByteCrafters..",
-    status: { text: "Pending", color: "text-danger", icon: <FaArrowDown size={12} /> },
-    assignedTo: "Matthew Anderson",
-  },
-  {
-    caseName: "John Doe",
-    email: "olivia@untitledui.com",
-    approvalRequests: "Maxfter Inc, CodeNova, ByteCrafters..",
+    caseNumber: "NIF-002",
+    caseName: "Sarah Wilson",
+    email: "sarah.wilson@nif.com",
+    approvalRequests: "NIF Application, Tax Registration, Business License..",
     status: { text: "Invoice Paid", color: "text-success", icon: <FaArrowUp size={12} /> },
     assignedTo: "Jane Cooper",
+    service: "nif"
   },
   {
-    caseName: "John Doe",
-    email: "olivia@untitledui.com",
-    approvalRequests: "Maxfter Inc, CodeNova, ByteCrafters..",
-    status: { text: "Name Applied", color: "text-danger", icon: <FaArrowDown size={12} /> },
+    caseNumber: "COMP-002",
+    caseName: "Michael Brown",
+    email: "michael.brown@company.com",
+    approvalRequests: "Company Registration, Business Name, Articles of Incorporation..",
+    status: { text: "Case Closed", color: "text-success", icon: <FaArrowUp size={12} /> },
     assignedTo: "Wade Warren",
+    service: "company"
   },
   {
-    caseName: "John Doe",
-    email: "olivia@untitledui.com",
-    approvalRequests: "Maxfter Inc, CodeNova, ByteCrafters..",
+    caseNumber: "VO-003",
+    caseName: "Robert Johnson",
+    email: "robert.johnson@virtual.com",
+    approvalRequests: "Virtual Office Setup, Mail Forwarding, Business Address..",
     status: { text: "Invoice Paid", color: "text-success", icon: <FaArrowUp size={12} /> },
-    assignedTo: "Brooklyn Simmons",
-  },
-  {
-    caseName: "John Doe",
-    email: "olivia@untitledui.com",
-    approvalRequests: "Maxfter Inc, CodeNova, ByteCrafters..",
-    status: { text: "Case Closed", color: "text-success", icon: <FaArrowUp size={12} /> },
-    assignedTo: "Jenny Wilson",
-  },
-  {
-    caseName: "John Doe",
-    email: "olivia@untitledui.com",
-    approvalRequests: "Maxfter Inc, CodeNova, ByteCrafters..",
-    status: { text: "Case Closed", color: "text-success", icon: <FaArrowUp size={12} /> },
     assignedTo: "Esther Howard",
-  },
-  {
-    caseName: "John Doe",
-    email: "olivia@untitledui.com",
-    approvalRequests: "Maxfter Inc, CodeNova, ByteCrafters..",
-    status: { text: "Name Applied", color: "text-danger", icon: <FaArrowDown size={12} /> },
-    assignedTo: "Leslie Alexander",
-  },
-  {
-    caseName: "John Doe",
-    email: "olivia@untitledui.com",
-    approvalRequests: "Maxfter Inc, CodeNova, ByteCrafters..",
-    status: { text: "Case Closed", color: "text-success", icon: <FaArrowUp size={12} /> },
-    assignedTo: "Guy Hawkins",
-  },
+    service: "virtual-office"
+  }
 ];
 
 
@@ -70,7 +43,17 @@ export default function Dashboard() {
   const [search, setSearch] = useState("");
 
   const handleViewClick = (id) => {
-    setSetp("viewCase")
+    const selectedCase = data[id];
+
+    if (selectedCase.service === "nif") {
+      // Navigate to NIF stepper in admin dashboard
+      setSetp("nifStepper");
+    } else if (selectedCase.service === "company") {
+      setSetp('viewCase');
+    } else if (selectedCase.service === "virtual-office") {
+      // Navigate to virtual office stepper in admin dashboard
+      setSetp("virtualOfficeStepper");
+    }
   };
 
   const handleSearchChange = (e) => {
@@ -78,7 +61,8 @@ export default function Dashboard() {
   };
 
   // Filter data based on search term
-  const filteredData = data.filter(item => 
+  const filteredData = data.filter(item =>
+    item.caseNumber.toLowerCase().includes(search.toLowerCase()) ||
     item.caseName.toLowerCase().includes(search.toLowerCase()) ||
     item.email.toLowerCase().includes(search.toLowerCase()) ||
     item.approvalRequests.toLowerCase().includes(search.toLowerCase()) ||
@@ -255,6 +239,7 @@ export default function Dashboard() {
               <table className="table table-borderless table-striped mb-0">
                 <thead>
                   <tr style={{ backgroundColor: "#3D3D3D0D" }}>
+                    <th style={{ fontSize: '14px', padding: '12px ' }}>Case Number</th>
                     <th style={{ fontSize: '14px', padding: '12px ' }}>Cases</th>
                     <th style={{ fontSize: '14px', padding: '12px ' }}>Approval Requests</th>
                     <th style={{ fontSize: '14px', padding: '12px ' }}>Status</th>
@@ -264,7 +249,7 @@ export default function Dashboard() {
                 </thead>
                 <tbody>
                   {filteredData.length > 0 ? (
-                    filteredData.map(({ caseName, email, approvalRequests, status, assignedTo }, i) => (
+                    filteredData.map(({ caseNumber, caseName, email, approvalRequests, status, assignedTo }, i) => (
                       <tr
                         key={i}
                         style={{
@@ -273,18 +258,21 @@ export default function Dashboard() {
                           height: "48px",
                         }}
                       >
-                        <td style={{ fontSize: '14px', padding: '12px ' }}>
+                        <td style={{ fontSize: '14px', padding: '12px', verticalAlign: 'middle' }}>
+                          <div className="fw-semibold" style={{ color: "#007C36" }}>{caseNumber}</div>
+                        </td>
+                        <td style={{ fontSize: '14px', padding: '12px', verticalAlign: 'middle' }}>
                           <div className="fw-semibold" style={{ color: "#3D3D3D" }}>{caseName}</div>
                           <div style={{ color: "#6c757d", fontSize: "12px" }}>{email}</div>
                         </td>
-                        <td style={{ fontSize: '14px', padding: '12px ' }}>{approvalRequests}</td>
-                        <td style={{ fontSize: '14px', padding: '12px ' }}>
+                        <td style={{ fontSize: '14px', padding: '12px', verticalAlign: 'middle' }}>{approvalRequests}</td>
+                        <td style={{ fontSize: '14px', padding: '12px', verticalAlign: 'middle' }}>
                           <span style={getStatusStyle(status)}>
                             {status.icon} {status.text}
                           </span>
                         </td>
-                        <td style={{ fontSize: '14px', padding: '12px ' }}>{assignedTo}</td>
-                        <td style={{ fontSize: '14px', padding: '12px ' }}>
+                        <td style={{ fontSize: '14px', padding: '12px', verticalAlign: 'middle' }}>{assignedTo}</td>
+                        <td style={{ fontSize: '14px', padding: '12px', verticalAlign: 'middle' }}>
                           <button
                             className="btn btn-link fw-semibold"
                             type="button"
@@ -303,7 +291,7 @@ export default function Dashboard() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="5" className="text-center py-4" style={{ color: '#6c757d' }}>
+                      <td colSpan="6" className="text-center py-4" style={{ color: '#6c757d' }}>
                         No cases found matching your search criteria
                       </td>
                     </tr>
@@ -317,6 +305,18 @@ export default function Dashboard() {
         step == 'viewCase' &&
         (
           <CaseDetail CaseId={Id} />
+        )
+      }
+      {
+        step == 'virtualOfficeStepper' &&
+        (
+          <VirtualOfficeStepper />
+        )
+      }
+      {
+        step == 'nifStepper' &&
+        (
+          <AdminNifStepper />
         )
       }
     </>
