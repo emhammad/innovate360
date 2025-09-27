@@ -53,7 +53,7 @@ export default function CompanyNameStep() {
         <title>Company Setup - Innovate360</title>
       </Head>
 
-      <div className="d-flex" style={{ minHeight: '100vh' }}>
+      <div className="d-flex" style={{ minHeight: '90vh' }}>
         {/* Sidebar */}
         <div className="bg-success text-white p-4" style={{ width: '280px' }}>
           <Image className='mb-20' src={logo_img} alt="theme-pure" />

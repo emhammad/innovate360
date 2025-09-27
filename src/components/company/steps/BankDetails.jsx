@@ -15,7 +15,7 @@ export default function BankDetails({ onNext, onBack }) {
     };
 
     return (
-        <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
+        <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '90vh', backgroundColor: '#f8f9fa' }}>
             <div className="container" style={{ maxWidth: '600px', marginTop: '100px', marginBottom: '100px' }}>
                 {/* Bank Details Section */}
                 <div className="mb-4">

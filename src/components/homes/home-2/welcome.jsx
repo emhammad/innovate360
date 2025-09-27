@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="container text-center my-5 d-flex justify-content-center align-items-center flex-column" style={{ minHeight: '80vh' }}>
+    <div className="container text-center my-5 d-flex justify-content-center align-items-center flex-column" style={{ minHeight: '70vh' }}>
       <h2 className="text-success" style={{ fontWeight: '600' }}>Welcome to Innovate360</h2>
       <p className="text-muted mb-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit ipsum dolor sit amet.</p>
       <h6 className="mb-4" style={{ fontWeight: '600', fontSize: '16px', color: '#3D3D3D' }}>Choose the service you prefer to continue</h6>

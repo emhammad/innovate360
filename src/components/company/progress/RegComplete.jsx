@@ -25,8 +25,6 @@ export default function CompanyDocuments() {
 
       <div className="container pb-5" style={{ minHeight: '400px' }}>
 
-        {/* Documents Display Section */}
-        {status === "documents" && (
           <div className="p-4 pb-2 rounded-4" style={{ backgroundColor: '#007C360D' }}>
             {documents.map((doc, index) => (
               <div
@@ -50,11 +48,8 @@ export default function CompanyDocuments() {
               </div>
             ))}
           </div>
-        )}
 
-        {/* Success Confirmation Section */}
-        {status === "registered" && (
-          <div className="rounded text-center p-4 rounded-4" style={{ backgroundColor: '#007C360D' }}>
+          <div className="rounded text-center p-4 rounded-4 mt-4" style={{ backgroundColor: '#007C360D' }}>
             <Image
               src={SuccessIcon} // Replace with your correct success image in /public
               alt="Success"
@@ -92,17 +87,7 @@ export default function CompanyDocuments() {
               Go to Main Dashboard
             </button>
           </div>
-        )}
 
-        {/* Debugging Buttons (Optional) */}
-        <div className="mt-4">
-          <button className="btn btn-outline-secondary me-2" onClick={() => setStatus("documents")}>
-            Show Documents
-          </button>
-          <button className="btn btn-outline-success" onClick={() => setStatus("registered")}>
-            Show Confirmation
-          </button>
-        </div>
       </div>
     </>
   );

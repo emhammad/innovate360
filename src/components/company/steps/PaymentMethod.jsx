@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 export default function PaymentMethod({ onNext, onBack }) {
-  const [paymentMethod, setPaymentMethod] = useState("bank");
+  const [paymentMethod, setPaymentMethod] = useState("card");
 
   const handlePaymentSelect = (method) => {
     setPaymentMethod(method);
@@ -19,7 +19,7 @@ export default function PaymentMethod({ onNext, onBack }) {
   };
 
   return (
-    <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
+    <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '90vh' }}>
       <div style={{ marginTop: '50px', marginBottom: '50px' }}>
         {/* Title */}
         <h4 className="fw-bold mb-3 text-center" style={{ color: '#3D3D3D', fontSize: '1.5rem' }}>
@@ -65,7 +65,7 @@ export default function PaymentMethod({ onNext, onBack }) {
               {/* Payment Options */}
               <div className="d-flex flex-column gap-3">
                 {/* Pay via Bank */}
-                <label
+                {/* <label
                   className={`border rounded-pill d-flex align-items-center ${paymentMethod === "bank"
                     ? "border-success"
                     : "border-secondary"
@@ -101,7 +101,7 @@ export default function PaymentMethod({ onNext, onBack }) {
                   }}>
                     Pay via Bank
                   </span>
-                </label>
+                </label> */}
 
                 {/* Pay via Card */}
                 <label

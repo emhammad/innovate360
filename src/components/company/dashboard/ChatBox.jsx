@@ -281,16 +281,31 @@ export default function ChatBox() {
           <>
             {/* Chat Header */}
             <div
-              className="d-flex align-items-center p-3"
+              className="p-3"
               style={{
                 backgroundColor: "#f8f9fa",
                 borderBottom: "1px solid #dee2e6",
                 borderRadius: "16px 16px 0 0"
               }}
             >
-              <h5 className="mb-0 fw-bold" style={{ color: "#007C36" }}>
-                {currentChat.name}
-              </h5>
+              {/* Special header for General Chat */}
+              {currentChat.name === "General Chat" ? (
+                <div>
+                  <h4 className="mb-1 fw-bold" style={{ color: "#3D3D3D", fontSize: "24px" }}>
+                    General Chat
+                  </h4>
+                  <h6 className="mb-0" style={{ color: "#3D3D3D", fontSize: "14px", fontWeight: "400" }}>
+                    Company Registration
+                  </h6>
+                  <span className="mb-0" style={{ color: "#007C36", fontSize: "12px", fontWeight: "600" , borderBottom : '1px solid #007C36' }}>
+                    Mark
+                  </span>
+                </div>
+              ) : (
+                <h5 className="mb-0 fw-bold" style={{ color: "#007C36" }}>
+                  {currentChat.name}
+                </h5>
+              )}
             </div>
 
             {/* Messages Area */}

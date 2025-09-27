@@ -27,7 +27,7 @@ export default function UploadReceipt({ onNext, onBack }) {
   };
 
   return (
-    <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh', backgroundColor: 'white' }}>
+    <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '90vh', backgroundColor: 'white' }}>
       <div className="text-center" style={{ padding: '40px' }}>
 
         {/* Title */}

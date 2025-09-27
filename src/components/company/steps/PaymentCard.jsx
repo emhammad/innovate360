@@ -31,13 +31,13 @@ export default function PaymentCard({ onNext, onBack }) {
     formData.cvv && formData.fullName && formData.country;
 
   return (
-    <div className="d-flex flex-column flex-lg-row" style={{ minHeight: '100vh' }}>
+    <div className="d-flex flex-column flex-lg-row" style={{ minHeight: '90vh' }}>
       {/* Left Section - Logo and Price */}
       <div
         className="d-flex flex-column justify-content-start align-items-start col-12 col-lg-5 px-3 px-lg-5"
         style={{
           backgroundColor: 'white',
-          paddingTop: '80px',
+          paddingTop: '60px',
           paddingLeft: '60px',
         }}
       >
@@ -90,7 +90,7 @@ export default function PaymentCard({ onNext, onBack }) {
         className="d-flex flex-column justify-content-center col-12 col-lg-6 px-3 px-lg-5"
         style={{
           backgroundColor: 'transparent',
-          paddingTop: '80px'
+          paddingTop: '60px'
         }}
       >
         <div className="w-100" style={{ maxWidth: '500px', margin: '0 auto' }}>
@@ -407,7 +407,7 @@ export default function PaymentCard({ onNext, onBack }) {
             </button>
 
             {/* Disclaimer */}
-            <p className="text-center mb-4 mt-2" style={{ fontSize: '12px', lineHeight: '1.4' , color: '#3D3D3D' }}>
+            <p className="text-center mb-2 mt-2" style={{ fontSize: '12px', lineHeight: '1.4' , color: '#3D3D3D' }}>
               By confirming you allow Innovate360 to charge you for future payments in accordance with their terms. You can always cancel your subscription.
             </p>
 

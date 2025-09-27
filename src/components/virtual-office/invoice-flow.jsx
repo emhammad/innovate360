@@ -359,7 +359,7 @@ function BankDetails({ onBack, onNext }) {
   };
 
   return (
-    <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
+    <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '90vh', backgroundColor: '#f8f9fa' }}>
       <div className="container" style={{ maxWidth: '600px', marginTop: '80px', marginBottom: '50px' }}>
 
         {/* Bank Details Section */}

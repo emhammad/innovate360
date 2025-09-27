@@ -14,8 +14,8 @@ import {
 } from 'react-icons/fa';
 
 export default function Home(CaseId) {
-  const [activeStep, setActiveStep] = useState(1);
-  const [completedSteps, setCompletedSteps] = useState([0]);
+  const [activeStep, setActiveStep] = useState(0);
+  const [completedSteps, setCompletedSteps] = useState([]);
   const [search, setSearch] = useState("");
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [assignSearch, setAssignSearch] = useState("");

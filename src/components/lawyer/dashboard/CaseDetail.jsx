@@ -15,10 +15,10 @@ export default function Home(CaseId) {
 
   const steps = [
     { title: 'Step 1', descrip: 'Registration' },
-    { title: 'Step 2', descrip: 'Payment' },
-    { title: 'Step 3', descrip: 'Verification' },
-    { title: 'Step 4', descrip: 'Review' },
-    { title: 'Step 5', descrip: 'Complete' }
+    // { title: 'Step 2', descrip: 'Payment' },
+    { title: 'Step 2', descrip: 'Verification' },
+    { title: 'Step 3', descrip: 'Review' },
+    { title: 'Step 4', descrip: 'Complete' }
   ];
 
 
@@ -31,13 +31,13 @@ export default function Home(CaseId) {
       button: 'View',
       active: true
     },
-    {
-      title: 'Invoice',
-      description: 'Waiting for invoice to be paid',
-      icon: <Image src="/assets/img/icon/invoice.png" alt="Invoice" width={40} height={40} />,
-      button: 'View',
-      active: false
-    },
+    // {
+    //   title: 'Invoice',
+    //   description: 'Waiting for invoice to be paid',
+    //   icon: <Image src="/assets/img/icon/invoice.png" alt="Invoice" width={40} height={40} />,
+    //   button: 'View',
+    //   active: false
+    // },
     {
       title: 'Company Name',
       description: 'Your name is not approved. Kindly resubmit the names.',
@@ -83,13 +83,13 @@ export default function Home(CaseId) {
     switch (activeStep) {
       case 0:
         return <Registration />;
+      // case 1:
+      //   return <InvoiceCard />;
       case 1:
-        return <InvoiceCard />;
-      case 2:
         return <AppliedNames />;
-      case 3:
+      case 2:
         return <ProcessDocuments />;
-      case 4:
+      case 3:
         return <RegComplete />;
       default:
         return <Registration />;

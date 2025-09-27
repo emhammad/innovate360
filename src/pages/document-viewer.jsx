@@ -92,7 +92,7 @@ export default function DocumentViewerPage() {
       </Head>
 
       <div className="document-viewer-page" style={{
-        minHeight: '100vh',
+        minHeight: '90vh',
         backgroundColor: '#f8f9fa',
         display: 'flex',
         flexDirection: 'column'

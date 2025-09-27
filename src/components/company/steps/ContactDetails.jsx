@@ -15,7 +15,7 @@ export default function ContactDetails({ onNext, onBack }) {
   const isComplete = isValidEmail && isValidPhone;
 
   return (
-    <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+    <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '90vh' }}>
       <div className="card" style={{
         width: '500px',
         borderRadius: '24px',

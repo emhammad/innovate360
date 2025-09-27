@@ -62,7 +62,7 @@ export default function ChooseCompanyType({ onNext, onBack }) {
     };
 
     return (
-        <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh', marginTop: '50px', marginBottom: '50px' }}>
+        <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '90vh', marginTop: '50px', marginBottom: '50px' }}>
             <div className="container" style={{ maxWidth: '1200px' }}>
                 {/* Header Section */}
                 <div className="text-center mb-5">

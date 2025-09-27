@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import PhoneInput from "react-phone-input-2";
 import 'react-phone-input-2/lib/bootstrap.css';
-import SuccessScreen from "./SuccessScreen";
 import Image from 'next/image';
 import { validateForm, getEmailErrorMessage, getPasswordErrorMessage, getNameErrorMessage, getPhoneErrorMessage } from '@/src/utils/validation';
 
@@ -16,7 +15,6 @@ export default function SignupForm() {
     password: "",
   });
 
-  const [submitted, setSubmitted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -86,12 +84,12 @@ export default function SignupForm() {
         profileImage: '/assets/img/team/team-1.jpg' // Default user image
       };
 
-      // Store user data in localStorage
-      localStorage.setItem('currentUser', JSON.stringify(newUser));
-      localStorage.setItem('isAuthenticated', 'true');
+      // Store user data in localStorage (but not authenticated yet)
+      localStorage.setItem('pendingUser', JSON.stringify(newUser));
+      localStorage.setItem('isAuthenticated', 'false');
       
-      // Simulate successful submission
-      setSubmitted(true);
+      // Navigate to OTP verification
+      router.push('/company/otp');
     } catch (err) {
       setError('An error occurred during signup. Please try again.');
     } finally {
@@ -99,21 +97,14 @@ export default function SignupForm() {
     }
   };
 
-  const handleContinue = () => {
-    // Redirect to main dashboard
-    router.push('/company/dashboard');
-  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  if (submitted) {
-    return <SuccessScreen onContinue={handleContinue} />;
-  }
 
   return (
-    <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+    <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '90vh' }}>
       <div className="card" style={{
         width: '600px',
         minHeight: '500px',
@@ -177,8 +168,9 @@ export default function SignupForm() {
           </div>
 
           {/* Email Input */}
-          <div className="mb-3 position-relative">
-            <input
+          <div className="mb-3">
+           <div className="position-relative">
+           <input
               type="email"
               className={`form-control ${fieldErrors.email ? 'is-invalid' : ''}`}
               placeholder="Enter your email"
@@ -213,6 +205,7 @@ export default function SignupForm() {
                 zIndex: 10
               }}
             />
+           </div>
             {fieldErrors.email && (
               <div className="invalid-feedback" style={{ display: 'block', fontSize: '12px', color: '#dc3545', marginTop: '4px' }}>
                 {fieldErrors.email}
@@ -335,12 +328,6 @@ export default function SignupForm() {
           </button>
         </form>
 
-        {/* Back to Login Link */}
-        <div className="text-center mt-2">
-          <p className="text-muted mb-0" style={{ fontSize: '14px' }}>
-            Already have an account? <a href="/signin" className="text-success text-decoration-none" style={{ fontWeight: '500' }}>Sign In</a>
-          </p>
-        </div>
       </div>
     </div>
   );

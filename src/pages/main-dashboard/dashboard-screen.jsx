@@ -132,7 +132,7 @@ const Content = () => {
         <>
             {step == 'caseList'
                 && (
-                    <div style={{ padding: '35px' }}>
+                    <div style={{ padding: '35px 35px 20px' }}>
                         <div className="d-flex justify-content-between align-items-center mb-3">
                             <h5 style={{ fontWeight: '600', color: '#3D3D3D' }}>Dashboard</h5>
                             <div className="d-flex gap-3 justify-content-between align-items-center">
@@ -373,7 +373,7 @@ const Content = () => {
             {
                 step == 'viewCase' &&
                 (
-                    <div style={{ padding: '35px' }}>
+                    <div style={{ padding: '35px 35px 20px' }}>
                         <div className="d-flex justify-content-between align-items-center mb-4">
                             <h5 style={{ fontWeight: '600', color: '#3D3D3D', fontSize: '24px' }}>Virtual Office Dashboard</h5>
                             <button

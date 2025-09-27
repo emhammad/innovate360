@@ -3,13 +3,36 @@ import { useState } from "react";
 
 export default function BusinessAddress({ onNext, onBack }) {
   const [address, setAddress] = useState("");
-  const [useAddon, setUseAddon] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [isAdded, setIsAdded] = useState(false);
 
-  const isComplete = useAddon || address.trim() !== "";
+  const validateAddress = () => {
+    if (!address.trim()) {
+      return false;
+    }
+    return true;
+  };
+
+  const handleAddOn = () => {
+    // Validate address before showing modal
+    if (validateAddress()) {
+      setShowModal(true);
+    }
+  };
+
+  const handleModalNext = () => {
+    setShowModal(false);
+    setIsAdded(true);
+    onNext && onNext("add-on");
+  };
+
+  const handleModalCancel = () => {
+    setShowModal(false);
+  };
 
   return (
-    <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '90vh' }}>
-      <div className="text-center" style={{ maxWidth: '450px' , marginTop: '60px' }}>
+    <div className="d-flex align-items-center justify-content-center">
+      <div className="text-center" style={{ maxWidth: '450px' }}>
         {/* Title */}
         <h4 className="mb-3" style={{ color: '#3D3D3D', fontWeight: '600' }}>Add Company's Address</h4>
 
@@ -29,7 +52,6 @@ export default function BusinessAddress({ onNext, onBack }) {
               className="form-control text-start"
               placeholder="Your company address"
               value={address}
-              disabled={useAddon}
               onChange={(e) => setAddress(e.target.value)}
               style={{
                 width: '100%',
@@ -90,43 +112,87 @@ export default function BusinessAddress({ onNext, onBack }) {
               width: '100%',
               minWidth: "150px",
               borderRadius: "25px",
-              backgroundColor: '#28a745',
+              backgroundColor: isAdded ? '#6c757d' : '#28a745',
               color: '#fff',
               border: 'none',
               height: '48px',
               fontSize: '16px',
               fontWeight: '600'
             }}
-            onClick={() => {
-              setUseAddon(true);
-              setAddress(""); // clear input if using add-on
-            }}
+            onClick={handleAddOn}
+            disabled={isAdded}
           >
-            Add On
+            {isAdded ? 'Added' : 'Add On'}
           </button>
         </div>
 
-        <div className="d-flex justify-content-center mx-auto" style={{ marginTop: '100px' }}>
-          <button
-            className="btn "
-            style={{
-              width: '95%',
-              borderRadius: '25px',
-              height: '48px',
-              fontSize: '16px',
-              fontWeight: '600',
-              paddingLeft: '32px',
-              paddingRight: '32px',
-              backgroundColor: isComplete ? '#28a745' : '#1D1B201F',
-              color: isComplete ? '#fff' : '#1D1B20',
-              border: 'none',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-            }}
-            onClick={() => onNext && onNext(address)}
+
+        {/* Modal */}
+        {showModal && (
+          <div
+            className="modal show d-block"
+            style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+            tabIndex="-1"
           >
-            Next
-          </button>
-        </div>
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content" style={{ borderRadius: '16px', border: 'none' }}>
+                <div className="modal-header" style={{ borderBottom: '1px solid #dee2e6' }}>
+                  <h5 className="modal-title fw-bold" style={{ color: '#3D3D3D', fontSize: '20px' }}>
+                    Add Business Address
+                  </h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    onClick={handleModalCancel}
+                    style={{ fontSize: '12px' }}
+                  ></button>
+                </div>
+                <div className="modal-body" style={{ padding: '16px 24px 24px 24px' }}>
+                  <p style={{ color: '#3D3D3D', fontSize: '16px', margin: 0, textAlign: 'left' }}>
+                    The charges for Business Address is added in your bill. Please complete the remaining process and click on next to proceed further.
+                  </p>
+                </div>
+                <div className="modal-footer" style={{ borderTop: '1px solid #dee2e6', gap: '8px' }}>
+                  <button
+                    type="button"
+                    className="btn"
+                    onClick={handleModalCancel}
+                    style={{
+                      borderRadius: '25px',
+                      height: '42px',
+                      fontSize: '16px',
+                      fontWeight: '600',
+                      backgroundColor: 'transparent',
+                      color: '#5B5B5B',
+                      border: 'none',
+                      minWidth: '100px',
+                      border: '1px solid #D2D4DA'
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="btn"
+                    onClick={handleModalNext}
+                    style={{
+                      borderRadius: '25px',
+                      height: '42px',
+                      fontSize: '16px',
+                      fontWeight: '600',
+                      backgroundColor: '#28a745',
+                      color: '#fff',
+                      border: 'none',
+                      minWidth: '100px'
+                    }}
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Go Back */}
         <div>

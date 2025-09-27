@@ -85,12 +85,12 @@ export default function NIFSignupForm() {
         profileImage: '/assets/img/team/team-1.jpg' // Default user image
       };
 
-      // Store user data in localStorage
-      localStorage.setItem('currentUser', JSON.stringify(newUser));
-      localStorage.setItem('isAuthenticated', 'true');
+      // Store user data in localStorage (but not authenticated yet)
+      localStorage.setItem('pendingUser', JSON.stringify(newUser));
+      localStorage.setItem('isAuthenticated', 'false');
 
-      // Navigate to main dashboard
-      router.push('/nif-number/success');
+      // Navigate to OTP verification
+      router.push('/nif-number/otp');
     } catch (err) {
       setError('An error occurred during signup. Please try again.');
     } finally {

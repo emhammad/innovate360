@@ -14,17 +14,17 @@ export default function CapitalAmount({ onNext, onBack }) {
         <h4 className="mb-3" style={{ color: '#3D3D3D', fontWeight: '600' }}>Capital Amount of Company</h4>
 
         {/* Subtitle */}
-        <p className="mb-4 mx-auto" style={{ maxWidth: "500px" , color: '#3D3D3D' , fontSize: '16px' }}>
-          Specify the authorized and paid-up capital amount in the relevant currency.
+        <p className="mb-4 mx-auto" style={{ maxWidth: "450px" , color: '#3D3D3D' , fontSize: '16px' }}>
+        Specify the authorized and paid-up capital amount in the Euros currency.
         </p>
 
         {/* Input */}
         <div className="mx-auto d-flex justify-content-center align-items-center" style={{  maxWidth: "500px", margin: '0px auto 45px auto', minHeight: '200px'  }}>
-          <div style={{ width: "80%" }}>
+          <div style={{ width: "80%", position: 'relative' }}>
             <input
               type="number"
               className="form-control"
-              placeholder="Enter capital amount (€)"
+              placeholder="0.00"
               min="0"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
@@ -35,7 +35,7 @@ export default function CapitalAmount({ onNext, onBack }) {
                 paddingTop: '15px',
                 paddingRight: '20px',
                 paddingBottom: '15px',
-                paddingLeft: '20px',
+                paddingLeft: '50px',
                 opacity: 1,
                 borderWidth: '1px',
                 border: '1px solid #79747E',
@@ -43,6 +43,20 @@ export default function CapitalAmount({ onNext, onBack }) {
                 fontSize: '14px'
               }}
             />
+            <span
+              style={{
+                position: 'absolute',
+                left: '20px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                color: '#007C36',
+                fontSize: '16px',
+                fontWeight: '600',
+                pointerEvents: 'none'
+              }}
+            >
+              €
+            </span>
           </div>
         </div>
 

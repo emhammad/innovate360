@@ -13,16 +13,39 @@ export default function Shareholders({ onNext, onBack }) {
   );
 
   const isComplete =
-    shareholders.every((s) => s.name.trim() && s.percentage.trim() && parseFloat(s.percentage) > 0);
+    shareholders.every((s) => s.name.trim() && s.percentage.trim() && parseFloat(s.percentage) > 0) &&
+    totalPercentage === 100;
 
   // Handlers
   const handleAddShareholder = () => {
-    setShareholders([...shareholders, { name: "", percentage: "" }]);
+    const newShareholders = [...shareholders, { name: "", percentage: "" }];
+    setShareholders(newShareholders);
+    
+    // Auto-distribute 50-50 if there are exactly 2 shareholders
+    if (newShareholders.length === 2) {
+      setTimeout(() => {
+        const updated = newShareholders.map((s, index) => ({
+          ...s,
+          percentage: s.percentage === "" ? "50" : s.percentage
+        }));
+        setShareholders(updated);
+      }, 100);
+    }
   };
 
   const handleChange = (index, field, value) => {
     const updated = [...shareholders];
     updated[index][field] = field === "percentage" ? value.replace(",", ".") : value;
+    setShareholders(updated);
+  };
+
+  // Auto-distribute equal percentages
+  const handleAutoDistribute = () => {
+    const equalPercentage = (100 / shareholders.length).toFixed(1);
+    const updated = shareholders.map((s) => ({
+      ...s,
+      percentage: equalPercentage
+    }));
     setShareholders(updated);
   };
 
@@ -42,12 +65,12 @@ export default function Shareholders({ onNext, onBack }) {
           List all shareholders along with their ownership percentage. Ensure the
           information matches official company registration records.
         </p>
-        <p className=" small fw-semibold mt-2 mb-4">
+        <p className=" small fw-semibold mt-2 mb-2">
           You need to show <span className="text-success">100%</span> partnership
         </p>
 
         {/* Shareholder Fields */}
-        <div className="mb-4 mx-auto d-flex flex-column align-items-start" style={{ maxWidth: "500px", minHeight: '150px' }}>
+        <div className="my-4 mx-auto d-flex flex-column align-items-start" style={{ maxWidth: "500px", minHeight: '150px' }}>
           {shareholders.map((s, index) => (
             <div
               key={index}
@@ -141,7 +164,8 @@ export default function Shareholders({ onNext, onBack }) {
                     height: "40px",
                     border: '1px solid #dc3545',
                     backgroundColor: 'transparent',
-                    color: '#dc3545'
+                    color: '#dc3545',
+                    fontSize: 'x-large'
                   }}
                   aria-label="Remove shareholder"
                 >
@@ -152,13 +176,34 @@ export default function Shareholders({ onNext, onBack }) {
           ))}
 
           {/* Add Shareholder */}
-          <button
-            type="button"
-            className="btn btn-link text-success fw-bold text-decoration-none"
-            onClick={handleAddShareholder}
-          >
-            + Add shareholder
-          </button>
+          <div className="d-flex gap-3 align-items-center">
+            <button
+              type="button"
+              className="btn btn-link text-success fw-bold text-decoration-none"
+              onClick={handleAddShareholder}
+            >
+              + Add shareholder
+            </button>
+            
+            {/* Auto-distribute button */}
+            {shareholders.length > 1 && totalPercentage !== 100 && (
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-sm"
+                onClick={handleAutoDistribute}
+                style={{
+                  fontSize: '12px',
+                  padding: '6px 12px',
+                  borderRadius: '20px',
+                  border: '1px solid #007C36',
+                  color: '#007C36',
+                  backgroundColor: 'transparent'
+                }}
+              >
+                Auto-distribute equally
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Next Button */}
@@ -176,7 +221,7 @@ export default function Shareholders({ onNext, onBack }) {
               color: isComplete ? '#fff' : '#1D1B20',
               border: 'none'
             }}
-            onClick={() => onNext(shareholders)}  
+            onClick={() => onNext(shareholders)}
             disabled={!isComplete}
           >
             Next

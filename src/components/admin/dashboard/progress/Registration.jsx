@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { CiUser } from 'react-icons/ci';
 import { FaEnvelope, FaFilePdf, FaCheckCircle } from 'react-icons/fa';
 
 const CompanyRegistrationForm = () => {
@@ -229,34 +230,49 @@ const CompanyRegistrationForm = () => {
         <hr className="mb-3" />
 
         {/* 4. Marital Status */}
-        <div className="d-flex flex-column flex-md-row justify-content-between align-items-start mb-0">
-          <div className="pe-md-4">
-            <h5 className="fw-semibold mb-2" style={{ color: '#3D3D3D' }}>Choose your marital status</h5>
-            <p className="mb-0 small" style={{ color: '#3D3D3D' }}>
-              Please indicate whether you are single, married, divorced, or widowed.
-            </p>
-          </div>
-          <label
-            key={status}
-            className={`border rounded-pill px-4 d-flex align-items-center w-100 ${status
-              ? "border-success"
-              : "border-secondary"
-              }`}
-            style={{ cursor: "pointer", userSelect: "none", padding: '12px', maxWidth: '400px' }}
-          >
-            <input
-              type="radio"
-              name="maritalStatus"
-              value={status}
-              checked={status}
-              onChange={() => setStatus("Married")}
-              className="form-check-input me-3"
-              style={{ cursor: "pointer" }}
-              readOnly
-            />
-            <span>{status}</span>
-          </label>
-        </div>
+       <div className="d-flex flex-column flex-md-row justify-content-between align-items-start mb-0">
+                <div className="pe-md-4">
+                  <h5 className="fw-semibold mb-2" style={{ color: '#3D3D3D' }}>Choose your marital status</h5>
+                  <p className="mb-0 small" style={{ color: '#3D3D3D' }}>
+                    Please indicate whether you are single, married, divorced, or widowed.
+                  </p>
+                </div>
+                <div className='d-flex gap-2 flex-column w-100' style={{ maxWidth: '400px' }}>
+                  <label
+                    key={status}
+                    className={`border rounded-pill px-4 d-flex align-items-center w-100 ${status
+                      ? "border-success"
+                      : "border-secondary"
+                      }`}
+                    style={{ cursor: "pointer", userSelect: "none", padding: '12px', maxWidth: '400px' }}
+                  >
+                    <input
+                      type="radio"
+                      name="maritalStatus"
+                      value={status}
+                      checked={status}
+                      onChange={() => setStatus("Married")}
+                      className="form-check-input me-3"
+                      style={{ cursor: "pointer" }}
+                      readOnly
+                    />
+                    <span>{status}</span>
+                  </label>
+                  <label
+                    className={`border rounded-pill px-4 d-flex align-items-center gap-2 w-100 ${status
+                      ? "border-success"
+                      : "border-secondary"
+                      }`}
+                    style={{ cursor: "pointer", userSelect: "none", padding: '12px', maxWidth: '400px' }}
+                  >
+                    <CiUser style={{ color: '#3D3D3D', fontSize: '20px' , fontWeight: '800', marginRight : '2px' }} />
+                    <span>{'Spouse'}</span>
+                  </label>
+                  <div className='text-end me-2' style={{ cursor: 'pointer' }}>
+                    <span style={{color : '#007C36' , textDecoration : 'underline' , fontSize : '14px' , fontWeight : '600'}}>View Id</span>
+                  </div>
+                </div>
+              </div>
 
         <hr className="mb-3" />
 
