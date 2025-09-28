@@ -4,6 +4,7 @@ import AdminHorizontalStepper from '../../common/AdminHorizontalStepper';
 import AdminStatusCards from '../../common/AdminStatusCards';
 import VirtualOfficeDocProcess from './VirtualOfficeDocProcess';
 import VirtualOfficeCompletedDocument from './VirtualOfficeCompletedDocument';
+import VirtualOfficeRegistration from './VirtualOfficeRegistration';
 
 export default function VirtualOfficeStepper({ onStepChange, onPaymentFlowChange }) {
     const [activeStep, setActiveStep] = useState(0);
@@ -60,22 +61,21 @@ export default function VirtualOfficeStepper({ onStepChange, onPaymentFlowChange
         }
     };
 
-    // Check if step is accessible
-    const isStepAccessible = (index) => {
-        if (index === 0) return true;
-        if (index === 1) return completedSteps.includes(0);
-        if (index === 2) return completedSteps.includes(1);
-        return false;
-    };
-
     // Define steps for the stepper
     const cardSteps = [
+        {
+            title: 'Registration',
+            description: 'Received documents for virtual office setup',
+            icon: '/assets/img/icon/registration.png',
+            button: 'Start',
+            active: activeStep === 0
+        },
         {
             title: 'Document Process',
             description: 'Upload required documents for virtual office setup',
             icon: '/assets/img/icon/list-icon.png',
             button: 'Start',
-            active: activeStep === 0
+            active: activeStep === 1
         },
         {
             title: 'Completed',
@@ -87,14 +87,12 @@ export default function VirtualOfficeStepper({ onStepChange, onPaymentFlowChange
     ];
 
     const handleStepClick = (index) => {
-        // Check if step is accessible
-        if (isStepAccessible(index)) {
-            // Mark previous step as completed when moving forward
-            if (index > activeStep) {
-                markStepCompleted(activeStep);
-            }
-            handleStepChange(index);
+
+        // Mark previous step as completed when moving forward
+        if (index > activeStep) {
+            markStepCompleted(activeStep);
         }
+        handleStepChange(index);
     };
 
     const handleCheckboxChange = (stepIndex, isChecked) => {
@@ -111,8 +109,10 @@ export default function VirtualOfficeStepper({ onStepChange, onPaymentFlowChange
     const getProgressComponent = () => {
         switch (activeStep) {
             case 0:
-                return <VirtualOfficeDocProcess />;
+                return <VirtualOfficeRegistration />;
             case 1:
+                return <VirtualOfficeDocProcess />;
+            case 2:
                 return <VirtualOfficeCompletedDocument
                     file={{
                         name: 'Virtual-Office-Confirmation.pdf',
@@ -147,13 +147,15 @@ export default function VirtualOfficeStepper({ onStepChange, onPaymentFlowChange
         <div className="pt-2">
             {/* Back Button */}
             <div className="d-flex justify-content-start mb-3">
-                <button 
-                    className="btn btn-outline-secondary"
+                <button
+                    className="btn"
                     onClick={handleBackToDashboard}
-                    style={{ 
-                        borderRadius: '20px', 
+                    style={{
+                        borderRadius: '20px',
                         fontSize: '14px',
-                        padding: '8px 16px'
+                        padding: '8px 16px',
+                        color: '#007C36',
+                        fontWeight: '600',
                     }}
                 >
                     ← Back to Dashboard
@@ -166,7 +168,6 @@ export default function VirtualOfficeStepper({ onStepChange, onPaymentFlowChange
                     activeStep={activeStep}
                     completedSteps={completedSteps}
                     handleStepClick={handleStepClick}
-                    isStepAccessible={isStepAccessible}
                 />
                 <AdminStatusCards
                     cardSteps={cardSteps}
@@ -174,7 +175,6 @@ export default function VirtualOfficeStepper({ onStepChange, onPaymentFlowChange
                     completedSteps={completedSteps}
                     handleStepClick={handleStepClick}
                     handleCheckboxChange={handleCheckboxChange}
-                    isStepAccessible={isStepAccessible}
                 />
             </>}
 

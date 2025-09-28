@@ -1,25 +1,24 @@
 import React from 'react';
 import Image from 'next/image';
 
-const AdminStatusCards = ({ cardSteps = [], activeStep, completedSteps, handleStepClick, handleCheckboxChange, isStepAccessible = () => true }) => {
+const AdminStatusCards = ({ cardSteps = [], activeStep, completedSteps, handleStepClick, handleCheckboxChange }) => {
   return (
     <div className="d-flex flex-wrap justify-content-center gap-3 my-3">
       {cardSteps.map((step, idx) => (
         <div
           key={idx}
-          onClick={() => isStepAccessible(idx) ? handleStepClick(idx) : null}
+          onClick={() => handleStepClick(idx)}
           className="card text-start d-flex flex-column p-3"
           style={{
             width: '190px',
             minHeight: '200px',
-            backgroundColor: 'white',
+            backgroundColor: completedSteps.includes(idx) ? '#007C36' : '#f8f9fa',
             borderRadius: '12.8px',
             boxShadow: '0px 0px 40px 0px #0000001A',
-            border: activeStep === idx ? '2px solid #007C36' : '1px solid #e9ecef',
-            opacity: activeStep === idx ? 1 : (isStepAccessible(idx) ? 0.9 : 0.5),
-            cursor: (isStepAccessible(idx)) ? 'pointer' : 'not-allowed',
             transform: activeStep === idx ? 'scale(1.02)' : 'scale(1)',
-            transition: 'all 0.2s ease'
+            transition: 'all 0.2s ease',
+            cursor: 'pointer',
+            border: 'none'
           }}
         >
           {/* Icon */}
@@ -38,11 +37,6 @@ const AdminStatusCards = ({ cardSteps = [], activeStep, completedSteps, handleSt
               alt={step.title}
               width={40}
               height={40}
-            // style={{
-            //   filter: completedSteps.includes(idx) ? 'brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%)' : 
-            //          activeStep === idx ? 'brightness(0) saturate(100%) invert(20%) sepia(20%) saturate(2000%) hue-rotate(100deg) brightness(0.3)' : 
-            //          'brightness(0) saturate(100%) invert(44%) sepia(8%) saturate(1090%) hue-rotate(169deg) brightness(95%) contrast(86%)'
-            // }}
             />
 
           </div>
@@ -52,7 +46,7 @@ const AdminStatusCards = ({ cardSteps = [], activeStep, completedSteps, handleSt
             <h6 className="mb-1" style={{
               fontSize: '14px',
               fontWeight: '600',
-              color: completedSteps.includes(idx) ? '#28a745' : activeStep === idx ? '#007C36' : '#3D3D3D'
+              color: completedSteps.includes(idx) ? 'white' : activeStep === idx ? '#007C36' : '#3D3D3D'
             }}>
               {step.title}
             </h6>
@@ -63,7 +57,7 @@ const AdminStatusCards = ({ cardSteps = [], activeStep, completedSteps, handleSt
                 fontSize: '12px',
                 minHeight: '50px',
                 lineHeight: "1.5",
-                color: completedSteps.includes(idx) ? '#28a745' : '#6c757d'
+                color: completedSteps.includes(idx) ? 'white' : '#6c757d'
               }}
             >
               {step.description.length > 50
@@ -73,7 +67,7 @@ const AdminStatusCards = ({ cardSteps = [], activeStep, completedSteps, handleSt
           </div>
 
           {/* Admin Checkbox */}
-          <span className='mb-2 d-flex align-items-center justify-content-start fw-semibold' style={{ fontSize: "11px" }}>
+          <span className='mb-2 d-flex align-items-center justify-content-start fw-semibold' style={{ fontSize: "11px", color: completedSteps.includes(idx) ? 'white' : '#6c757d' }}>
             <input
               style={{
                 fontSize: "11px",
@@ -88,7 +82,6 @@ const AdminStatusCards = ({ cardSteps = [], activeStep, completedSteps, handleSt
             />
             Mark as done
           </span>
-
           {/* Button */}
           <button
             className={`btn btn-sm rounded-pill py-2 mt-auto`}
@@ -99,7 +92,6 @@ const AdminStatusCards = ({ cardSteps = [], activeStep, completedSteps, handleSt
               fontSize: '12px',
               fontWeight: '500'
             }}
-            disabled={!isStepAccessible(idx)}
           >
             {completedSteps.includes(idx) ? 'Completed' : step.button}
           </button>

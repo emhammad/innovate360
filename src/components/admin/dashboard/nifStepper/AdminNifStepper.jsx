@@ -71,14 +71,6 @@ export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
     setShowPaymentFlow(false);
   };
 
-  // Check if step is accessible
-  const isStepAccessible = (index) => {
-    if (index === 0) return true;
-    if (index === 1) return completedSteps.includes(0);
-    if (index === 2) return completedSteps.includes(1);
-    return false;
-  };
-
   // Define steps for the stepper
   const cardSteps = [
     {
@@ -105,14 +97,12 @@ export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
   ];
 
   const handleStepClick = (index) => {
-    // Check if step is accessible
-    if (isStepAccessible(index)) {
-      // Mark previous step as completed when moving forward
-      if (index > activeStep) {
-        markStepCompleted(activeStep);
-      }
-      handleStepChange(index);
+
+    if (index > activeStep) {
+      markStepCompleted(activeStep);
     }
+    handleStepChange(index);
+
   };
 
   const handleCheckboxChange = (stepIndex, isChecked) => {
@@ -178,13 +168,15 @@ export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
     <div className="pt-2">
       {/* Back Button */}
       <div className="d-flex justify-content-start mb-3">
-        <button 
+        <button
           className="btn"
           onClick={handleBackToDashboard}
-          style={{ 
-            borderRadius: '20px', 
+          style={{
+            borderRadius: '20px',
             fontSize: '14px',
-            padding: '8px 16px'
+            padding: '8px 16px',
+            color: '#007C36',
+            fontWeight: '600',
           }}
         >
           ← Back to Dashboard
@@ -197,7 +189,6 @@ export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
           activeStep={activeStep}
           completedSteps={completedSteps}
           handleStepClick={handleStepClick}
-          isStepAccessible={isStepAccessible}
         />
         <AdminStatusCards
           cardSteps={cardSteps}
@@ -205,7 +196,6 @@ export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
           completedSteps={completedSteps}
           handleStepClick={handleStepClick}
           handleCheckboxChange={handleCheckboxChange}
-          isStepAccessible={isStepAccessible}
         />
       </>}
 

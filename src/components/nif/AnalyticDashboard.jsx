@@ -87,6 +87,10 @@ export default function Home({ onStepChange, onPaymentFlowChange }) {
     setShowPaymentFlow(false);
   };
 
+  const handleResetPaymentflow = () => {
+    setShowPaymentFlow(false);
+  }
+
 
   const cardSteps = [
     {
@@ -131,6 +135,7 @@ export default function Home({ onStepChange, onPaymentFlowChange }) {
           return <InvoiceFlow
             onBackToStep0={() => handleStepChange(0)}
             onBackToSummary={handleBackToSummary}
+            onResetPaymentflow={handleResetPaymentflow}
             onNextToStep2={() => {
               markStepCompleted(1);
               handleStepChange(2);

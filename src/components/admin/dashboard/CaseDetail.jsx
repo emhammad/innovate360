@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
-import HorizontalStepper from '../../company/common/HorizontalStepper'; // adjust path as needed
-import StatusCards from '../../company/common/StatusCard';
+import HorizontalStepper from '../common/AdminHorizontalStepper'; // adjust path as needed
+import StatusCards from '../common/AdminStatusCards';
 import Registration from "./progress/Registration";
 import InvoiceCard from './progress/Invoice';
 import AppliedNames from "./progress/NameApplied";
@@ -81,35 +81,35 @@ export default function Home(CaseId) {
     {
       title: 'Registration',
       description: 'Your invoice is not paid. Kindly pay it to complete your registration.',
-      icon: <Image src="/assets/img/icon/registration.png" alt="Registration" width={40} height={40} />,
+      icon: '/assets/img/icon/registration.png',
       button: 'View',
       active: true
     },
     {
       title: 'Invoice',
       description: 'Waiting for invoice to be paid',
-      icon: <Image src="/assets/img/icon/invoice.png" alt="Invoice" width={40} height={40} />,
+      icon: '/assets/img/icon/invoice.png',
       button: 'View',
       active: false
     },
     {
       title: 'Company Name',
       description: 'Your name is not approved. Kindly resubmit the names.',
-      icon: <Image src="/assets/img/icon/company-name.png" alt="Company Name" width={40} height={40} />,
+      icon: '/assets/img/icon/company-name.png',
       button: 'View',
       active: false
     },
     {
       title: 'Processing',
       description: 'Your company registration is in process. Kindly e-sign the documents uploaded.',
-      icon: <Image src="/assets/img/icon/processing.png" alt="Processing" width={40} height={40} />,
+      icon: '/assets/img/icon/processing.png',
       button: 'View',
       active: false
     },
     {
       title: 'Company Registration',
       description: 'Your company is successfully registered.',
-      icon: <Image src="/assets/img/icon/com-registration.png" alt="Company Registration" width={40} height={40} />,
+      icon: '/assets/img/icon/com-registration.png',
       button: 'View',
       active: false
     }
@@ -149,21 +149,32 @@ export default function Home(CaseId) {
         return <Registration />;
     }
   };
+  const handleBackToDashboard = () => {
+    // Navigate back to admin dashboard
+    window.location.href = '/admin/dashboard';
+  };
   return (
-    <div className="container-fluid py-5">
+    <div className="container-fluid py-3">
       {/* Header Section */}
       <div
         className="bg-white" style={{ marginBottom: '35px' }}
       >
         <div className="d-flex justify-content-between align-items-center">
-          {/* User Information */}
-          <div>
-            <h5 className="mb-1 fw-bold" style={{ color: '#3D3D3D', fontSize: '18px' }}>
-              John Doe
-            </h5>
-            <p className="mb-0 text-muted" style={{ fontSize: '14px' }}>
-              olivia@untitledui.com
-            </p>
+          {/* Back Button */}
+          <div className="d-flex justify-content-start mb-3">
+            <button
+              className="btn"
+              onClick={handleBackToDashboard}
+              style={{
+                borderRadius: '20px',
+                fontSize: '14px',
+                padding: '8px 16px',
+                color: '#007C36',
+                fontWeight: '600',
+              }}
+            >
+              ← Back to Dashboard
+            </button>
           </div>
 
           {/* Search and Assign To */}

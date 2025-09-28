@@ -183,7 +183,9 @@ export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
           style={{
             borderRadius: '20px',
             fontSize: '14px',
-            padding: '8px 16px'
+            padding: '8px 16px',
+            color: '#007C36',
+            fontWeight: '600'
           }}
         >
           ← Back to Dashboard

@@ -3,25 +3,24 @@
 import { useState } from 'react';
 import Head from 'next/head';
 import { AiOutlineFilePdf } from 'react-icons/ai';
-import { FaUpload, FaFileUpload, FaFileDownload } from 'react-icons/fa';
+import { FaUpload } from 'react-icons/fa';
 import { BsDownload } from 'react-icons/bs';
+import UploadImg from '@/public/assets/img/icon/upload-green.png'
 import Image from 'next/image';
-
-import SuccessIcon from '@assets/img/company/tick-icon.png'; // ✅ Replace with actual image path
 
 export default function CompanyDocuments() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [receivedFiles, setReceivedFiles] = useState([
-    { 
+    {
       id: 1,
-      name: "Legal_document.pdf", 
-      size: "200 KB", 
+      name: "Legal_document.pdf",
+      size: "200 KB",
       url: "/sample.pdf"
     },
-    { 
+    {
       id: 2,
-      name: "Confidential_Agreement.pdf", 
-      size: "180 KB", 
+      name: "Confidential_Agreement.pdf",
+      size: "180 KB",
       url: "/sample.pdf"
     }
   ]);
@@ -126,7 +125,7 @@ export default function CompanyDocuments() {
   return (
     <>
       <Head>
-        <title>Company Documents</title>
+        <title>Documents</title>
       </Head>
 
       <div className="py-5">
@@ -135,140 +134,178 @@ export default function CompanyDocuments() {
           {/* Main Content Area */}
           <div className="flex-grow-1">
             {/* Upload Documents */}
-              <div
-                className="p-4"
-                style={{
-                  borderRadius: '16px',
-                  backgroundColor: '#F3F9F6',
-                  minHeight: '400px'
-                }}
-              >
-                {/* Show uploaded files if any, otherwise show dropzone */}
-                {uploadedFiles.length > 0 ? (
-                  <div>
-                    {uploadedFiles.map((file) => (
-                      <div
-                        key={file.id}
-                        className="d-flex align-items-center p-3 bg-white rounded-3 mb-3"
-                        style={{
-                          borderRadius: '12px',
-                          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                        }}
-                      >
-                        {/* File Icon */}
-                        <div className="me-3">
-                          <AiOutlineFilePdf size={24} style={{ color: '#6c757d' }} />
+            <div
+              className="p-4"
+              style={{
+                borderRadius: '16px',
+                backgroundColor: '#F3F9F6',
+                minHeight: '400px'
+              }}
+            >
+              {/* Show uploaded files if any, otherwise show dropzone */}
+              {uploadedFiles.length > 0 ? (
+                <div>
+                  {uploadedFiles.map((file) => (
+                    <div
+                      key={file.id}
+                      className="d-flex align-items-center p-3 bg-white rounded-3 mb-3"
+                      style={{
+                        borderRadius: '12px',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                      }}
+                    >
+                      {/* File Icon */}
+                      <div className="me-3">
+                        <AiOutlineFilePdf size={24} style={{ color: '#6c757d' }} />
+                      </div>
+
+                      {/* File Info */}
+                      <div className="flex-grow-1 d-flex flex-column justify-content-center">
+                        <div style={{
+                          fontWeight: '500',
+                          color: '#3D3D3D',
+                          fontSize: '14px',
+                          marginBottom: '4px'
+                        }}>
+                          {file.name}
                         </div>
-
-                        {/* File Info */}
-                        <div className="flex-grow-1 d-flex justify-content-between align-items-center">
-                          <div>
-                            <div style={{
-                              fontWeight: '500',
-                              color: '#3D3D3D',
-                              fontSize: '14px',
-                              marginBottom: '4px'
-                            }}>
-                              {file.name}
-                            </div>
-                            <div style={{
-                              color: '#6c757d',
-                              fontSize: '12px',
-                              marginBottom: '8px'
-                            }}>
-                              {file.size}
-                            </div>
-                          </div>
-
-                          {/* Progress Bar */}
-                          <div
-                            className="progress"
-                            style={{
-                              height: '4px',
-                              backgroundColor: '#e9ecef',
-                              borderRadius: '2px',
-                              minWidth: '300px'
-                            }}
-                          >
-                            <div
-                              className="progress-bar"
-                              style={{
-                                width: `${file.progress}%`,
-                                backgroundColor: '#007C36',
-                                borderRadius: '2px',
-                                transition: 'width 0.3s ease'
-                              }}
-                            />
-                          </div>
+                        <div style={{
+                          color: '#6c757d',
+                          fontSize: '12px',
+                          marginBottom: '8px'
+                        }}>
+                          {file.size}
                         </div>
                       </div>
-                    ))}
 
-                    {/* Upload More Button */}
-                    <button
-                      onClick={handleUploadMore}
-                      className="btn btn-link p-0"
-                      style={{
-                        color: '#007C36',
-                        textDecoration: 'none',
-                        fontSize: '14px',
-                        fontWeight: '500'
-                      }}
-                    >
-                      + Upload more
-                    </button>
-                  </div>
-                ) : (
-                  /* Upload Dropzone - shown by default */
-                  <div
-                    className="d-flex flex-column justify-content-center align-items-center text-center"
+                      {/* Progress Bar or Actions */}
+                      {file.status === 'completed' ? (
+                        <div className="d-flex align-items-center gap-2">
+                          {/* Download Button */}
+                          <button
+                            className="btn"
+                            style={{
+                              backgroundColor: '#EDFF8B',
+                              borderRadius: '50%',
+                              padding: '8px',
+                              border: 'none',
+                              boxShadow: 'none',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}
+                            onClick={() => window.open(`/uploads/${file.name}`, '_blank')}
+                            title="Download"
+                          >
+                            <BsDownload style={{ color: '#3D3D3D', fontSize: '18px' }} />
+                          </button>
+                          {/* View Button */}
+                          <button
+                            className="btn"
+                            style={{
+                              backgroundColor: '#007C36',
+                              color: '#fff',
+                              borderRadius: '25px',
+                              fontWeight: '500',
+                              fontSize: '14px',
+                              padding: '8px 24px',
+                              border: 'none',
+                              boxShadow: 'none'
+                            }}
+                            onClick={() => handleViewDocument(file)}
+                          >
+                            View
+                          </button>
+                        </div>
+                      ) : (
+                        <div
+                          className="progress flex-grow-1"
+                          style={{
+                            height: '4px',
+                            backgroundColor: '#e9ecef',
+                            borderRadius: '2px',
+                            minWidth: '300px'
+                          }}
+                        >
+                          <div
+                            className="progress-bar"
+                            style={{
+                              width: `${file.progress}%`,
+                              backgroundColor: '#007C36',
+                              borderRadius: '2px',
+                              transition: 'width 0.3s ease'
+                            }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+
+                  {/* Upload More Button */}
+                  <button
+                    onClick={handleUploadMore}
+                    className="btn btn-link p-0"
                     style={{
-                      height: '400px',
-                      borderRadius: '16px',
-                      backgroundColor: '#F3F9F6',
-                      cursor: 'pointer',
-                      padding: '40px'
-                    }}
-                    onDrop={handleDrop}
-                    onDragOver={handleDragOver}
-                    onClick={() => {
-                      const fileInput = document.getElementById('fileInput');
-                      if (fileInput) {
-                        fileInput.click();
-                      }
+                      color: '#007C36',
+                      textDecoration: 'none',
+                      fontSize: '14px',
+                      fontWeight: '500'
                     }}
                   >
-                    <div
-                      className="text-white rounded-circle d-flex justify-content-center align-items-center mb-4"
-                      style={{
-                        width: '80px',
-                        height: '80px',
-                        backgroundColor: '#007C36'
-                      }}
-                    >
-                      <FaUpload size={32} />
-                    </div>
-                    <div>
-                      <p className="mb-2" style={{ fontSize: '18px', color: '#3D3D3D', fontWeight: '500' }}>
-                        Click to upload or drag and drop
-                      </p>
-                      <small style={{ color: '#6c757d', fontSize: '14px' }}>
-                        PDF or DOCX (max. 10MB)
-                      </small>
-                    </div>
+                    + Upload more
+                  </button>
+                </div>
+              ) : (
+                /* Upload Dropzone - shown by default */
+                <div
+                  className="d-flex flex-column justify-content-center align-items-center text-center"
+                  style={{
+                    height: '300px',
+                    borderRadius: '16px',
+                    backgroundColor: '#F3F9F6',
+                    cursor: 'pointer',
+                    padding: '40px'
+                  }}
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                  onClick={() => {
+                    const fileInput = document.getElementById('fileInput');
+                    if (fileInput) {
+                      fileInput.click();
+                    }
+                  }}
+                >
+                  <div
+                    className="text-white rounded-circle d-flex justify-content-center align-items-center mb-4"
+                    style={{
+                      width: '50px',
+                      height: '50px',
+                      backgroundColor: '#007C36'
+                    }}
+                  >
+                    <Image src={UploadImg} />
                   </div>
-                )}
+                  <div>
+                    <p className="mb-2" style={{ fontSize: '18px', color: '#3D3D3D', fontWeight: '600' }}>
+                      Click to upload or drag and drop
+                    </p>
+                    <small style={{ color: '#6c757d', fontSize: '14px' }}>
+                      PDF or DOCX (max. 10MB)
+                    </small>
+                  </div>
+                </div>
+              )}
 
-                {/* File Input - Always available */}
-                <input
-                  type="file"
-                  id="fileInput"
-                  hidden
-                  onChange={handleFileSelect}
-                  accept=".pdf,.docx"
-                  multiple
-                />
-              </div>
+              {/* File Input - Always available */}
+              <input
+                type="file"
+                id="fileInput"
+                hidden
+                onChange={handleFileSelect}
+                accept=".pdf,.docx"
+                multiple
+              />
+            </div>
 
           </div>
         </div>
