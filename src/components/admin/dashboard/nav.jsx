@@ -3,14 +3,14 @@ import { useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
 
-import AnalyticsIcon from "@assets/img/sideNav/analytics.png";
+import { LuUsersRound } from "react-icons/lu";
+
+import DashboardIcon from "@assets/img/sideNav/dashboard.png";
+import DashboardIconActive from "@assets/img/sideNav/dashboard-active.png";
 import CardIcon from "@assets/img/sideNav/card.png";
+import CardIconActive from "@assets/img/sideNav/card-active.png";
 import ChatIcon from "@assets/img/sideNav/chat.png";
-import AnalyticsIconActive from "@assets/img/icon/chart.png";
-import CardIconActive from "@assets/img/icon/card.png";
-import ChatIconActive from "@assets/img/icon/message-notif.png";
-import { LuUserRound } from "react-icons/lu";
-// Import your step components
+import ChatIconActive from "@assets/img/sideNav/chat-active.png";
 
 import AnalyticDashboard from "./dashboard";
 import Transaction from "./Transaction";
@@ -75,14 +75,13 @@ export default function CompanySetupPage() {
                 width: "40px",
                 height: "40px",
                 borderRadius: "25px",
-                backgroundColor: activeTab === 0 ? "#EDFF8B" : "transparent",
                 cursor: "pointer"
               }}
               role="button"
               onClick={() => handleNavClick(0)}
             >
               <Image
-                src={activeTab === 0 ? AnalyticsIconActive : AnalyticsIcon}
+                src={activeTab === 0 ? DashboardIconActive : DashboardIcon}
                 alt="Analytics"
                 width={activeTab === 0 ? '25px' : '35px'}
                 height={activeTab === 0 ? '25px' : '35px'}
@@ -94,7 +93,6 @@ export default function CompanySetupPage() {
                 width: "40px",
                 height: "40px",
                 borderRadius: "25px",
-                backgroundColor: activeTab === 1 ? "#EDFF8B" : "transparent",
                 cursor: "pointer"
               }}
               role="button"
@@ -113,7 +111,6 @@ export default function CompanySetupPage() {
                 width: "40px",
                 height: "40px",
                 borderRadius: "25px",
-                backgroundColor: activeTab === 2 ? "#EDFF8B" : "transparent",
                 cursor: "pointer"
               }}
               role="button"
@@ -139,8 +136,8 @@ export default function CompanySetupPage() {
               role="button"
               onClick={() => handleNavClick(3)}
             >
-              <LuUserRound
-                size={activeTab === 3 ? 20 : 25}
+              <LuUsersRound
+                size={activeTab === 3 ? 20 : 22}
                 color={activeTab === 3 ? "#007C36" : "#a5d0b8"}
               />
             </div>
@@ -150,15 +147,14 @@ export default function CompanySetupPage() {
                 width: "40px",
                 height: "40px",
                 borderRadius: "25px",
-                border: '1px solid ',
-                filter: activeTab === 4 ? '' : 'brightness(3.5)',
+                border: '1px solid rgb(176, 213, 192)',
                 backgroundColor: activeTab === 4 ? "#EDFF8B" : "transparent",
                 cursor: "pointer"
               }}
               role="button"
               onClick={() => handleNavClick(4)}
             >
-              <SlEarphonesAlt style={{ color: activeTab === 4 ? '#3D3D3D' : '#fff' }} />
+              <SlEarphonesAlt style={{ color: activeTab === 4 ? '#3D3D3D' : 'rgb(176, 213, 192)', fontWeight: '800' }} />
             </div>
             <div
               className="d-flex align-items-center justify-content-center mb-4"
@@ -166,15 +162,14 @@ export default function CompanySetupPage() {
                 width: "40px",
                 height: "40px",
                 borderRadius: "25px",
-                border: '1px solid ',
-                filter: activeTab === 5 ? '' : 'brightness(3.5)',
+                border: '1px solid rgb(176, 213, 192)',
                 backgroundColor: activeTab === 5 ? "#EDFF8B" : "transparent",
                 cursor: "pointer"
               }}
               role="button"
               onClick={() => handleNavClick(5)}
             >
-              <CiUser style={{ color: activeTab === 5 ? '#3D3D3D' : '#fff', fontSize: '20px' }} />
+              <CiUser style={{ color: activeTab === 5 ? '#3D3D3D' : 'rgb(176, 213, 192)', fontSize: '20px', fontWeight: '800' }} />
             </div>
           </div>
           <div className="flex-grow-1">

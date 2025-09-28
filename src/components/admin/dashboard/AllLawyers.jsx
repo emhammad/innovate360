@@ -252,11 +252,9 @@ export default function AllLawyers() {
                         </div>
 
                         {/* Modal Body */}
-                        <div className="mb-4">
+                        <div className="my-4">
                             <div className="mb-3">
-                                <label className="form-label fw-semibold" style={{ color: "#3D3D3D" }}>
-                                    Name
-                                </label>
+                                
                                 <input
                                     type="text"
                                     className="form-control"
@@ -265,7 +263,7 @@ export default function AllLawyers() {
                                     onChange={(e) => handleInputChange("name", e.target.value)}
                                     style={{
                                         width: '100%',
-                                        height: '54px',
+                                        height: '48px',
                                         borderRadius: '50px',
                                         paddingTop: '15px',
                                         paddingRight: '20px',
@@ -281,9 +279,7 @@ export default function AllLawyers() {
                             </div>
 
                             <div className="mb-3">
-                                <label className="form-label fw-semibold" style={{ color: "#3D3D3D" }}>
-                                    Email
-                                </label>
+                                
                                 <div className="position-relative">
                                     <input
                                         type="email"
@@ -293,7 +289,7 @@ export default function AllLawyers() {
                                         onChange={(e) => handleInputChange("email", e.target.value)}
                                         style={{
                                             width: '100%',
-                                            height: '54px',
+                                            height: '48px',
                                             borderRadius: '50px',
                                             paddingTop: '15px',
                                             paddingRight: '20px',
@@ -320,37 +316,39 @@ export default function AllLawyers() {
                                 </div>
                             </div>
 
-                            <p className="text-muted small mb-0">
+                            <p className="text-muted mb-3" style={{ fontSize: "12px" }}>
                                 On clicking Add an email will be sent to lawyer to join Innovate360
                             </p>
                         </div>
 
                         {/* Modal Footer */}
-                        <div className="d-flex gap-3">
+                        <div className="d-flex justify-content-end gap-3">
                             <button
-                                className="btn flex-fill"
+                                className="btn "
                                 onClick={() => setShowAddModal(false)}
                                 style={{
                                     backgroundColor: "white",
                                     color: "#6c757d",
                                     border: "1px solid #dee2e6",
-                                    borderRadius: "8px",
-                                    padding: "10px 20px",
-                                    fontWeight: "500"
+                                    borderRadius: "25px",
+                                    padding: "8px 20px",
+                                    fontWeight: "500",
+                                    minWidth: "150px",
                                 }}
                             >
                                 Cancel
                             </button>
                             <button
-                                className="btn flex-fill"
+                                className="btn "
                                 onClick={handleAddLawyer}
                                 style={{
                                     backgroundColor: "#007C36",
                                     color: "white",
                                     border: "none",
-                                    borderRadius: "8px",
-                                    padding: "10px 20px",
-                                    fontWeight: "500"
+                                    borderRadius: "25px",
+                                    padding: "8px 20px",
+                                    fontWeight: "500",
+                                    minWidth: "150px",
                                 }}
                             >
                                 Add

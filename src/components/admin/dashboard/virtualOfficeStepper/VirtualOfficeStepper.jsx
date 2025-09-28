@@ -71,8 +71,8 @@ export default function VirtualOfficeStepper({ onStepChange, onPaymentFlowChange
             active: activeStep === 0
         },
         {
-            title: 'Document Process',
-            description: 'Upload required documents for virtual office setup',
+            title: 'Invoice',
+            description: 'Waiting for invoice to be paid',
             icon: '/assets/img/icon/list-icon.png',
             button: 'Start',
             active: activeStep === 1
@@ -146,7 +146,7 @@ export default function VirtualOfficeStepper({ onStepChange, onPaymentFlowChange
     return (
         <div className="pt-2">
             {/* Back Button */}
-            <div className="d-flex justify-content-start mb-3">
+            <div className="d-flex justify-content-start mb-1">
                 <button
                     className="btn"
                     onClick={handleBackToDashboard}

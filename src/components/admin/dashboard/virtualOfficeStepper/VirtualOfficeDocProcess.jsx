@@ -5,12 +5,12 @@ export default function InvoiceSummary({ onPayNow }) {
     // Mock transaction data
     const transaction = {
         id: 1,
-        item: 'NIF Registration Service',
-        method: 'Bank Transfer',
-        methodDetail: 'Pending',
+        item: 'Maxfter Inc.',
+        method: 'Credit Card',
+        methodDetail: '****7865',
         date: '2023-10-26',
         amount: '€150.00',
-        status: 'Pending'
+        status: 'Success'
     };
 
     const getStatusStyle = (status) => {

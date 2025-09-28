@@ -3,11 +3,12 @@ import { useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
 
-import AnalyticsIcon from "@assets/img/sideNav/analytics.png";
+import DashboardIcon from "@assets/img/sideNav/dashboard.png";
+import DashboardIconActive from "@assets/img/sideNav/dashboard-active.png";
+import CardIcon from "@assets/img/sideNav/card.png";
+import CardIconActive from "@assets/img/sideNav/card-active.png";
 import ChatIcon from "@assets/img/sideNav/chat.png";
-import AnalyticsIconActive from "@assets/img/icon/chart.png";
-import ChatIconActive from "@assets/img/icon/message-notif.png";
-// Import your step components
+import ChatIconActive from "@assets/img/sideNav/chat-active.png";
 
 import AnalyticDashboard from "./dashboard";
 import ChatBox from "./ChatBox";
@@ -67,16 +68,13 @@ export default function CompanySetupPage() {
                 width: "40px",
                 height: "40px",
                 borderRadius: "25px",
-                border: '1px solid ',
-                filter: activeTab === 0 ? '' : 'brightness(3.5)',
-                backgroundColor: activeTab === 0 ? "#EDFF8B" : "transparent",
                 cursor: "pointer"
               }}
               role="button"
               onClick={() => handleNavClick(0)}
             >
               <Image
-                src={activeTab === 0 ? AnalyticsIconActive : AnalyticsIcon}
+                src={activeTab === 0 ? DashboardIconActive : DashboardIcon}
                 alt="Analytics"
                 width={activeTab ? '25px' : '35px'}
                 height={activeTab ? '25px' : '35px'}
@@ -88,16 +86,13 @@ export default function CompanySetupPage() {
                 width: "40px",
                 height: "40px",
                 borderRadius: "25px",
-                border: '1px solid ',
-                filter: activeTab === 1 ? '' : 'brightness(3.5)',
-                backgroundColor: activeTab === 1 ? "#EDFF8B" : "transparent",
                 cursor: "pointer"
               }}
               role="button"
               onClick={() => handleNavClick(1)}
             >
               <Image
-                src={activeTab === 1 ? ChatIconActive : ChatIcon}
+                src={activeTab === 1 ? CardIconActive : CardIcon}
                 alt="Chat"
                 width={activeTab ? '25px' : '35px'}
                 height={activeTab ? '25px' : '35px'}
@@ -109,15 +104,14 @@ export default function CompanySetupPage() {
                 width: "40px",
                 height: "40px",
                 borderRadius: "25px",
-                border: '1px solid ',
-                filter: activeTab === 2 ? '' : 'brightness(3.5)',
+                border: '1px solid rgb(176, 213, 192)',
                 backgroundColor: activeTab === 2 ? "#EDFF8B" : "transparent",
                 cursor: "pointer"
               }}
               role="button"
               onClick={() => handleNavClick(2)}
             >
-              <SlEarphonesAlt style={{ color: activeTab === 2 ? '#3D3D3D' : '#fff' }} />
+              <SlEarphonesAlt style={{ color: activeTab === 2 ? '#3D3D3D' : 'rgb(176, 213, 192)', fontWeight: '800' }} />
             </div>
             <div
               className="d-flex align-items-center justify-content-center mb-4"
@@ -125,15 +119,14 @@ export default function CompanySetupPage() {
                 width: "40px",
                 height: "40px",
                 borderRadius: "25px",
-                border: '1px solid ',
-                filter: activeTab === 3 ? '' : 'brightness(3.5)',
+                border: '1px solid rgb(176, 213, 192)',
                 backgroundColor: activeTab === 3 ? "#EDFF8B" : "transparent",
                 cursor: "pointer"
               }}
               role="button"
               onClick={() => handleNavClick(3)}
             >
-              <CiUser style={{ color: activeTab === 3 ? '#3D3D3D' : '#fff', fontSize: '20px' }} />
+              <CiUser style={{ color: activeTab === 3 ? '#3D3D3D' : 'rgb(176, 213, 192)', fontSize: '20px', fontWeight: '800' }} />
             </div>
           </div>
           <div className="flex-grow-1">

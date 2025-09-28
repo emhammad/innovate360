@@ -155,6 +155,14 @@ export default function CustomerSupport() {
         }
     };
 
+    const handleStatusChange = (ticketId, newStatus) => {
+        setTickets(prev =>
+            prev.map(ticket =>
+                ticket.id === ticketId ? { ...ticket, status: newStatus } : ticket
+            )
+        );
+    };
+
     return (
         <>
             <div style={{ padding: '35px' }}>
@@ -342,7 +350,8 @@ export default function CustomerSupport() {
             {showViewModal && selectedTicket && (
                 <ViewTicketModal
                     ticket={selectedTicket}
-                    onClose={handleCloseViewModal}
+                    onClose={() => setShowViewModal(false)}
+                    onStatusChange={handleStatusChange}
                 />
             )}
         </>
@@ -613,7 +622,7 @@ const CreateTicketModal = ({ onClose, onSubmit }) => {
 };
 
 // View Ticket Modal Component
-const ViewTicketModal = ({ ticket, onClose }) => {
+const ViewTicketModal = ({ ticket, onClose, onStatusChange }) => {
     const getStatusStyle = (status) => {
         switch (status) {
             case "Resolved":
@@ -731,9 +740,26 @@ const ViewTicketModal = ({ ticket, onClose }) => {
                                         Status
                                     </label>
                                     <div>
-                                        <span style={getStatusStyle(ticket.status)}>
-                                            {ticket.status}
-                                        </span>
+                                        <select
+                                            value={ticket.status}
+                                            onChange={e => onStatusChange(ticket.id, e.target.value)}
+                                            className="form-select"
+                                            style={{
+                                                borderRadius: '25px',
+                                                border: '1px solid #3D3D3D40',
+                                                fontSize: '15px',
+                                                padding: '10px 24px',
+                                                minWidth: '140px',
+                                                background: '#F7FAF7',
+                                                color: '#007C36',
+                                                fontWeight: '500',
+                                                boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
+                                            }}
+                                        >
+                                            <option value="Pending">Pending</option>
+                                            <option value="In Progress">In Progress</option>
+                                            <option value="Resolved">Resolved</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
