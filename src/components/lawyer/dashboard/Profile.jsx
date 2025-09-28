@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { LuLockKeyhole, LuUserRound } from "react-icons/lu";
+import { MdOutlineLocalPhone } from "react-icons/md";
+import { GoMail } from "react-icons/go";
 
 export default function Profile() {
     const [formData, setFormData] = useState({
@@ -8,7 +11,7 @@ export default function Profile() {
         email: '',
         phone: '',
         password: '',
-        profileImage: '/assets/img/team/team-1.jpg'
+        profileImage: '/assets/img/team/team-2.jpg'
     });
 
     const [isEditing, setIsEditing] = useState(false);
@@ -23,7 +26,7 @@ export default function Profile() {
                 email: user.email || '',
                 phone: user.phone || '',
                 password: user.password ? '123123' : '',
-                profileImage: user.profileImage || '/assets/img/team/team-1.jpg'
+                profileImage: user.profileImage || '/assets/img/team/team-2.jpg'
             });
         }
     }, []);
@@ -136,7 +139,7 @@ export default function Profile() {
                                 paddingTop: '15px',
                                 paddingRight: '20px',
                                 paddingBottom: '15px',
-                                paddingLeft: '50px',
+                                paddingLeft: '55px',
                                 opacity: 1,
                                 borderWidth: '1px',
                                 border: '1px solid #3D3D3D40',
@@ -146,17 +149,15 @@ export default function Profile() {
                             }}
                             disabled={!isEditing}
                         />
-                        <Image
-                            src="/assets/img/icon/sms.png"
-                            alt="Name Icon"
-                            width={20}
-                            height={20}
+                        <LuUserRound
                             className="position-absolute"
                             style={{
                                 top: '50%',
                                 left: '20px',
                                 transform: 'translateY(-50%)',
-                                zIndex: 10
+                                zIndex: 10,
+                                fontSize: '25px',
+                                color: '#3d3d3d'
                             }}
                         />
                     </div>
@@ -178,7 +179,7 @@ export default function Profile() {
                                 paddingTop: '15px',
                                 paddingRight: '20px',
                                 paddingBottom: '15px',
-                                paddingLeft: '50px',
+                                paddingLeft: '55px',
                                 opacity: 1,
                                 borderWidth: '1px',
                                 border: '1px solid #3D3D3D40',
@@ -188,17 +189,15 @@ export default function Profile() {
                             }}
                             disabled={!isEditing}
                         />
-                        <Image
-                            src="/assets/img/icon/sms.png"
-                            alt="Email Icon"
-                            width={20}
-                            height={20}
+                        <GoMail
                             className="position-absolute"
                             style={{
                                 top: '50%',
                                 left: '20px',
                                 transform: 'translateY(-50%)',
-                                zIndex: 10
+                                zIndex: 10,
+                                fontSize: '25px',
+                                color: '#3d3d3d'
                             }}
                         />
                     </div>
@@ -220,7 +219,7 @@ export default function Profile() {
                                 paddingTop: '15px',
                                 paddingRight: '20px',
                                 paddingBottom: '15px',
-                                paddingLeft: '50px',
+                                paddingLeft: '55px',
                                 opacity: 1,
                                 borderWidth: '1px',
                                 border: '1px solid #3D3D3D40',
@@ -230,17 +229,15 @@ export default function Profile() {
                             }}
                             disabled={!isEditing}
                         />
-                        <Image
-                            src="/assets/img/icon/sms.png"
-                            alt="Phone Icon"
-                            width={20}
-                            height={20}
+                        <MdOutlineLocalPhone
                             className="position-absolute"
                             style={{
                                 top: '50%',
                                 left: '20px',
                                 transform: 'translateY(-50%)',
-                                zIndex: 10
+                                zIndex: 10,
+                                fontSize: '25px',
+                                color: '#3d3d3d'
                             }}
                         />
                     </div>
@@ -262,7 +259,7 @@ export default function Profile() {
                                 paddingTop: '15px',
                                 paddingRight: '50px',
                                 paddingBottom: '15px',
-                                paddingLeft: '50px',
+                                paddingLeft: '55px',
                                 opacity: 1,
                                 borderWidth: '1px',
                                 border: '1px solid #3D3D3D40',
@@ -272,17 +269,15 @@ export default function Profile() {
                             }}
                             disabled={!isEditing}
                         />
-                        <Image
-                            src="/assets/img/icon/sms.png"
-                            alt="Password Icon"
-                            width={20}
-                            height={20}
+                        <LuLockKeyhole
                             className="position-absolute"
                             style={{
                                 top: '50%',
                                 left: '20px',
                                 transform: 'translateY(-50%)',
-                                zIndex: 10
+                                zIndex: 10,
+                                fontSize: '25px',
+                                color: '#3d3d3d'
                             }}
                         />
                         {/* Eye Icon */}
