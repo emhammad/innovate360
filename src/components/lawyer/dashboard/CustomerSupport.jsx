@@ -3,6 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import SearchIcon from "@assets/img/icon/search-icon.svg";
 import NoDate from "@assets/img/icon/cusomer-page.png";
+import { FaChevronDown } from "react-icons/fa";
 
 const supportData = [
     {
@@ -153,6 +154,17 @@ export default function CustomerSupport() {
                     width: "fit-content",
                 };
         }
+    };
+
+    const handleStatusChange = (ticketId, newStatus) => {
+        setTickets(prev =>
+            prev.map(ticket =>
+                ticket.id === ticketId ? { ...ticket, status: newStatus } : ticket
+            )
+        );
+        setSelectedTicket(prev =>
+            prev && prev.id === ticketId ? { ...prev, status: newStatus } : prev
+        );
     };
 
     return (
@@ -342,7 +354,8 @@ export default function CustomerSupport() {
             {showViewModal && selectedTicket && (
                 <ViewTicketModal
                     ticket={selectedTicket}
-                    onClose={handleCloseViewModal}
+                    onClose={() => setShowViewModal(false)}
+                    onStatusChange={handleStatusChange}
                 />
             )}
         </>
@@ -613,7 +626,7 @@ const CreateTicketModal = ({ onClose, onSubmit }) => {
 };
 
 // View Ticket Modal Component
-const ViewTicketModal = ({ ticket, onClose }) => {
+const ViewTicketModal = ({ ticket, onClose, onStatusChange }) => {
     const getStatusStyle = (status) => {
         switch (status) {
             case "Resolved":
@@ -730,10 +743,41 @@ const ViewTicketModal = ({ ticket, onClose }) => {
                                     <label className="form-label fw-semibold" style={{ color: '#6c757d', fontSize: '14px' }}>
                                         Status
                                     </label>
-                                    <div>
-                                        <span style={getStatusStyle(ticket.status)}>
-                                            {ticket.status}
-                                        </span>
+                                    <div className="position-relative" style={{ width: '100%' }}>
+                                        <select
+                                            value={ticket.status}
+                                            onChange={e => onStatusChange(ticket.id, e.target.value)}
+                                            className="form-select"
+                                            style={{
+                                                borderRadius: '25px',
+                                                border: '1px solid #3D3D3D40',
+                                                fontSize: '15px',
+                                                padding: '10px 44px 10px 24px', // extra right padding for icon
+                                                minWidth: '140px',
+                                                background: '#F7FAF7',
+                                                color: '#007C36',
+                                                fontWeight: '500',
+                                                boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                                                appearance: 'none', // hide default arrow
+                                                WebkitAppearance: 'none',
+                                                MozAppearance: 'none',
+                                            }}
+                                        >
+                                            <option value="Pending">Pending</option>
+                                            <option value="In Progress">In Progress</option>
+                                            <option value="Resolved">Resolved</option>
+                                        </select>
+                                        <FaChevronDown
+                                            style={{
+                                                position: 'absolute',
+                                                right: '18px',
+                                                top: '50%',
+                                                transform: 'translateY(-50%)',
+                                                pointerEvents: 'none',
+                                                color: '#007C36',
+                                                fontSize: '18px'
+                                            }}
+                                        />
                                     </div>
                                 </div>
                             </div>

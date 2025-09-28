@@ -61,23 +61,6 @@ export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
     }
   };
 
-  // Handle payment flow
-  const handlePayNow = () => {
-    setShowPaymentFlow(true);
-  };
-
-  const handleBackToSummary = () => {
-    setShowPaymentFlow(false);
-  };
-
-  // Check if step is accessible
-  const isStepAccessible = (index) => {
-    if (index === 0) return true;
-    if (index === 1) return completedSteps.includes(0);
-    if (index === 2) return completedSteps.includes(1);
-    return false;
-  };
-
   // Define steps for the stepper
   const cardSteps = [
     {
@@ -86,13 +69,6 @@ export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
       icon: '/assets/img/icon/registration.png',
       button: 'View',
       active: true
-    },
-    {
-      title: 'Invoice',
-      description: 'Waiting for invoice to be paid',
-      icon: '/assets/img/icon/invoice.png',
-      button: 'Pay Now',
-      active: false
     },
     {
       title: 'Complete',
@@ -104,14 +80,13 @@ export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
   ];
 
   const handleStepClick = (index) => {
-    // Check if step is accessible
-    if (isStepAccessible(index)) {
-      // Mark previous step as completed when moving forward
-      if (index > activeStep) {
-        markStepCompleted(activeStep);
-      }
-      handleStepChange(index);
+
+    // Mark previous step as completed when moving forward
+    if (index > activeStep) {
+      markStepCompleted(activeStep);
     }
+    handleStepChange(index);
+
   };
 
   const handleCheckboxChange = (stepIndex, isChecked) => {
@@ -130,19 +105,6 @@ export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
       case 0:
         return <AdminNifDocProcess />;
       case 1:
-        if (showPaymentFlow) {
-          return <AdminNifInvoiceFlow
-            onBackToStep0={() => handleStepChange(0)}
-            onBackToSummary={handleBackToSummary}
-            onNextToStep2={() => {
-              markStepCompleted(1);
-              handleStepChange(2);
-            }}
-          />;
-        } else {
-          return <AdminNifInvoiceSummary onPayNow={handlePayNow} />;
-        }
-      case 2:
         return <AdminNifCompletedDocument
           file={{
             name: 'NIF-Confirmation.pdf',
@@ -198,7 +160,6 @@ export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
           activeStep={activeStep}
           completedSteps={completedSteps}
           handleStepClick={handleStepClick}
-          isStepAccessible={isStepAccessible}
         />
         <AdminStatusCards
           cardSteps={cardSteps}
@@ -206,7 +167,6 @@ export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
           completedSteps={completedSteps}
           handleStepClick={handleStepClick}
           handleCheckboxChange={handleCheckboxChange}
-          isStepAccessible={isStepAccessible}
         />
       </>}
 

@@ -5,8 +5,6 @@ import Image from "next/image";
 
 import DashboardIcon from "@assets/img/sideNav/dashboard.png";
 import DashboardIconActive from "@assets/img/sideNav/dashboard-active.png";
-import CardIcon from "@assets/img/sideNav/card.png";
-import CardIconActive from "@assets/img/sideNav/card-active.png";
 import ChatIcon from "@assets/img/sideNav/chat.png";
 import ChatIconActive from "@assets/img/sideNav/chat-active.png";
 
@@ -92,7 +90,7 @@ export default function CompanySetupPage() {
               onClick={() => handleNavClick(1)}
             >
               <Image
-                src={activeTab === 1 ? CardIconActive : CardIcon}
+                src={activeTab === 1 ? ChatIconActive : ChatIcon}
                 alt="Chat"
                 width={activeTab ? '25px' : '35px'}
                 height={activeTab ? '25px' : '35px'}

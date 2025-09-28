@@ -1,15 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function Profile() {
     const [formData, setFormData] = useState({
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        phone: '+1 234 567 8900',
-        password: '••••••••'
+        name: '',
+        email: '',
+        phone: '',
+        password: '',
+        profileImage: '/assets/img/team/team-1.jpg'
     });
 
     const [isEditing, setIsEditing] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+
+    useEffect(() => {
+        const userData = localStorage.getItem("currentUser");
+        if (userData) {
+            const user = JSON.parse(userData);
+            setFormData({
+                name: user.name || '',
+                email: user.email || '',
+                phone: user.phone || '',
+                password: user.password ? '123123' : '',
+                profileImage: user.profileImage || '/assets/img/team/team-1.jpg'
+            });
+        }
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -26,19 +43,24 @@ export default function Profile() {
         setIsEditing(false);
     };
 
-    const handleEdit = () => {
-        setIsEditing(true);
+    const handleEdit = (e) => {
+        e.preventDefault();
+        setIsEditing(true)
     };
 
     const handleCancel = () => {
         setIsEditing(false);
-        // Reset form data to original values
-        setFormData({
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            phone: '+1 234 567 8900',
-            password: '••••••••'
-        });
+        const userData = localStorage.getItem("currentUser");
+        if (userData) {
+            const user = JSON.parse(userData);
+            setFormData({
+                name: user.name || '',
+                email: user.email || '',
+                phone: user.phone || '',
+                password: user.password ? '123123' : '',
+                profileImage: user.profileImage || '/assets/img/team/team-1.jpg'
+            });
+        }
     };
 
     return (
@@ -62,7 +84,7 @@ export default function Profile() {
                 {/* Profile Picture */}
                 <div className="position-relative mb-4">
                     <Image
-                        src="/assets/img/team/team-1.jpg"
+                        src={formData.profileImage}
                         alt="Profile Picture"
                         width={120}
                         height={120}
@@ -96,7 +118,7 @@ export default function Profile() {
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit} style={{ width: '100%', padding: '0 40px' }}>
+                <form style={{ width: '100%', padding: '0 40px' }}>
                     {/* Name Field */}
                     <div className="mb-3 position-relative">
                         <input
@@ -122,6 +144,7 @@ export default function Profile() {
                                 fontSize: '14px',
                                 backgroundColor: isEditing ? 'transparent' : '#f8f9fa'
                             }}
+                            disabled={!isEditing}
                         />
                         <Image
                             src="/assets/img/icon/sms.png"
@@ -163,6 +186,7 @@ export default function Profile() {
                                 fontSize: '14px',
                                 backgroundColor: isEditing ? 'transparent' : '#f8f9fa'
                             }}
+                            disabled={!isEditing}
                         />
                         <Image
                             src="/assets/img/icon/sms.png"
@@ -204,6 +228,7 @@ export default function Profile() {
                                 fontSize: '14px',
                                 backgroundColor: isEditing ? 'transparent' : '#f8f9fa'
                             }}
+                            disabled={!isEditing}
                         />
                         <Image
                             src="/assets/img/icon/sms.png"
@@ -223,7 +248,7 @@ export default function Profile() {
                     {/* Password Field */}
                     <div className="mb-4 position-relative">
                         <input
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             className="form-control"
                             name="password"
                             placeholder="Password"
@@ -235,7 +260,7 @@ export default function Profile() {
                                 height: '54px',
                                 borderRadius: '25px',
                                 paddingTop: '15px',
-                                paddingRight: '20px',
+                                paddingRight: '50px',
                                 paddingBottom: '15px',
                                 paddingLeft: '50px',
                                 opacity: 1,
@@ -245,6 +270,7 @@ export default function Profile() {
                                 fontSize: '14px',
                                 backgroundColor: isEditing ? 'transparent' : '#f8f9fa'
                             }}
+                            disabled={!isEditing}
                         />
                         <Image
                             src="/assets/img/icon/sms.png"
@@ -259,29 +285,80 @@ export default function Profile() {
                                 zIndex: 10
                             }}
                         />
+                        {/* Eye Icon */}
+                        <span
+                            style={{
+                                position: "absolute",
+                                right: "20px",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                cursor: isEditing ? "pointer" : "not-allowed",
+                                zIndex: 10,
+                                color: "#6c757d"
+                            }}
+                            onClick={() => isEditing && setShowPassword(prev => !prev)}
+                        >
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        </span>
                     </div>
 
                     {/* Action Buttons */}
                     <div className="d-flex gap-3 justify-content-center">
-
-                        <button
-                            type="button"
-                            className="btn btn-success"
-                            onClick={handleEdit}
-                            style={{
-                                backgroundColor: '#007C36',
-                                border: 'none',
-                                borderRadius: '25px',
-                                height: '48px',
-                                fontSize: '16px',
-                                fontWeight: '600',
-                                padding: '0 40px',
-                                width: '100%'
-                            }}
-                        >
-                            Confirm
-                        </button>
-
+                        {!isEditing ? (
+                            <button
+                                type="button"
+                                className="btn btn-success"
+                                onClick={handleEdit}
+                                style={{
+                                    backgroundColor: '#007C36',
+                                    border: 'none',
+                                    borderRadius: '25px',
+                                    height: '48px',
+                                    fontSize: '16px',
+                                    fontWeight: '600',
+                                    padding: '0 40px',
+                                    width: '100%'
+                                }}
+                            >
+                                Edit
+                            </button>
+                        ) : (
+                            <>
+                                <button
+                                    type="submit"
+                                    className="btn btn-success"
+                                    onClick={handleSubmit}
+                                    style={{
+                                        backgroundColor: '#007C36',
+                                        border: 'none',
+                                        borderRadius: '25px',
+                                        height: '48px',
+                                        fontSize: '16px',
+                                        fontWeight: '600',
+                                        padding: '0 40px',
+                                        width: '100%'
+                                    }}
+                                >
+                                    Save
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-light"
+                                    onClick={handleCancel}
+                                    style={{
+                                        border: '1px solid #dee2e6',
+                                        borderRadius: '25px',
+                                        height: '48px',
+                                        fontSize: '16px',
+                                        fontWeight: '600',
+                                        padding: '0 40px',
+                                        width: '100%'
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                            </>
+                        )}
                     </div>
                 </form>
             </div>

@@ -1,24 +1,69 @@
-// pages/admin-login.js
+// pages/login.js
 import Head from 'next/head';
 import Image from 'next/image';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { authenticateUser } from '../../data/users';
 
-export default function AdminLoginScreen() {
+export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Clear error when user starts typing
+    if (error) setError('');
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+
+    try {
+      // Authenticate user
+      const user = authenticateUser(formData.email, formData.password);
+
+      if (user) {
+        // Store user data in localStorage
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        localStorage.setItem('isAuthenticated', 'true');
+
+        // Redirect to main dashboard
+        router.push('/admin/dashboard');
+      } else {
+        setError('Invalid email or password. Please try again.');
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
       <Head>
-        <title>Admin Login - Innovate360</title>
+        <title>Admin - Login</title>
       </Head>
       <div className="d-flex justify-content-center align-items-center vh-100">
         <div className="card" style={{
           width: '580px',
-          height: '450px',
+          minHeight: '450px',
           borderRadius: '24px',
           paddingTop: '24px',
           paddingRight: '24px',
@@ -40,17 +85,28 @@ export default function AdminLoginScreen() {
 
           {/* Welcome Section */}
           <div className="text-start mb-4">
-            <h4 className="fw-bold mb-2" style={{ fontWeight: '400', color: '#3D3D3D' }}>Welcome</h4>
+            <h4 className="fw-bold mb-2" style={{ fontWeight: '400', color: '#3D3D3D' }}>Welcome to Admin Panel</h4>
             <p className="text-muted mb-0" style={{ fontSize: '14px' }}>Login to continue</p>
           </div>
 
-          <form>
+          <form onSubmit={handleSubmit}>
+            {/* Error Message */}
+            {error && (
+              <div className="alert alert-danger mb-3" style={{ fontSize: '14px', borderRadius: '8px' }}>
+                {error}
+              </div>
+            )}
+
             {/* Email Input */}
             <div className="mb-3 position-relative">
               <input
                 type="email"
                 className="form-control"
+                name="email"
                 placeholder="Enter your email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
                 style={{
                   width: '100%',
                   height: '54px',
@@ -86,7 +142,11 @@ export default function AdminLoginScreen() {
               <input
                 type={showPassword ? "text" : "password"}
                 className="form-control"
+                name="password"
                 placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleInputChange}
+                required
                 style={{
                   width: '100%',
                   height: '54px',
@@ -133,35 +193,24 @@ export default function AdminLoginScreen() {
               />
             </div>
 
-            {/* Forgot Password Link */}
-            <div className="mb-4">
-              <a
-                href="/admin/forgot-password"
-                className="text-success text-decoration-none"
-                style={{ fontSize: '14px', fontWeight: '500' }}
-              >
-                Forgot Password?
-              </a>
-            </div>
-
             {/* Login Button */}
             <button
               type="submit"
-              onClick={(e) => {
-                e.preventDefault();
-                window.location.href = '/admin/dashboard';
-              }}
+              disabled={isLoading}
               className="btn btn-success w-100 mt-2"
               style={{
                 borderRadius: '25px',
                 height: '48px',
                 fontSize: '16px',
-                fontWeight: '600'
+                fontWeight: '600',
+                backgroundColor: '#007C36',
+                opacity: isLoading ? 0.7 : 1
               }}
             >
-              Login
+              {isLoading ? 'Logging in...' : 'Login'}
             </button>
           </form>
+
         </div>
       </div>
     </>

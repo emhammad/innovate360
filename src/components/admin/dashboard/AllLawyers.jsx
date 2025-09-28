@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { FaSearch, FaUser, FaTimes } from "react-icons/fa";
 import Image from "next/image";
+import { LuLockKeyholeOpen, LuUserRound } from "react-icons/lu";
+import { IoMailOutline } from "react-icons/io5";
 
 export default function AllLawyers() {
     const [search, setSearch] = useState("");
@@ -253,33 +255,47 @@ export default function AllLawyers() {
 
                         {/* Modal Body */}
                         <div className="my-4">
+
                             <div className="mb-3">
-                                
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="John Doe"
-                                    value={newLawyer.name}
-                                    onChange={(e) => handleInputChange("name", e.target.value)}
-                                    style={{
-                                        width: '100%',
-                                        height: '48px',
-                                        borderRadius: '50px',
-                                        paddingTop: '15px',
-                                        paddingRight: '20px',
-                                        paddingBottom: '15px',
-                                        paddingLeft: '20px',
-                                        opacity: 1,
-                                        borderWidth: '1px',
-                                        border: '1px solid #3D3D3D40',
-                                        background: 'transparent',
-                                        fontSize: '14px'
-                                    }}
-                                />
+
+                                <div className="position-relative">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="John Doe"
+                                        value={newLawyer.name}
+                                        onChange={(e) => handleInputChange("name", e.target.value)}
+                                        style={{
+                                            width: '100%',
+                                            height: '48px',
+                                            borderRadius: '50px',
+                                            paddingTop: '15px',
+                                            paddingRight: '20px',
+                                            paddingBottom: '15px',
+                                            paddingLeft: '50px',
+                                            opacity: 1,
+                                            borderWidth: '1px',
+                                            border: '1px solid #3D3D3D40',
+                                            background: 'transparent',
+                                            fontSize: '14px'
+                                        }}
+                                    />
+                                    <LuUserRound
+                                        style={{
+                                            position: "absolute",
+                                            left: "20px",
+                                            top: "50%",
+                                            transform: "translateY(-50%)",
+                                            color: "#6c757d",
+                                            fontSize: "20px",
+                                            zIndex: 10
+                                        }}
+                                    />
+                                </div>
                             </div>
 
                             <div className="mb-3">
-                                
+
                                 <div className="position-relative">
                                     <input
                                         type="email"
@@ -302,7 +318,7 @@ export default function AllLawyers() {
                                             fontSize: '14px'
                                         }}
                                     />
-                                    <FaUser
+                                    <IoMailOutline
                                         style={{
                                             position: "absolute",
                                             left: "20px",
@@ -316,7 +332,66 @@ export default function AllLawyers() {
                                 </div>
                             </div>
 
-                            <p className="text-muted mb-3" style={{ fontSize: "12px" }}>
+                            <div className="mb-3">
+                                <label className="form-label fw-semibold" style={{ color: '#6c757d', fontSize: '14px' }}>
+                                    Access Type
+                                </label>
+                                <div className="position-relative">
+                                    <select
+                                        className="form-select"
+                                        value={newLawyer.accessType || ""}
+                                        onChange={e => handleInputChange("accessType", e.target.value)}
+                                        style={{
+                                            borderRadius: '50px',
+                                            border: '1px solid #3D3D3D40',
+                                            fontSize: '14px',
+                                            padding: '12px 44px 12px 50px',
+                                            background: '#F7FAF7',
+                                            fontWeight: '500',
+                                            boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                                            appearance: 'none',
+                                            WebkitAppearance: 'none',
+                                            MozAppearance: 'none',
+                                            width: '100%'
+                                        }}
+                                    >
+                                        <option value="" disabled>Select Access Type</option>
+                                        <option value="Company registration">Company registration</option>
+                                        <option value="NIF">NIF</option>
+                                        <option value="Both">Both</option>
+                                    </select>
+                                    {/* Dropdown icon */}
+                                    <LuLockKeyholeOpen
+                                        style={{
+                                            position: "absolute",
+                                            left: "20px",
+                                            top: "50%",
+                                            transform: "translateY(-50%)",
+                                            color: "#6c757d",
+                                            fontSize: "20px",
+                                            zIndex: 10,
+                                            pointerEvents: "none"
+                                        }}
+                                    />
+                                    <svg
+                                        style={{
+                                            position: 'absolute',
+                                            right: '18px',
+                                            top: '50%',
+                                            transform: 'translateY(-50%)',
+                                            pointerEvents: 'none'
+                                        }}
+                                        width="18"
+                                        height="18"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path d="M7 10l5 5 5-5" stroke="#007C36" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <p className="text-muted mb-3 ps-3" style={{ fontSize: "12px" }}>
                                 On clicking Add an email will be sent to lawyer to join Innovate360
                             </p>
                         </div>
