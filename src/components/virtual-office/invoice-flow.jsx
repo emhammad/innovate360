@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import logo_img from "@assets/img/logo/innovate360.png";
 import WalletImage from "@assets/img/icon/payment-success.png";
 import InvoicePreview from '../admin/dashboard/InvoicePreview';
+import Select from "react-select";
 import {
   FaDownload
 } from 'react-icons/fa';
@@ -532,121 +533,140 @@ function CardPayment({ onBack, onSuccess }) {
     fullName: "",
     country: ""
   });
+  const [fieldErrors, setFieldErrors] = useState({});
 
-  const [errors, setErrors] = useState({});
-
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const validateCardNumber = (cardNumber) => {
-    const cleanNumber = cardNumber.replace(/\s/g, '');
-    return /^\d{16}$/.test(cleanNumber);
-  };
-
-  const validateExpiryDate = (expiryDate) => {
-    return /^\d{2}\/\d{2}$/.test(expiryDate);
-  };
-
-  const validateCVV = (cvv) => {
-    return /^\d{3}$/.test(cvv);
-  };
+  const countryOptions = [
+    { value: "Portugal", label: "Portugal" },
+    { value: "Spain", label: "Spain" },
+    { value: "France", label: "France" },
+    { value: "Germany", label: "Germany" },
+    { value: "Italy", label: "Italy" },
+    { value: "United Kingdom", label: "United Kingdom" },
+    { value: "United States", label: "United States" },
+    // ...add more as needed
+  ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    let processedValue = value;
 
-    // Auto-format card number with spaces
-    if (name === 'cardNumber') {
-      const cleanValue = value.replace(/\s/g, '').replace(/\D/g, '');
-      if (cleanValue.length <= 16) {
-        processedValue = cleanValue.replace(/(\d{4})(?=\d)/g, '$1 ');
-      } else {
-        return; // Don't update if more than 16 digits
-      }
-    }
-
-    // Auto-format expiry date with slash
-    if (name === 'expiryDate') {
-      const cleanValue = value.replace(/\D/g, '');
-      if (cleanValue.length <= 4) {
-        if (cleanValue.length >= 2) {
-          processedValue = cleanValue.substring(0, 2) + '/' + cleanValue.substring(2, 4);
-        } else {
-          processedValue = cleanValue;
-        }
-      } else {
-        return; // Don't update if more than 4 digits
-      }
-    }
-
-    // Limit CVV to 3 digits
-    if (name === 'cvv') {
-      const cleanValue = value.replace(/\D/g, '');
-      if (cleanValue.length <= 3) {
-        processedValue = cleanValue;
-      } else {
-        return; // Don't update if more than 3 digits
-      }
-    }
-
-    setFormData(prev => ({
-      ...prev,
-      [name]: processedValue
-    }));
-
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({
+    // Clear field error when user starts typing
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => ({
         ...prev,
         [name]: ''
       }));
     }
+
+    // Add validation for card number to limit digits
+    if (name === 'cardNumber') {
+      // Remove all non-digit characters and limit to 16 digits
+      const digitsOnly = value.replace(/\D/g, '');
+      if (digitsOnly.length <= 16) {
+        // Format with spaces every 4 digits
+        const formatted = digitsOnly.replace(/(\d{4})(?=\d)/g, '$1 ');
+        setFormData(prev => ({
+          ...prev,
+          [name]: formatted
+        }));
+      }
+      return;
+    }
+
+    // Add validation for CVV to limit to 3-4 digits
+    if (name === 'cvv') {
+      const digitsOnly = value.replace(/\D/g, '');
+      if (digitsOnly.length <= 4) {
+        setFormData(prev => ({
+          ...prev,
+          [name]: digitsOnly
+        }));
+      }
+      return;
+    }
+
+    // Add validation for expiry date (MM/YY format)
+    if (name === 'expiryDate') {
+      const digitsOnly = value.replace(/\D/g, '');
+      if (digitsOnly.length <= 4) {
+        let formatted = digitsOnly;
+        if (digitsOnly.length >= 2) {
+          formatted = digitsOnly.substring(0, 2) + '/' + digitsOnly.substring(2, 4);
+        }
+        setFormData(prev => ({
+          ...prev,
+          [name]: formatted
+        }));
+      }
+      return;
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleCountryChange = (selectedOption) => {
+    setFormData(prev => ({
+      ...prev,
+      country: selectedOption ? selectedOption.value : ""
+    }));
+    if (fieldErrors.country) {
+      setFieldErrors(prev => ({
+        ...prev,
+        country: ""
+      }));
+    }
+  };
 
-    const newErrors = {};
+  const validateForm = () => {
+    const errors = {};
 
     // Validate email
     if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!validateEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      errors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = 'Please enter a valid email address';
     }
 
-    // Validate card number
+    // Validate card number (must be exactly 16 digits)
+    const cardDigits = formData.cardNumber.replace(/\D/g, '');
     if (!formData.cardNumber) {
-      newErrors.cardNumber = 'Card number is required';
-    } else if (!validateCardNumber(formData.cardNumber)) {
-      newErrors.cardNumber = 'Please enter a valid 16-digit card number';
+      errors.cardNumber = 'Card number is required';
+    } else if (cardDigits.length !== 16) {
+      errors.cardNumber = 'Card number must be 16 digits';
     }
 
-    // Validate expiry date
+    // Validate expiry date (MM/YY format)
     if (!formData.expiryDate) {
-      newErrors.expiryDate = 'Expiry date is required';
-    } else if (!validateExpiryDate(formData.expiryDate)) {
-      newErrors.expiryDate = 'Please enter a valid expiry date (MM/YY)';
+      errors.expiryDate = 'Expiry date is required';
+    } else if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(formData.expiryDate)) {
+      errors.expiryDate = 'Please enter valid expiry date (MM/YY)';
     }
 
-    // Validate CVV
+    // Validate CVV (3-4 digits)
     if (!formData.cvv) {
-      newErrors.cvv = 'CVV is required';
-    } else if (!validateCVV(formData.cvv)) {
-      newErrors.cvv = 'Please enter a valid 3-digit CVV';
+      errors.cvv = 'CVV is required';
+    } else if (!/^\d{3,4}$/.test(formData.cvv)) {
+      errors.cvv = 'CVV must be 3-4 digits';
     }
 
     // Validate full name
     if (!formData.fullName.trim()) {
-      newErrors.fullName = 'Full name is required';
+      errors.fullName = 'Full name is required';
     }
 
-    setErrors(newErrors);
+    if (!formData.country) {
+      errors.country = "Country is required";
+    }
 
-    // If no errors, proceed with submission
-    if (Object.keys(newErrors).length === 0) {
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validateForm()) {
       if (onSuccess) {
         onSuccess(formData);
       }
@@ -654,7 +674,7 @@ function CardPayment({ onBack, onSuccess }) {
   };
 
   const isFormValid = formData.email && formData.cardNumber && formData.expiryDate &&
-    formData.cvv && formData.fullName && Object.keys(errors).length === 0;
+    formData.cvv && formData.fullName;
 
   return (
     <div className='d-flex flex-column justify-content-center' style={{ minHeight: '90vh', margin: 'auto' }}>
@@ -734,179 +754,173 @@ function CardPayment({ onBack, onSuccess }) {
             {/* Payment Form */}
             <form onSubmit={handleSubmit}>
               {/* Email Address */}
-              <div className="mb-3">
-                <div className='position-relative'>
-                  <input
-                    type="email"
-                    name="email"
-                    className="form-control"
-                    placeholder="example@mail.com"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    style={{
-                      width: '100%',
-                      height: '54px',
-                      borderRadius: '50px',
-                      paddingTop: '15px',
-                      paddingRight: '20px',
-                      paddingBottom: '15px',
-                      paddingLeft: '50px',
-                      opacity: 1,
-                      borderWidth: '1px',
-                      border: errors.email ? '1px solid #dc3545' : '1px solid #3D3D3D40',
-                      background: 'transparent',
-                      fontSize: '14px',
-                      outline: 'none'
-                    }}
-                  />
-                  <Image
-                    src="/assets/img/icon/sms.png"
-                    alt="Email Icon"
-                    width={20}
-                    height={20}
-                    className="position-absolute"
-                    style={{
-                      top: '50%',
-                      left: '20px',
-                      transform: 'translateY(-50%)',
-                      zIndex: 10
-                    }}
-                  />
-                </div>
-                {errors.email && (
-                  <div className="text-danger mt-1 ms-3" style={{ fontSize: '12px' }}>
-                    {errors.email}
+              <div className="mb-3 position-relative">
+                <input
+                  type="email"
+                  name="email"
+                  className={`form-control ${fieldErrors.email ? 'is-invalid' : ''}`}
+                  placeholder="example@mail.com"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  style={{
+                    width: '100%',
+                    height: '54px',
+                    borderRadius: '50px',
+                    paddingTop: '15px',
+                    paddingRight: '20px',
+                    paddingBottom: '15px',
+                    paddingLeft: '50px',
+                    opacity: 1,
+                    borderWidth: '1px',
+                    border: fieldErrors.email ? '1px solid #dc3545' : '1px solid #3D3D3D40',
+                    background: 'transparent',
+                    fontSize: '14px',
+                    outline: 'none'
+                  }}
+                />
+                {fieldErrors.email && (
+                  <div className="invalid-feedback" style={{ display: 'block', fontSize: '12px', color: '#dc3545', marginTop: '4px' }}>
+                    {fieldErrors.email}
                   </div>
                 )}
+                <Image
+                  src="/assets/img/icon/sms.png"
+                  alt="Email Icon"
+                  width={20}
+                  height={20}
+                  className="position-absolute"
+                  style={{
+                    top: '50%',
+                    left: '20px',
+                    transform: 'translateY(-50%)',
+                    zIndex: 10
+                  }}
+                />
               </div>
 
               {/* Card Number */}
-              <div className="mb-3">
-                <div className='position-relative'>
-                  <input
-                    type="text"
-                    name="cardNumber"
-                    className="form-control"
-                    placeholder="1234 1234 1234 1234"
-                    value={formData.cardNumber}
-                    onChange={handleInputChange}
-                    maxLength={19}
-                    style={{
-                      width: '100%',
-                      height: '54px',
-                      borderRadius: '50px',
-                      paddingTop: '15px',
-                      paddingRight: '200px',
-                      paddingBottom: '15px',
-                      paddingLeft: '20px',
-                      opacity: 1,
-                      borderWidth: '1px',
-                      border: errors.cardNumber ? '1px solid #dc3545' : '1px solid #3D3D3D40',
-                      background: 'transparent',
-                      fontSize: '14px',
-                      outline: 'none'
-                    }}
-                  />
-                  {/* Payment Method Logos - Inside the input field */}
-                  <div
-                    className="position-absolute d-flex align-items-center"
-                    style={{
-                      top: '50%',
-                      right: '15px',
-                      transform: 'translateY(-50%)',
-                      gap: '8px',
-                      pointerEvents: 'none'
-                    }}
-                  >
-                    {/* VISA */}
-                    <div
-                      className="d-flex align-items-center justify-content-center"
-                      style={{
-                        backgroundColor: 'white',
-                        borderRadius: '3px',
-                        padding: '4px 6px',
-                        minWidth: '20px',
-                        height: '20px',
-                        border: 'none'
-                      }}
-                    >
-                      <span style={{ fontSize: '8px', fontWeight: 'bold', color: '#1A1F71' }}>VISA</span>
-                    </div>
-
-                    {/* Mastercard */}
-                    <div
-                      className="d-flex align-items-center justify-content-center"
-                      style={{
-                        backgroundColor: '#000',
-                        borderRadius: '3px',
-                        padding: '4px 6px',
-                        minWidth: '20px',
-                        height: '20px'
-                      }}
-                    >
-                      <div className="d-flex align-items-center">
-                        <div
-                          style={{
-                            width: '8px',
-                            height: '8px',
-                            borderRadius: '50%',
-                            backgroundColor: '#EB001B',
-                            marginRight: '-2px',
-                            zIndex: 2
-                          }}
-                        ></div>
-                        <div
-                          style={{
-                            width: '8px',
-                            height: '8px',
-                            borderRadius: '50%',
-                            backgroundColor: '#F79E1B',
-                            zIndex: 1
-                          }}
-                        ></div>
-                      </div>
-                    </div>
-
-                    {/* JCB */}
-                    <div
-                      className="d-flex align-items-center justify-content-center"
-                      style={{
-                        backgroundColor: 'white',
-                        borderRadius: '3px',
-                        padding: '4px 6px',
-                        minWidth: '20px',
-                        height: '20px',
-                        border: 'none'
-                      }}
-                    >
-                      <div className="d-flex">
-                        <div style={{ width: '2px', height: '12px', backgroundColor: '#0066CC', marginRight: '1px' }}></div>
-                        <div style={{ width: '2px', height: '12px', backgroundColor: '#CC0000', marginRight: '1px' }}></div>
-                        <div style={{ width: '2px', height: '12px', backgroundColor: '#00AA44' }}></div>
-                      </div>
-                    </div>
-
-                    {/* PayPal */}
-                    <div
-                      className="d-flex align-items-center justify-content-center"
-                      style={{
-                        backgroundColor: '#0070BA',
-                        borderRadius: '3px',
-                        padding: '4px 6px',
-                        minWidth: '20px',
-                        height: '20px'
-                      }}
-                    >
-                      <span style={{ fontSize: '7px', fontWeight: 'bold', color: 'white' }}>PayPal</span>
-                    </div>
-
-                  </div>
-                </div>
-                {errors.cardNumber && (
-                  <div className="text-danger mt-1 ms-3" style={{ fontSize: '12px' }}>
-                    {errors.cardNumber}
+              <div className="mb-3 position-relative">
+                <input
+                  type="text"
+                  name="cardNumber"
+                  className={`form-control ${fieldErrors.cardNumber ? 'is-invalid' : ''}`}
+                  placeholder="1234 1234 1234 1234"
+                  value={formData.cardNumber}
+                  onChange={handleInputChange}
+                  style={{
+                    width: '100%',
+                    height: '54px',
+                    borderRadius: '50px',
+                    paddingTop: '15px',
+                    paddingRight: '200px',
+                    paddingBottom: '15px',
+                    paddingLeft: '20px',
+                    opacity: 1,
+                    borderWidth: '1px',
+                    border: fieldErrors.cardNumber ? '1px solid #dc3545' : '1px solid #3D3D3D40',
+                    background: 'transparent',
+                    fontSize: '14px',
+                    outline: 'none'
+                  }}
+                />
+                {fieldErrors.cardNumber && (
+                  <div className="invalid-feedback" style={{ display: 'block', fontSize: '12px', color: '#dc3545', marginTop: '4px' }}>
+                    {fieldErrors.cardNumber}
                   </div>
                 )}
+                {/* Payment Method Logos - Inside the input field */}
+                <div
+                  className="position-absolute d-flex align-items-center"
+                  style={{
+                    top: '50%',
+                    right: '15px',
+                    transform: 'translateY(-50%)',
+                    gap: '8px',
+                    pointerEvents: 'none'
+                  }}
+                >
+                  {/* VISA */}
+                  <div
+                    className="d-flex align-items-center justify-content-center"
+                    style={{
+                      backgroundColor: 'white',
+                      borderRadius: '3px',
+                      padding: '4px 6px',
+                      minWidth: '20px',
+                      height: '20px',
+                      border: 'none'
+                    }}
+                  >
+                    <span style={{ fontSize: '8px', fontWeight: 'bold', color: '#1A1F71' }}>VISA</span>
+                  </div>
+
+                  {/* Mastercard */}
+                  <div
+                    className="d-flex align-items-center justify-content-center"
+                    style={{
+                      backgroundColor: '#000',
+                      borderRadius: '3px',
+                      padding: '4px 6px',
+                      minWidth: '20px',
+                      height: '20px'
+                    }}
+                  >
+                    <div className="d-flex align-items-center">
+                      <div
+                        style={{
+                          width: '8px',
+                          height: '8px',
+                          borderRadius: '50%',
+                          backgroundColor: '#EB001B',
+                          marginRight: '-2px',
+                          zIndex: 2
+                        }}
+                      ></div>
+                      <div
+                        style={{
+                          width: '8px',
+                          height: '8px',
+                          borderRadius: '50%',
+                          backgroundColor: '#F79E1B',
+                          zIndex: 1
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  {/* JCB */}
+                  <div
+                    className="d-flex align-items-center justify-content-center"
+                    style={{
+                      backgroundColor: 'white',
+                      borderRadius: '3px',
+                      padding: '4px 6px',
+                      minWidth: '20px',
+                      height: '20px',
+                      border: 'none'
+                    }}
+                  >
+                    <div className="d-flex">
+                      <div style={{ width: '2px', height: '12px', backgroundColor: '#0066CC', marginRight: '1px' }}></div>
+                      <div style={{ width: '2px', height: '12px', backgroundColor: '#CC0000', marginRight: '1px' }}></div>
+                      <div style={{ width: '2px', height: '12px', backgroundColor: '#00AA44' }}></div>
+                    </div>
+                  </div>
+
+                  {/* PayPal */}
+                  <div
+                    className="d-flex align-items-center justify-content-center"
+                    style={{
+                      backgroundColor: '#0070BA',
+                      borderRadius: '3px',
+                      padding: '4px 6px',
+                      minWidth: '20px',
+                      height: '20px'
+                    }}
+                  >
+                    <span style={{ fontSize: '7px', fontWeight: 'bold', color: 'white' }}>PayPal</span>
+                  </div>
+                </div>
               </div>
 
               {/* Expiry Date and CVV */}
@@ -915,11 +929,10 @@ function CardPayment({ onBack, onSuccess }) {
                   <input
                     type="text"
                     name="expiryDate"
-                    className="form-control"
+                    className={`form-control ${fieldErrors.expiryDate ? 'is-invalid' : ''}`}
                     placeholder="MM/YY"
                     value={formData.expiryDate}
                     onChange={handleInputChange}
-                    maxLength={5}
                     style={{
                       width: '100%',
                       height: '54px',
@@ -930,15 +943,15 @@ function CardPayment({ onBack, onSuccess }) {
                       paddingLeft: '20px',
                       opacity: 1,
                       borderWidth: '1px',
-                      border: errors.expiryDate ? '1px solid #dc3545' : '1px solid #3D3D3D40',
+                      border: fieldErrors.expiryDate ? '1px solid #dc3545' : '1px solid #3D3D3D40',
                       background: 'transparent',
                       fontSize: '14px',
                       outline: 'none'
                     }}
                   />
-                  {errors.expiryDate && (
-                    <div className="text-danger mt-1 ms-3" style={{ fontSize: '12px' }}>
-                      {errors.expiryDate}
+                  {fieldErrors.expiryDate && (
+                    <div className="invalid-feedback" style={{ display: 'block', fontSize: '12px', color: '#dc3545', marginTop: '4px' }}>
+                      {fieldErrors.expiryDate}
                     </div>
                   )}
                 </div>
@@ -946,11 +959,10 @@ function CardPayment({ onBack, onSuccess }) {
                   <input
                     type="text"
                     name="cvv"
-                    className="form-control"
+                    className={`form-control ${fieldErrors.cvv ? 'is-invalid' : ''}`}
                     placeholder="CVV/CVC"
                     value={formData.cvv}
                     onChange={handleInputChange}
-                    maxLength={3}
                     style={{
                       width: '100%',
                       height: '54px',
@@ -961,15 +973,15 @@ function CardPayment({ onBack, onSuccess }) {
                       paddingLeft: '20px',
                       opacity: 1,
                       borderWidth: '1px',
-                      border: errors.cvv ? '1px solid #dc3545' : '1px solid #3D3D3D40',
+                      border: fieldErrors.cvv ? '1px solid #dc3545' : '1px solid #3D3D3D40',
                       background: 'transparent',
                       fontSize: '14px',
                       outline: 'none'
                     }}
                   />
-                  {errors.cvv && (
-                    <div className="text-danger mt-1 ms-3" style={{ fontSize: '12px' }}>
-                      {errors.cvv}
+                  {fieldErrors.cvv && (
+                    <div className="invalid-feedback" style={{ display: 'block', fontSize: '12px', color: '#dc3545', marginTop: '4px' }}>
+                      {fieldErrors.cvv}
                     </div>
                   )}
                 </div>
@@ -980,7 +992,7 @@ function CardPayment({ onBack, onSuccess }) {
                 <input
                   type="text"
                   name="fullName"
-                  className="form-control"
+                  className={`form-control ${fieldErrors.fullName ? 'is-invalid' : ''}`}
                   placeholder="Full Name on Card"
                   value={formData.fullName}
                   onChange={handleInputChange}
@@ -994,57 +1006,60 @@ function CardPayment({ onBack, onSuccess }) {
                     paddingLeft: '20px',
                     opacity: 1,
                     borderWidth: '1px',
-                    border: errors.fullName ? '1px solid #dc3545' : '1px solid #3D3D3D40',
+                    border: fieldErrors.fullName ? '1px solid #dc3545' : '1px solid #3D3D3D40',
                     background: 'transparent',
                     fontSize: '14px',
                     outline: 'none'
                   }}
                 />
-                {errors.fullName && (
-                  <div className="text-danger mt-1 ms-3" style={{ fontSize: '12px' }}>
-                    {errors.fullName}
+                {fieldErrors.fullName && (
+                  <div className="invalid-feedback" style={{ display: 'block', fontSize: '12px', color: '#dc3545', marginTop: '4px' }}>
+                    {fieldErrors.fullName}
                   </div>
                 )}
               </div>
 
               {/* Country or Region */}
               <div className="mb-4 position-relative">
-                <input
-                  type="text"
-                  name="country"
-                  className="form-control"
-                  placeholder="Country or Region"
-                  value={formData.country}
-                  onChange={handleInputChange}
-                  style={{
-                    width: '100%',
-                    height: '54px',
-                    borderRadius: '50px',
-                    paddingTop: '15px',
-                    paddingRight: '50px',
-                    paddingBottom: '15px',
-                    paddingLeft: '20px',
-                    opacity: 1,
-                    borderWidth: '1px',
-                    border: '1px solid #3D3D3D40',
-                    background: 'transparent',
-                    fontSize: '14px',
-                    outline: 'none'
+                <Select
+                  options={countryOptions}
+                  value={countryOptions.find(opt => opt.value === formData.country) || null}
+                  onChange={handleCountryChange}
+                  placeholder="Select Country or Region"
+                  isClearable
+                  classNamePrefix="react-select"
+                  styles={{
+                    control: (base, state) => ({
+                      ...base,
+                      borderRadius: '50px',
+                      minHeight: '48px',
+                      height: '48px',
+                      borderColor: fieldErrors.country ? '#dc3545' : '#3D3D3D40',
+                      boxShadow: 'none',
+                      paddingLeft: '2px',
+                      fontSize: '14px',
+                      background: 'transparent'
+                    }),
+                    valueContainer: (base) => ({
+                      ...base,
+                      paddingLeft: '18px',
+                      height: '48px'
+                    }),
+                    input: (base) => ({
+                      ...base,
+                      height: '48px'
+                    }),
+                    placeholder: (base) => ({
+                      ...base,
+                      marginBottom: '10px'
+                    })
                   }}
                 />
-                <div
-                  className="position-absolute"
-                  style={{
-                    top: '50%',
-                    right: '20px',
-                    transform: 'translateY(-50%)',
-                    color: '#3D3D3D',
-                    fontSize: '16px',
-                    pointerEvents: 'none'
-                  }}
-                >
-                  ▼
-                </div>
+                {fieldErrors.country && (
+                  <div style={{ color: '#dc3545', fontSize: '12px', marginTop: '4px' }}>
+                    {fieldErrors.country}
+                  </div>
+                )}
               </div>
 
               {/* Subscribe Button */}
@@ -1052,11 +1067,11 @@ function CardPayment({ onBack, onSuccess }) {
                 type="submit"
                 className="btn w-100 mb-3"
                 style={{
-                  height: '48px',
+                  height: '42px',
                   borderRadius: '50px',
                   fontSize: '16px',
                   fontWeight: '600',
-                  backgroundColor: isFormValid ? '#28a745' : '#1D1B201F',
+                  backgroundColor: isFormValid ? '#007C36' : '#1D1B201F',
                   color: isFormValid ? '#fff' : '#1D1B20',
                   border: 'none',
                   boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
@@ -1067,7 +1082,7 @@ function CardPayment({ onBack, onSuccess }) {
               </button>
 
               {/* Disclaimer */}
-              <p className="text-center mb-2 mt-2" style={{ fontSize: '12px', lineHeight: '1.4', color: '#3D3D3D' }}>
+              <p className="text-center mb-4 mt-2" style={{ fontSize: '12px', lineHeight: '1.4', color: '#3D3D3D' }}>
                 By confirming you allow Innovate360 to charge you for future payments in accordance with their terms. You can always cancel your subscription.
               </p>
             </form>

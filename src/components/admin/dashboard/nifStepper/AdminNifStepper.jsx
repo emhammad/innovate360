@@ -6,6 +6,7 @@ import AdminNifDocProcess from './AdminNifDocProcess';
 import AdminNifInvoiceFlow from './AdminNifInvoiceFlow';
 import AdminNifInvoiceSummary from './AdminNifInvoiceSummary';
 import AdminNifCompletedDocument from './AdminNifCompletedDocument';
+import AdminNifProcessing from './AdminNifProcessing';
 import { FaSearch, FaTimes, FaUser } from 'react-icons/fa';
 
 export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
@@ -134,6 +135,13 @@ export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
       active: false
     },
     {
+      title: 'Processing',
+      description: 'Kindly e-sign the documents uploaded.',
+      icon: '/assets/img/icon/processing.png',
+      button: 'View',
+      active: false
+    },
+    {
       title: 'Complete',
       description: 'Your NIF registration is successfully completed.',
       icon: '/assets/img/icon/completed.png',
@@ -180,6 +188,8 @@ export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
           return <AdminNifInvoiceSummary onPayNow={handlePayNow} />;
         }
       case 2:
+        return <AdminNifProcessing />;
+      case 3:
         return <AdminNifCompletedDocument
           file={{
             name: 'NIF-Confirmation.pdf',

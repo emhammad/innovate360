@@ -39,7 +39,7 @@ export default function NIFNumber({ onNext, onBack }) {
   };
 
 
-const handleAddOn = () => {
+  const handleAddOn = () => {
     if (validateNIF()) {
       setShowModal(true);
       // Store in localStorage
@@ -141,7 +141,25 @@ const handleAddOn = () => {
             {isAdded === true ? 'Added' : 'Add On'}
           </button>
         </div>
-
+        <button
+          type="button"
+          className="btn mt-4"
+          style={{
+            width: '100%',
+            minWidth: "150px",
+            maxWidth: "400px",
+            borderRadius: "25px",
+            backgroundColor: '#28a745',
+            color: '#fff',
+            border: 'none',
+            height: '48px',
+            fontSize: '16px',
+            fontWeight: '600'
+          }}
+          onClick={() => onNext()}
+        >
+          Next
+        </button>
 
         {/* Modal */}
         {showModal && (

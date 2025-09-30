@@ -5,6 +5,7 @@ import Image from 'next/image';
 import logo_img from "@assets/img/logo/innovate360.png";
 import WalletImage from "@assets/img/icon/payment-success.png";
 import InvoicePreview from '../../admin/dashboard/InvoicePreview';
+import Select from "react-select";
 
 import {
   FaDownload
@@ -513,6 +514,17 @@ function CardPayment({ onBack, onSuccess }) {
   });
   const [fieldErrors, setFieldErrors] = useState({});
 
+  const countryOptions = [
+    { value: "Portugal", label: "Portugal" },
+    { value: "Spain", label: "Spain" },
+    { value: "France", label: "France" },
+    { value: "Germany", label: "Germany" },
+    { value: "Italy", label: "Italy" },
+    { value: "United Kingdom", label: "United Kingdom" },
+    { value: "United States", label: "United States" },
+    // ...add more as needed
+  ];
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
@@ -573,6 +585,19 @@ function CardPayment({ onBack, onSuccess }) {
     }));
   };
 
+  const handleCountryChange = (selectedOption) => {
+    setFormData(prev => ({
+      ...prev,
+      country: selectedOption ? selectedOption.value : ""
+    }));
+    if (fieldErrors.country) {
+      setFieldErrors(prev => ({
+        ...prev,
+        country: ""
+      }));
+    }
+  };
+
   const validateForm = () => {
     const errors = {};
 
@@ -610,6 +635,9 @@ function CardPayment({ onBack, onSuccess }) {
       errors.fullName = 'Full name is required';
     }
 
+    if (!formData.country) {
+      errors.country = "Country is required";
+    }
 
     setFieldErrors(errors);
     return Object.keys(errors).length === 0;
@@ -972,42 +1000,45 @@ function CardPayment({ onBack, onSuccess }) {
 
               {/* Country or Region */}
               <div className="mb-4 position-relative">
-                <input
-                  type="text"
-                  name="country"
-                  className={`form-control ${fieldErrors.country ? 'is-invalid' : ''}`}
-                  placeholder="Country or Region"
-                  value={formData.country}
-                  onChange={handleInputChange}
-                  style={{
-                    width: '100%',
-                    height: '54px',
-                    borderRadius: '50px',
-                    paddingTop: '15px',
-                    paddingRight: '50px',
-                    paddingBottom: '15px',
-                    paddingLeft: '20px',
-                    opacity: 1,
-                    borderWidth: '1px',
-                    border: '1px solid #3D3D3D40',
-                    background: 'transparent',
-                    fontSize: '14px',
-                    outline: 'none'
+                <Select
+                  options={countryOptions}
+                  value={countryOptions.find(opt => opt.value === formData.country) || null}
+                  onChange={handleCountryChange}
+                  placeholder="Select Country or Region"
+                  isClearable
+                  classNamePrefix="react-select"
+                  styles={{
+                    control: (base, state) => ({
+                      ...base,
+                      borderRadius: '50px',
+                      minHeight: '48px',
+                      height: '48px',
+                      borderColor: fieldErrors.country ? '#dc3545' : '#3D3D3D40',
+                      boxShadow: 'none',
+                      paddingLeft: '2px',
+                      fontSize: '14px',
+                      background: 'transparent'
+                    }),
+                    valueContainer: (base) => ({
+                      ...base,
+                      paddingLeft: '18px',
+                      height: '48px'
+                    }),
+                    input: (base) => ({
+                      ...base,
+                      height: '48px'
+                    }),
+                    placeholder: (base) => ({
+                      ...base,
+                      marginBottom: '10px'
+                    })
                   }}
                 />
-                <div
-                  className="position-absolute"
-                  style={{
-                    top: '50%',
-                    right: '20px',
-                    transform: 'translateY(-50%)',
-                    color: '#3D3D3D',
-                    fontSize: '16px',
-                    pointerEvents: 'none'
-                  }}
-                >
-                  ▼
-                </div>
+                {fieldErrors.country && (
+                  <div style={{ color: '#dc3545', fontSize: '12px', marginTop: '4px' }}>
+                    {fieldErrors.country}
+                  </div>
+                )}
               </div>
 
               {/* Subscribe Button */}

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import Select from "react-select";
 
 export default function PaymentCard({ onNext, onBack }) {
   const [formData, setFormData] = useState({
@@ -12,19 +13,143 @@ export default function PaymentCard({ onNext, onBack }) {
     fullName: "",
     country: ""
   });
+  const [fieldErrors, setFieldErrors] = useState({});
+
+  const countryOptions = [
+    { value: "Portugal", label: "Portugal" },
+    { value: "Spain", label: "Spain" },
+    { value: "France", label: "France" },
+    { value: "Germany", label: "Germany" },
+    { value: "Italy", label: "Italy" },
+    { value: "United Kingdom", label: "United Kingdom" },
+    { value: "United States", label: "United States" },
+    // ...add more as needed
+  ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+    // Clear field error when user starts typing
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+
+    // Add validation for card number to limit digits
+    if (name === 'cardNumber') {
+      // Remove all non-digit characters and limit to 16 digits
+      const digitsOnly = value.replace(/\D/g, '');
+      if (digitsOnly.length <= 16) {
+        // Format with spaces every 4 digits
+        const formatted = digitsOnly.replace(/(\d{4})(?=\d)/g, '$1 ');
+        setFormData(prev => ({
+          ...prev,
+          [name]: formatted
+        }));
+      }
+      return;
+    }
+
+    // Add validation for CVV to limit to 3-4 digits
+    if (name === 'cvv') {
+      const digitsOnly = value.replace(/\D/g, '');
+      if (digitsOnly.length <= 4) {
+        setFormData(prev => ({
+          ...prev,
+          [name]: digitsOnly
+        }));
+      }
+      return;
+    }
+
+    // Add validation for expiry date (MM/YY format)
+    if (name === 'expiryDate') {
+      const digitsOnly = value.replace(/\D/g, '');
+      if (digitsOnly.length <= 4) {
+        let formatted = digitsOnly;
+        if (digitsOnly.length >= 2) {
+          formatted = digitsOnly.substring(0, 2) + '/' + digitsOnly.substring(2, 4);
+        }
+        setFormData(prev => ({
+          ...prev,
+          [name]: formatted
+        }));
+      }
+      return;
+    }
+
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
   };
 
+  const handleCountryChange = (selectedOption) => {
+    setFormData(prev => ({
+      ...prev,
+      country: selectedOption ? selectedOption.value : ""
+    }));
+    if (fieldErrors.country) {
+      setFieldErrors(prev => ({
+        ...prev,
+        country: ""
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const errors = {};
+
+    // Validate email
+    if (!formData.email) {
+      errors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = 'Please enter a valid email address';
+    }
+
+    // Validate card number (must be exactly 16 digits)
+    const cardDigits = formData.cardNumber.replace(/\D/g, '');
+    if (!formData.cardNumber) {
+      errors.cardNumber = 'Card number is required';
+    } else if (cardDigits.length !== 16) {
+      errors.cardNumber = 'Card number must be 16 digits';
+    }
+
+    // Validate expiry date (MM/YY format)
+    if (!formData.expiryDate) {
+      errors.expiryDate = 'Expiry date is required';
+    } else if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(formData.expiryDate)) {
+      errors.expiryDate = 'Please enter valid expiry date (MM/YY)';
+    }
+
+    // Validate CVV (3-4 digits)
+    if (!formData.cvv) {
+      errors.cvv = 'CVV is required';
+    } else if (!/^\d{3,4}$/.test(formData.cvv)) {
+      errors.cvv = 'CVV must be 3-4 digits';
+    }
+
+    // Validate full name
+    if (!formData.fullName.trim()) {
+      errors.fullName = 'Full name is required';
+    }
+
+    if (!formData.country) {
+      errors.country = "Country is required";
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (validateForm()) {
+      window.location.href = '/company/payment-success';
+    }
     // Redirect to payment success page after card payment
-    window.location.href = '/company/payment-success';
   };
 
   const isFormValid = formData.email && formData.cardNumber && formData.expiryDate &&
@@ -349,42 +474,45 @@ export default function PaymentCard({ onNext, onBack }) {
 
             {/* Country or Region */}
             <div className="mb-4 position-relative">
-              <input
-                type="text"
-                name="country"
-                className="form-control"
-                placeholder="Country or Region"
-                value={formData.country}
-                onChange={handleInputChange}
-                style={{
-                  width: '100%',
-                  height: '54px',
-                  borderRadius: '50px',
-                  paddingTop: '15px',
-                  paddingRight: '50px',
-                  paddingBottom: '15px',
-                  paddingLeft: '20px',
-                  opacity: 1,
-                  borderWidth: '1px',
-                  border: '1px solid #3D3D3D40',
-                  background: 'transparent',
-                  fontSize: '14px',
-                  outline: 'none'
+              <Select
+                options={countryOptions}
+                value={countryOptions.find(opt => opt.value === formData.country) || null}
+                onChange={handleCountryChange}
+                placeholder="Select Country or Region"
+                isClearable
+                classNamePrefix="react-select"
+                styles={{
+                  control: (base, state) => ({
+                    ...base,
+                    borderRadius: '50px',
+                    minHeight: '48px',
+                    height: '48px',
+                    borderColor: fieldErrors.country ? '#dc3545' : '#3D3D3D40',
+                    boxShadow: 'none',
+                    paddingLeft: '2px',
+                    fontSize: '14px',
+                    background: 'transparent'
+                  }),
+                  valueContainer: (base) => ({
+                    ...base,
+                    paddingLeft: '18px',
+                    height: '48px'
+                  }),
+                  input: (base) => ({
+                    ...base,
+                    height: '48px'
+                  }),
+                  placeholder: (base) => ({
+                    ...base,
+                    marginBottom: '10px'
+                  })
                 }}
               />
-              <div
-                className="position-absolute"
-                style={{
-                  top: '50%',
-                  right: '20px',
-                  transform: 'translateY(-50%)',
-                  color: '#3D3D3D',
-                  fontSize: '16px',
-                  pointerEvents: 'none'
-                }}
-              >
-                ▼
-              </div>
+              {fieldErrors.country && (
+                <div style={{ color: '#dc3545', fontSize: '12px', marginTop: '4px' }}>
+                  {fieldErrors.country}
+                </div>
+              )}
             </div>
 
             {/* Subscribe Button */}
@@ -407,13 +535,13 @@ export default function PaymentCard({ onNext, onBack }) {
             </button>
 
             {/* Disclaimer */}
-            <p className="text-center mb-2 mt-2" style={{ fontSize: '12px', lineHeight: '1.4' , color: '#3D3D3D' }}>
+            <p className="text-center mb-2 mt-2" style={{ fontSize: '12px', lineHeight: '1.4', color: '#3D3D3D' }}>
               By confirming you allow Innovate360 to charge you for future payments in accordance with their terms. You can always cancel your subscription.
             </p>
 
             {/* Footer */}
             <div className="text-center">
-              <p className="mb-0" style={{ fontSize: '12px' , color: '#3D3D3D' }}>
+              <p className="mb-0" style={{ fontSize: '12px', color: '#3D3D3D' }}>
                 Powered by <Link href="#" className="text-success fw-semibold text-decoration-none">stripe</Link> |
                 <Link href="#" className="text-success fw-semibold text-decoration-none ms-1">Terms of Service</Link> |
                 <Link href="#" className="text-success fw-semibold text-decoration-none ms-1">Privacy Policy</Link>

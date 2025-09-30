@@ -31,16 +31,16 @@ export default function BusinessAddress({ onNext, onBack }) {
   };
 
   return (
-    <div className="d-flex align-items-center justify-content-center">
+    <div className="d-flex align-items-center justify-content-center h-100" style={{ minHeight: '90vh' }}>
       <div className="text-center" style={{ maxWidth: '450px' }}>
         {/* Title */}
         <h4 className="mb-3" style={{ color: '#3D3D3D', fontWeight: '600' }}>Add Company's Address</h4>
 
         {/* Subtitle */}
-        <p className="mb-2 mx-auto" style={{ maxWidth: "500px", color: '#3D3D3D' , fontSize: '16px' }}>
+        <p className="mb-2 mx-auto" style={{ maxWidth: "500px", color: '#3D3D3D', fontSize: '16px' }}>
           Please provide your business address (Portuguese only).
         </p>
-        <p className="mb-4" style={{ fontSize: "16px" , color: '#3D3D3D' }}>
+        <p className="mb-4" style={{ fontSize: "16px", color: '#3D3D3D' }}>
           Don't have one? You can apply easily using the <strong>Add-on</strong> option.
         </p>
 
@@ -91,7 +91,7 @@ export default function BusinessAddress({ onNext, onBack }) {
           </div>
         </div>
 
-          {/* Add-on Card */}
+        {/* Add-on Card */}
         <div
           className="mx-auto p-4 mb-3"
           style={{
@@ -196,6 +196,25 @@ export default function BusinessAddress({ onNext, onBack }) {
 
         {/* Go Back */}
         <div>
+          <button
+            type="button"
+            className="btn mt-4"
+            style={{
+              width: '100%',
+              minWidth: "150px",
+              maxWidth: "400px",
+              borderRadius: "25px",
+              backgroundColor: '#28a745',
+              color: '#fff',
+              border: 'none',
+              height: '48px',
+              fontSize: '16px',
+              fontWeight: '600'
+            }}
+            onClick={() => onNext()}
+          >
+            Next
+          </button>
           <button
             type="button"
             className="btn btn-link text-success fw-bold text-decoration-none"

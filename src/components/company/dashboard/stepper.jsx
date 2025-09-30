@@ -114,7 +114,7 @@ export default function CompanyNameStep({
 
   return (
     <>
-      <div id="stepper-component" className="d-flex w-100" style={{ minHeight: '90vh' }}>
+      <div id="stepper-component" className="d-flex w-100" style={{ minHeight: isAuthenticated ? "90vh" : "100vh" }}>
         {/* Stepper sidebar - Background changes based on authentication */}
         <div
           className="d-flex flex-column"
@@ -264,7 +264,7 @@ export default function CompanyNameStep({
             {getStepComponent()}
           </div>
         </div>
-      </div>
+      </div >
     </>
   );
 }

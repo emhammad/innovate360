@@ -5,6 +5,8 @@ import AdminStatusCards from '../../common/AdminStatusCards';
 import AdminNifDocProcess from './NifDocProcess';
 import AdminNifInvoiceSummary from './NifInvoiceSummary';
 import AdminNifCompletedDocument from './NifCompletedDocument';
+import AdminNifProcessing from './NifProcessing';
+
 
 export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
   const [activeStep, setActiveStep] = useState(0);
@@ -71,6 +73,13 @@ export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
       active: true
     },
     {
+      title: 'Processing',
+      description: 'Kindly e-sign the documents uploaded.',
+      icon: '/assets/img/icon/processing.png',
+      button: 'View',
+      active: false
+    },
+    {
       title: 'Complete',
       description: 'Your NIF registration is successfully completed.',
       icon: '/assets/img/icon/completed.png',
@@ -104,7 +113,10 @@ export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
     switch (activeStep) {
       case 0:
         return <AdminNifDocProcess />;
+      
       case 1:
+        return <AdminNifProcessing />;
+      case 2:
         return <AdminNifCompletedDocument
           file={{
             name: 'NIF-Confirmation.pdf',
@@ -116,6 +128,7 @@ export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
         return <AdminNifDocProcess />;
     }
   };
+
 
   // Show loading state until hydrated
   if (!isHydrated) {
