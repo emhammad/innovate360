@@ -6,7 +6,7 @@ import headphone from "@assets/img/footer/headphone.png";
 import footer_logo from "@assets/img/logo/footer-logo.png";
 import user from "@assets/img/footer/user.png";
 import EmailAeroplan from '@/src/svg/email-aeroplan';
-import SocialLinks, { CopyRight } from '@/src/common/social-links';
+// import { CopyRight } from '@/src/common/social-links';
 
 const footer_content = { 
     contact_us: <> Contact us at <span>@Themepure.com </span></>,
@@ -137,10 +137,7 @@ const Footer = () => {
                                             I agree to all your terms and policies
                                         </label>
                                 </div>
-                                <div className="tp-footer-widget-social">
-                                    <SocialLinks /> 
-
-                                </div>
+                                
                                 </div>
                             </div>
                             </div>
@@ -149,11 +146,11 @@ const Footer = () => {
 
                     <div className="tp-footer-copyright-area p-relative">
                         <div className="row">
-                            <div className="col-md-12 col-lg-6">
+                            {/* <div className="col-md-12 col-lg-6">
                                 <div className="tp-footer-copyright-inner">
                                 <p><CopyRight /> </p>
                                 </div>
-                            </div>
+                            </div> */}
                             <div className="col-md-12 col-lg-6">
                                 <div className="tp-footer-copyright-inner text-lg-end">
                                 <Link href="#">Terms and conditions</Link>
