@@ -174,42 +174,42 @@ export default function NIFSignupForm() {
                 {/* Email Input */}
                 <div className="mb-3">
                   <div className="position-relative">
-                  <input
-                    type="email"
-                    className={`form-control ${fieldErrors.email ? 'is-invalid' : ''}`}
-                    placeholder="Enter your email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    style={{
-                      width: '100%',
-                      height: '50px',
-                      borderRadius: '50px',
-                      paddingTop: '15px',
-                      paddingRight: '50px',
-                      paddingBottom: '15px',
-                      paddingLeft: '50px',
-                      opacity: 1,
-                      borderWidth: '1px',
-                      border: fieldErrors.email ? '1px solid #dc3545' : '1px solid #79747E',
-                      background: 'transparent',
-                      fontSize: '14px'
-                    }}
-                  />
-                  <Image
-                    src="/assets/img/icon/sms.png"
-                    alt="Email Icon"
-                    width={20}
-                    height={20}
-                    className="position-absolute"
-                    style={{
-                      top: '50%',
-                      left: '20px',
-                      transform: 'translateY(-50%)',
-                      zIndex: 10
-                    }}
-                  />
+                    <input
+                      type="email"
+                      className={`form-control ${fieldErrors.email ? 'is-invalid' : ''}`}
+                      placeholder="Enter your email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      style={{
+                        width: '100%',
+                        height: '50px',
+                        borderRadius: '50px',
+                        paddingTop: '15px',
+                        paddingRight: '50px',
+                        paddingBottom: '15px',
+                        paddingLeft: '50px',
+                        opacity: 1,
+                        borderWidth: '1px',
+                        border: fieldErrors.email ? '1px solid #dc3545' : '1px solid #79747E',
+                        background: 'transparent',
+                        fontSize: '14px'
+                      }}
+                    />
+                    <Image
+                      src="/assets/img/icon/sms.png"
+                      alt="Email Icon"
+                      width={20}
+                      height={20}
+                      className="position-absolute"
+                      style={{
+                        top: '50%',
+                        left: '20px',
+                        transform: 'translateY(-50%)',
+                        zIndex: 10
+                      }}
+                    />
                   </div>
                   {fieldErrors.email && (
                     <div className="invalid-feedback" style={{ display: 'block', fontSize: '12px', color: '#dc3545', marginTop: '4px' }}>

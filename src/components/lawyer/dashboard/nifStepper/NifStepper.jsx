@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import AdminHorizontalStepper from '../../common/AdminHorizontalStepper';
-import AdminStatusCards from '../../common/AdminStatusCards';
-import AdminNifDocProcess from './NifDocProcess';
-import AdminNifInvoiceSummary from './NifInvoiceSummary';
-import AdminNifCompletedDocument from './NifCompletedDocument';
-import AdminNifProcessing from './NifProcessing';
+import HorizontalStepper from '../../common/HorizontalStepper';
+import StatusCards from '../../common/StatusCards';
+import NifDocProcess from './NifDocProcess';
+import NifInvoiceSummary from './NifInvoiceSummary';
+import NifCompletedDocument from './NifCompletedDocument';
+import NifProcessing from './NifProcessing';
 
 
 export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
@@ -112,12 +112,12 @@ export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
   const getProgressComponent = () => {
     switch (activeStep) {
       case 0:
-        return <AdminNifDocProcess />;
+        return <NifDocProcess />;
       
       case 1:
-        return <AdminNifProcessing />;
+        return <NifProcessing />;
       case 2:
-        return <AdminNifCompletedDocument
+        return <NifCompletedDocument
           file={{
             name: 'NIF-Confirmation.pdf',
             size: '200 KB',
@@ -125,7 +125,7 @@ export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
           }}
         />;
       default:
-        return <AdminNifDocProcess />;
+        return <NifDocProcess />;
     }
   };
 
@@ -168,13 +168,13 @@ export default function AdminNifStepper({ onStepChange, onPaymentFlowChange }) {
       </div>
 
       {activeStep === 1 && showPaymentFlow ? "" : <>
-        <AdminHorizontalStepper
+        <HorizontalStepper
           steps={cardSteps}
           activeStep={activeStep}
           completedSteps={completedSteps}
           handleStepClick={handleStepClick}
         />
-        <AdminStatusCards
+        <StatusCards
           cardSteps={cardSteps}
           activeStep={activeStep}
           completedSteps={completedSteps}

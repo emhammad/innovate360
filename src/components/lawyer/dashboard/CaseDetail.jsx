@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
-import HorizontalStepper from '../common/AdminHorizontalStepper'; // adjust path as needed
-import StatusCards from '../common/AdminStatusCards';
+import HorizontalStepper from '../common/HorizontalStepper'; // adjust path as needed
+import StatusCards from '../common/StatusCards';
 import Registration from "./progress/Registration";
 import InvoiceCard from './progress/Invoice';
 import AppliedNames from "./progress/NameApplied";
